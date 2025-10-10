@@ -4,6 +4,7 @@ import com.efms.employee_file_ms_be.api.request.SalaryEventUpdateRequest;
 import com.efms.employee_file_ms_be.api.response.SalaryEventResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.exception.SalaryEventNotFound;
 import com.efms.employee_file_ms_be.model.domain.Employee;
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
 import com.efms.employee_file_ms_be.model.domain.SalaryEventFrequency;
@@ -39,7 +40,7 @@ public class SalaryEventPatchCmd implements Command {
     @Override
     public void execute() {
         SalaryEvent salaryEvent = repository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new RuntimeException("Salary Event not found"));
+                .orElseThrow(() -> new SalaryEventNotFound(id));
         updateProperties(salaryEvent, salaryEventUpdateRequest);
         salaryEvent = repository.save(salaryEvent);
         salaryEventResponse = mapper.toDTO(salaryEvent);

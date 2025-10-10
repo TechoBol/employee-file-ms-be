@@ -4,6 +4,7 @@ import com.efms.employee_file_ms_be.api.request.PositionUpdateRequest;
 import com.efms.employee_file_ms_be.api.response.PositionResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.exception.PositionNotFound;
 import com.efms.employee_file_ms_be.model.domain.Position;
 import com.efms.employee_file_ms_be.model.mapper.position.PositionMapper;
 import com.efms.employee_file_ms_be.model.repository.PositionRepository;
@@ -37,7 +38,7 @@ public class PositionPatchCmd implements Command {
     @Override
     public void execute() {
         Position position = repository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new RuntimeException("Position not found"));
+                .orElseThrow(() -> new PositionNotFound(id));
         updateProperties(position, positionUpdateRequest);
         position = repository.save(position);
         positionResponse = mapper.toDTO(position);

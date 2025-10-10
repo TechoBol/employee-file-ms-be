@@ -6,6 +6,8 @@ import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventByAbsenceCreateCmd;
+import com.efms.employee_file_ms_be.exception.EndDateBeforeStartDateException;
+import com.efms.employee_file_ms_be.exception.MultiDayVacationMustBeFullDayException;
 import com.efms.employee_file_ms_be.model.domain.*;
 import com.efms.employee_file_ms_be.model.mapper.absence.AbsenceMapper;
 import com.efms.employee_file_ms_be.model.repository.AbsenceRepository;
@@ -35,7 +37,6 @@ public class AbsenceCreateCmd implements Command {
         validateRequest();
         Absence absence = mapper.toEntity(absenceCreateRequest);
 
-        // Crear el salary event si es necesario usando el nuevo command
         SalaryEvent salaryEvent = createSalaryEventForAbsence(absence);
 
         if (salaryEvent != null) {
@@ -56,13 +57,14 @@ public class AbsenceCreateCmd implements Command {
     private void validateRequest() {
         if (absenceCreateRequest.getEndDate() != null &&
                 absenceCreateRequest.getEndDate().isBefore(absenceCreateRequest.getDate())) {
-            throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la fecha de inicio");
+            throw new EndDateBeforeStartDateException(absenceCreateRequest.getDate().atStartOfDay(),
+                    absenceCreateRequest.getEndDate().atStartOfDay());
         }
 
         if (absenceCreateRequest.getType() == AbsenceType.VACATION &&
                 absenceCreateRequest.getEndDate() != null &&
                 absenceCreateRequest.getDuration() == AbsenceDuration.HALF_DAY) {
-            throw new IllegalArgumentException("Las vacaciones de múltiples días deben ser de día completo");
+            throw new MultiDayVacationMustBeFullDayException();
         }
     }
 }

@@ -10,12 +10,12 @@ import lombok.AllArgsConstructor;
  * @author Josue Veliz
  */
 @RestException(
-        message = Constants.ExceptionMessage.EMPLOYEE_NOT_FOUND
+        message = Constants.ExceptionMessage.ABSENCE_NOT_FOUND
 )
 @NotFoundException()
 @AllArgsConstructor
-public class EmployeeNotFoundException extends ApiRestException {
+public class AbsenceNotFoundException extends ApiRestException {
 
     @RestExceptionAttribute
-    private String employeeId;
+    private String absenceId;
 }

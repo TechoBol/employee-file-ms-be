@@ -4,6 +4,7 @@ import com.efms.employee_file_ms_be.api.request.EmployeeUpdateRequest;
 import com.efms.employee_file_ms_be.api.response.EmployeeResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.exception.EmployeeNotFoundException;
 import com.efms.employee_file_ms_be.model.domain.*;
 import com.efms.employee_file_ms_be.model.mapper.employee.EmployeeMapper;
 import com.efms.employee_file_ms_be.model.repository.EmployeeRepository;
@@ -35,7 +36,7 @@ public class EmployeePatchCmd implements Command {
     @Override
     public void execute() {
         Employee employee = repository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                .orElseThrow(() -> new EmployeeNotFoundException(id));
         updateProperties(employee, employeeUpdateRequest);
         employee = repository.save(employee);
         employeeResponse = mapper.toDTO(employee);

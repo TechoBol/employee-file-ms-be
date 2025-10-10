@@ -4,6 +4,7 @@ import com.efms.employee_file_ms_be.api.request.BaseSalaryUpdateRequest;
 import com.efms.employee_file_ms_be.api.response.BaseSalaryResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.exception.BaseSalaryNotFoundException;
 import com.efms.employee_file_ms_be.model.domain.BaseSalary;
 import com.efms.employee_file_ms_be.model.domain.Employee;
 import com.efms.employee_file_ms_be.model.mapper.base_salary.BaseSalaryMapper;
@@ -38,7 +39,7 @@ public class BaseSalaryPatchCmd implements Command {
     @Override
     public void execute() {
         BaseSalary baseSalary = repository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new RuntimeException("Base Salary not found"));
+                .orElseThrow(() -> new BaseSalaryNotFoundException(id));
         updateProperties(baseSalary, baseSalaryUpdateRequest);
         baseSalary = repository.save(baseSalary);
         baseSalaryResponse = mapper.toDTO(baseSalary);

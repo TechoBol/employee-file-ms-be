@@ -1,11 +1,13 @@
 package com.efms.employee_file_ms_be.exception.core.processor;
 
+import com.efms.employee_file_ms_be.exception.Constants;
 import com.efms.employee_file_ms_be.exception.core.ApiRestException;
 import com.efms.employee_file_ms_be.exception.core.RestErrorResponse;
 import com.efms.employee_file_ms_be.exception.core.annotations.BadRequestException;
 import com.efms.employee_file_ms_be.exception.core.annotations.NotFoundException;
 import com.efms.employee_file_ms_be.exception.core.annotations.RestException;
 import com.efms.employee_file_ms_be.exception.core.annotations.RestExceptionAttribute;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -19,9 +21,10 @@ import java.util.regex.Pattern;
  * @author Josue Veliz
  */
 @Component
+@Slf4j
 public class RestExceptionProcessor {
 
-    private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\{([^}]+)\\}");
+    private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\{([^}]+)}");
 
     public RestErrorResponse processException(ApiRestException exception) {
         Class<?> exceptionClass = exception.getClass();
@@ -53,7 +56,7 @@ public class RestExceptionProcessor {
             String messageTemplate = restException.message();
             return interpolateMessage(messageTemplate, attributes);
         }
-        return "Internal Server Error";
+        return HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase();
     }
 
     private String interpolateMessage(String messageTemplate, Map<String, Object> attributes) {
@@ -96,7 +99,7 @@ public class RestExceptionProcessor {
                         attributes.put(attributeName, value);
                     }
                 } catch (IllegalAccessException e) {
-                    System.err.println("Error accessing field " + field.getName() + ": " + e.getMessage());
+                    log.error(String.format(Constants.ExceptionMessage.ERROR_ACCESSING_FIELDS, field), e.getMessage());
                 }
             }
         }

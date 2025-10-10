@@ -7,6 +7,9 @@ import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventByAbsenceCreateCmd;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventDeleteByIdCmd;
+import com.efms.employee_file_ms_be.exception.AbsenceNotFoundException;
+import com.efms.employee_file_ms_be.exception.EndDateBeforeStartDateException;
+import com.efms.employee_file_ms_be.exception.RecordEditNotAllowedException;
 import com.efms.employee_file_ms_be.model.domain.Absence;
 import com.efms.employee_file_ms_be.model.domain.AbsenceDuration;
 import com.efms.employee_file_ms_be.model.domain.AbsenceType;
@@ -44,7 +47,7 @@ public class AbsencePatchCmd implements Command {
     @Override
     public void execute() {
         Absence absence = absenceRepository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new RuntimeException("Absence not found"));
+                .orElseThrow(() -> new AbsenceNotFoundException(id));
 
         validateEditingTimeframe(absence);
         validateRequest(absence);
@@ -68,10 +71,7 @@ public class AbsencePatchCmd implements Command {
         LocalDate fifthDayOfNextMonth = lastDayOfAbsenceMonth.plusDays(5);
 
         if (now.isAfter(fifthDayOfNextMonth)) {
-            throw new IllegalArgumentException(
-                    "No se puede editar la ausencia. Solo se permite editar durante el mes de registro " +
-                            "o hasta el día 5 del mes siguiente."
-            );
+            throw new RecordEditNotAllowedException();
         }
     }
 
@@ -83,7 +83,7 @@ public class AbsencePatchCmd implements Command {
                 absenceUpdateRequest.getEndDate() : absence.getEndDate();
 
         if (endDate != null && endDate.isBefore(startDate)) {
-            throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la fecha de inicio");
+            throw new EndDateBeforeStartDateException(startDate.atStartOfDay(), endDate.atStartOfDay());
         }
 
         AbsenceType type = absenceUpdateRequest.getType() != null ?
@@ -95,7 +95,7 @@ public class AbsencePatchCmd implements Command {
         if (type == AbsenceType.VACATION &&
                 endDate != null &&
                 duration == AbsenceDuration.HALF_DAY) {
-            throw new IllegalArgumentException("Las vacaciones de múltiples días deben ser de día completo");
+            throw new EndDateBeforeStartDateException();
         }
     }
 

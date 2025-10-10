@@ -6,10 +6,14 @@ import com.efms.employee_file_ms_be.command.base_salary.BaseSalaryReadByEmployee
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
+import com.efms.employee_file_ms_be.exception.CommonBadRequestException;
+import com.efms.employee_file_ms_be.exception.Constants;
 import com.efms.employee_file_ms_be.model.domain.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -21,8 +25,10 @@ import java.time.temporal.ChronoUnit;
  */
 @CommandExecute
 @RequiredArgsConstructor
+@Validated
 public class SalaryEventByAbsenceCreateCmd implements Command {
 
+    @NotNull
     @Setter
     private Absence absence;
 
@@ -58,11 +64,8 @@ public class SalaryEventByAbsenceCreateCmd implements Command {
     }
 
     private void validateAbsence() {
-        if (absence == null) {
-            throw new IllegalArgumentException("La ausencia no puede ser nula");
-        }
         if (absence.getEmployee() == null || absence.getEmployee().getId() == null) {
-            throw new IllegalArgumentException("El empleado de la ausencia no puede ser nulo");
+            throw new CommonBadRequestException(Constants.ExceptionMessage.ABSENCE_EMPLOYEE_NOT_NULL);
         }
     }
 

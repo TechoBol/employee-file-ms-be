@@ -1,21 +1,22 @@
 package com.efms.employee_file_ms_be.exception;
 
 import com.efms.employee_file_ms_be.exception.core.ApiRestException;
-import com.efms.employee_file_ms_be.exception.core.annotations.NotFoundException;
+import com.efms.employee_file_ms_be.exception.core.annotations.BadRequestException;
 import com.efms.employee_file_ms_be.exception.core.annotations.RestException;
 import com.efms.employee_file_ms_be.exception.core.annotations.RestExceptionAttribute;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Josue Veliz
  */
 @RestException(
-        message = Constants.ExceptionMessage.EMPLOYEE_NOT_FOUND
+        message = Constants.ExceptionMessage.COMMON_BAD_REQUEST
 )
-@NotFoundException()
+@BadRequestException()
 @AllArgsConstructor
-public class EmployeeNotFoundException extends ApiRestException {
+public class CommonBadRequestException extends ApiRestException {
 
     @RestExceptionAttribute
-    private String employeeId;
+    private final String message;
 }

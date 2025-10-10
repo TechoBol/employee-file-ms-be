@@ -4,6 +4,7 @@ import com.efms.employee_file_ms_be.api.request.CompanyUpdateRequest;
 import com.efms.employee_file_ms_be.api.response.CompanyResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.exception.CompanyNotFoundException;
 import com.efms.employee_file_ms_be.model.domain.Company;
 import com.efms.employee_file_ms_be.model.mapper.company.CompanyMapper;
 import com.efms.employee_file_ms_be.model.repository.CompanyRepository;
@@ -36,7 +37,7 @@ public class CompanyUpdateCmd implements Command {
     @Override
     public void execute() {
         Company company = repository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new RuntimeException("Company not found"));
+                .orElseThrow(() -> new CompanyNotFoundException(id));
         updateProperties(company, request);
         company = repository.save(company);
         companyResponse = mapper.toDTO(company);

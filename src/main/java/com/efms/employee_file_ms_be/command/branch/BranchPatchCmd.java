@@ -4,6 +4,7 @@ import com.efms.employee_file_ms_be.api.request.BranchUpdateRequest;
 import com.efms.employee_file_ms_be.api.response.BranchResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.exception.BranchNotFoundException;
 import com.efms.employee_file_ms_be.model.domain.Branch;
 import com.efms.employee_file_ms_be.model.domain.Company;
 import com.efms.employee_file_ms_be.model.mapper.branch.BranchMapper;
@@ -38,7 +39,7 @@ public class BranchPatchCmd implements Command {
     @Override
     public void execute() {
         Branch branch = repository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new RuntimeException("Branch not found"));
+                .orElseThrow(() -> new BranchNotFoundException(id));
         updateProperties(branch, branchUpdateRequest);
         branch = repository.save(branch);
         branchResponse = mapper.toDTO(branch);
