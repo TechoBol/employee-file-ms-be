@@ -51,4 +51,7 @@ public class Payment {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
+
+    @Column(name = "company_id", nullable = false)
+    private UUID companyId;
 }

@@ -20,10 +20,6 @@ public class BranchMapper implements CustomMapper<BranchResponse, BranchCreateRe
         Branch instance = new Branch();
         instance.setName(branchCreateRequest.getName());
 
-        Company company = new Company();
-        company.setId(UUID.fromString(branchCreateRequest.getCompanyId()));
-        instance.setCompany(company);
-
         return instance;
     }
 
@@ -32,8 +28,7 @@ public class BranchMapper implements CustomMapper<BranchResponse, BranchCreateRe
         return BranchResponse.builder()
                 .id(branch.getId().toString())
                 .name(branch.getName())
-                .companyId(branch.getCompany().getId().toString())
-//                .companyName(branch.getCompany().getName())
+                .companyId(String.valueOf(branch.getCompanyId()))
                 .build();
     }
 }

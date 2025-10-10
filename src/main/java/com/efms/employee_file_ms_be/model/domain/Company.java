@@ -18,15 +18,9 @@ public class Company {
     @Column(updatable = false, nullable = false)
     private UUID id;
 
-    @Column(updatable = false, nullable = false, length = 80)
+    @Column(nullable = false, length = 80)
     private String name;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Branch> branches;
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Department> departments;
-
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Position> positions;
+    @Column(nullable = false, length = 10)
+    private String type;
 }

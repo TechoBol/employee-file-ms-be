@@ -3,6 +3,7 @@ package com.efms.employee_file_ms_be.command.department;
 import com.efms.employee_file_ms_be.api.response.DepartmentResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.Department;
 import com.efms.employee_file_ms_be.model.mapper.department.DepartmentMapper;
 import com.efms.employee_file_ms_be.model.repository.DepartmentRepository;
@@ -18,10 +19,7 @@ import java.util.UUID;
  */
 @CommandExecute
 @RequiredArgsConstructor
-public class DepartmentListByCompanyIdCmd implements Command {
-
-    @Setter
-    private String companyId;
+public class DepartmentListCmd implements Command {
 
     @Getter
     private List<DepartmentResponse> departments;
@@ -32,7 +30,8 @@ public class DepartmentListByCompanyIdCmd implements Command {
 
     @Override
     public void execute() {
-        List<Department> departmentsByCompany = repository.findDepartmentsByCompanyId(UUID.fromString(companyId));
+        UUID companyId = UUID.fromString(TenantContext.getTenantId());
+        List<Department> departmentsByCompany = repository.findAllByCompanyId(companyId);
         departments = departmentsByCompany.stream()
                 .map(mapper::toDTO)
                 .toList();

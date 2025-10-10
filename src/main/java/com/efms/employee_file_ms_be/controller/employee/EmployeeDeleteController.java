@@ -1,6 +1,7 @@
 package com.efms.employee_file_ms_be.controller.employee;
 
 import com.efms.employee_file_ms_be.command.employee.EmployeeDeleteCmd;
+import com.efms.employee_file_ms_be.controller.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Josue Veliz
  */
 @RestController
-@RequestMapping("/api/employees")
+@RequestMapping(Constants.Path.EMPLOYEE_PATH)
 @RequiredArgsConstructor
-@Tag(name = "Employee")
+@Tag(name = Constants.Tag.EMPLOYEE)
 public class EmployeeDeleteController {
 
     private final EmployeeDeleteCmd command;

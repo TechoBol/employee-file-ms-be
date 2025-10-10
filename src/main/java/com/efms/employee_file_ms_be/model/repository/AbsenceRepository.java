@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -15,15 +16,17 @@ import java.util.UUID;
  */
 public interface AbsenceRepository extends JpaRepository<Absence, UUID> {
 
-    List<Absence> findByEmployeeCompanyId(UUID companyId);
+    Optional<Absence> findByIdAndCompanyId(UUID id, UUID companyId);
 
-    List<Absence> findByEmployeeId(UUID employeeId);
+    List<Absence> findByCompanyId(UUID companyId);
 
-    List<Absence> findByEmployeeIdAndType(UUID employeeId, AbsenceType type);
+    List<Absence> findByEmployeeIdAndCompanyId(UUID employeeId, UUID companyId);
 
-    List<Absence> findByEmployeeIdAndDateBetween(UUID employeeId, LocalDate startDate, LocalDate endDate);
+    List<Absence> findByEmployeeIdAndCompanyIdAndType(UUID employeeId, UUID companyId, AbsenceType type);
 
-    List<Absence> findByEmployeeCompanyIdAndDateBetween(UUID companyId, LocalDate startDate, LocalDate endDate);
+    List<Absence> findByCompanyIdAndEmployeeIdAndDateBetween(UUID companyId, UUID employeeId, LocalDate date, LocalDate date2);
+
+    List<Absence> findByCompanyIdAndDateBetween(UUID companyId, LocalDate startDate, LocalDate endDate);
 
     @Query("SELECT a FROM Absence a WHERE a.employee.id = :employeeId " +
             "AND ((a.date <= :date AND (a.endDate IS NULL OR a.endDate >= :date)) " +

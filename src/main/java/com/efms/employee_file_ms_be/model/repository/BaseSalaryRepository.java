@@ -12,16 +12,20 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface BaseSalaryRepository extends JpaRepository<BaseSalary, UUID> {
+
+    Optional<BaseSalary> findByIdAndCompanyId(UUID id, UUID companyId);
+
     @EntityGraph(attributePaths = {
             "employee",
     })
-    @Query("SELECT bs FROM BaseSalary bs WHERE bs.employee.id = :employeeId")
-    Optional<BaseSalary> findByEmployeeId(@Param("employeeId") UUID employeeId);
+    @Query("SELECT bs FROM BaseSalary bs WHERE bs.employee.id = :employeeId AND bs.companyId = :companyId")
+    Optional<BaseSalary> findByEmployeeIdAndCompanyId(@Param("employeeId") UUID employeeId,
+                                                      @Param("companyId") UUID companyId);
 
     @Query("""
     SELECT bs FROM BaseSalary bs\s
     JOIN bs.employee e\s
-    WHERE e.company.id = :companyId\s
+    WHERE e.companyId = :companyId\s
     AND e.isDeleted = false
    \s""")
     Page<BaseSalary> findAllByCompanyIdAndActiveEmployees(@Param("companyId") UUID companyId, Pageable pageable);

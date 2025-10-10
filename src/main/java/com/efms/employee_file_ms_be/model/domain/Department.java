@@ -22,9 +22,8 @@ public class Department {
     @Column(nullable = false, length = 80)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id", nullable = false)
-    private Company company;
+    @Column(name = "company_id", nullable = false)
+    private UUID companyId;
 
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Employee> employees;

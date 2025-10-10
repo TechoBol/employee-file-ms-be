@@ -3,6 +3,7 @@ package com.efms.employee_file_ms_be.command.employee;
 import com.efms.employee_file_ms_be.api.response.EmployeeResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.Employee;
 import com.efms.employee_file_ms_be.model.mapper.employee.EmployeeMapper;
 import com.efms.employee_file_ms_be.model.repository.EmployeeRepository;
@@ -19,9 +20,6 @@ import java.util.UUID;
 public class EmployeeReadByPageableCmd implements Command {
 
     @Setter
-    private String companyId;
-
-    @Setter
     private Pageable pageable;
 
     @Getter
@@ -33,7 +31,8 @@ public class EmployeeReadByPageableCmd implements Command {
 
     @Override
     public void execute() {
-        Page<Employee> employeePage = repository.findAllByCompanyId(UUID.fromString(companyId), pageable);
+        UUID companyId = UUID.fromString(TenantContext.getTenantId());
+        Page<Employee> employeePage = repository.findAllByCompanyId(companyId, pageable);
         employees = employeePage.map(mapper::toDTO);
     }
 }

@@ -19,10 +19,7 @@ public class PositionMapper implements CustomMapper<PositionResponse, PositionCr
     @Override
     public Position toEntity(PositionCreateRequest positionCreateRequest) {
         Position instance = new Position();
-        Company company = new Company();
-        company.setId(UUID.fromString(positionCreateRequest.getCompanyId()));
         BeanUtils.copyProperties(positionCreateRequest, instance);
-        instance.setCompany(company);
         return instance;
     }
 

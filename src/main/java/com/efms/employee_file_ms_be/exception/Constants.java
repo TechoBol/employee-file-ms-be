@@ -21,5 +21,6 @@ public class Constants {
         public static final String SALARY_EVENT_NOT_FOUND =  "Salary event with id {salaryId} not found";
         public static final String COMMON_BAD_REQUEST = "Bad Request: {message}";
         public static final String ABSENCE_EMPLOYEE_NOT_NULL = "The employee of the absence cannot be null";
+        public static final String GENERAL_SETTINGS_NOT_FOUND = "General settings with id {settingsId} not found";
     }
 }

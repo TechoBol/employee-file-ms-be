@@ -19,9 +19,6 @@ public class DepartmentMapper implements CustomMapper<DepartmentResponse, Depart
     @Override
     public Department toEntity(DepartmentCreateRequest departmentCreateRequest) {
         Department instance = new Department();
-        Company company = new Company();
-        company.setId(UUID.fromString(departmentCreateRequest.getCompanyId()));
-        instance.setCompany(company);
         BeanUtils.copyProperties(departmentCreateRequest, instance);
         return instance;
     }

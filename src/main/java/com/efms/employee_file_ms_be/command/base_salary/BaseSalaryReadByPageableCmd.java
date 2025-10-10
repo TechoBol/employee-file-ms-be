@@ -3,6 +3,7 @@ package com.efms.employee_file_ms_be.command.base_salary;
 import com.efms.employee_file_ms_be.api.response.BaseSalaryResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.BaseSalary;
 import com.efms.employee_file_ms_be.model.mapper.base_salary.BaseSalaryMapper;
 import com.efms.employee_file_ms_be.model.repository.BaseSalaryRepository;
@@ -22,9 +23,6 @@ import java.util.UUID;
 public class BaseSalaryReadByPageableCmd implements Command {
 
     @Setter
-    private String companyId;
-
-    @Setter
     private Pageable pageable;
 
     @Getter
@@ -36,8 +34,9 @@ public class BaseSalaryReadByPageableCmd implements Command {
 
     @Override
     public void execute() {
+        UUID companyId = UUID.fromString(TenantContext.getTenantId());
         Page<BaseSalary> baseSalaryPage = repository
-                .findAllByCompanyIdAndActiveEmployees(UUID.fromString(companyId), pageable);
+                .findAllByCompanyIdAndActiveEmployees(companyId, pageable);
         baseSalaryResponse = baseSalaryPage.map(mapper::toDTO);
     }
 }

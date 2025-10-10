@@ -17,10 +17,6 @@ public class Constants {
         public static final String NAME = "payment";
     }
 
-    public static class Attendance {
-        public static final String NAME = "attendance";
-    }
-
     public static class SalaryEvent {
         public static final String NAME = "salary_event";
     }
@@ -51,6 +47,10 @@ public class Constants {
 
     public static class Absence {
         public static final String NAME = "absence";
+    }
+
+    public static class GeneralSettings {
+        public static final String NAME = "general_settings";
     }
 
     public static class TypeSpecifications {

@@ -4,12 +4,15 @@ import com.efms.employee_file_ms_be.api.request.BaseSalaryCreateRequest;
 import com.efms.employee_file_ms_be.api.response.BaseSalaryResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.BaseSalary;
 import com.efms.employee_file_ms_be.model.mapper.base_salary.BaseSalaryMapper;
 import com.efms.employee_file_ms_be.model.repository.BaseSalaryRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import java.util.UUID;
 
 @CommandExecute
 @RequiredArgsConstructor
@@ -27,7 +30,11 @@ public class BaseSalaryCreateCmd implements Command {
 
     @Override
     public void execute() {
-        BaseSalary baseSalary = repository.save(mapper.toEntity(baseSalaryCreateRequest));
+        UUID companyId = UUID.fromString(TenantContext.getTenantId());
+        BaseSalary baseSalary = mapper.toEntity(baseSalaryCreateRequest);
+        baseSalary.setCompanyId(companyId);
+        baseSalary = repository.save(baseSalary);
+        baseSalary.setCompanyId(companyId);
         baseSalaryResponse = mapper.toDTO(baseSalary);
     }
 }

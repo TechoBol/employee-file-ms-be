@@ -4,6 +4,7 @@ import com.efms.employee_file_ms_be.api.request.EmployeeUpdateRequest;
 import com.efms.employee_file_ms_be.api.response.EmployeeResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.EmployeeNotFoundException;
 import com.efms.employee_file_ms_be.model.domain.*;
 import com.efms.employee_file_ms_be.model.mapper.employee.EmployeeMapper;
@@ -11,7 +12,6 @@ import com.efms.employee_file_ms_be.model.repository.EmployeeRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.util.Optionals;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -35,7 +35,8 @@ public class EmployeePatchCmd implements Command {
 
     @Override
     public void execute() {
-        Employee employee = repository.findById(UUID.fromString(id))
+        UUID companyId = UUID.fromString(TenantContext.getTenantId());
+        Employee employee = repository.findByIdAndCompanyId(UUID.fromString(id), companyId)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
         updateProperties(employee, employeeUpdateRequest);
         employee = repository.save(employee);
@@ -68,11 +69,6 @@ public class EmployeePatchCmd implements Command {
             Location location = new Location();
             location.setId(UUID.fromString(locationId));
             employee.setLocation(location);
-        });
-        Optional.ofNullable(employeeUpdateRequest.getCompanyId()).ifPresent(companyId -> {
-            Company company = new Company();
-            company.setId(UUID.fromString(companyId));
-            employee.setCompany(company);
         });
     }
 }

@@ -44,4 +44,7 @@ public class SalaryEvent {
     private LocalDate startDate;
 
     private LocalDate endDate;
+
+    @Column(name = "company_id", nullable = false)
+    private UUID companyId;
 }

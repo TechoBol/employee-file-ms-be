@@ -22,6 +22,7 @@ public class CompanyMapper implements CustomMapper<CompanyResponse, CompanyCreat
         return CompanyResponse.builder()
                 .id(company.getId().toString())
                 .name(company.getName())
+                .type(company.getType())
                 .build();
     }
 }

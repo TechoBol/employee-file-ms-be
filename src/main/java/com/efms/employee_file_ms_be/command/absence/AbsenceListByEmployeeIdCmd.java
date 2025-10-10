@@ -3,13 +3,16 @@ package com.efms.employee_file_ms_be.command.absence;
 import com.efms.employee_file_ms_be.api.response.AbsenceResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.Absence;
 import com.efms.employee_file_ms_be.model.mapper.absence.AbsenceMapper;
 import com.efms.employee_file_ms_be.model.repository.AbsenceRepository;
+import com.efms.employee_file_ms_be.util.DateUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +23,12 @@ import java.util.UUID;
 @CommandExecute
 @RequiredArgsConstructor
 public class AbsenceListByEmployeeIdCmd implements Command {
+
+    @Setter
+    private LocalDate startDate;
+
+    @Setter
+    private LocalDate endDate;
 
     @Setter
     private String employeeId;
@@ -35,7 +44,10 @@ public class AbsenceListByEmployeeIdCmd implements Command {
 
     @Override
     public void execute() {
-        absenceList = absenceRepository.findByEmployeeId(UUID.fromString(employeeId));
+        startDate = DateUtils.getStartDateOrDefault(startDate);
+        endDate = DateUtils.getEndDateOrDefault(endDate);
+        UUID companyId = UUID.fromString(TenantContext.getTenantId());
+        absenceList = absenceRepository.findByCompanyIdAndEmployeeIdAndDateBetween(companyId, UUID.fromString(employeeId), startDate, endDate);
         absenceResponseList = absenceList.stream()
                 .map(absenceMapper::toDTO)
                 .toList();

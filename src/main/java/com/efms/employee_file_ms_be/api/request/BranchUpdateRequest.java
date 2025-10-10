@@ -11,6 +11,4 @@ import lombok.Setter;
 public class BranchUpdateRequest {
 
     private String name;
-
-    private String companyId;
 }

@@ -2,13 +2,39 @@ package com.efms.employee_file_ms_be.model.repository;
 
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface SalaryEventRepository extends JpaRepository<SalaryEvent, UUID> {
 
-    List<SalaryEvent> findByEmployeeCompanyId(UUID companyId);
+    @Query("""
+        SELECT s FROM SalaryEvent s 
+        WHERE s.employee.id = :employeeId 
+          AND s.companyId = :companyId
+          AND (s.startDate <= :endDate AND (s.endDate IS NULL OR s.endDate >= :startDate))
+    """)
+    List<SalaryEvent> findByEmployeeAndCompanyInDateRange(
+            @Param("employeeId") UUID employeeId,
+            @Param("companyId") UUID companyId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
 
-    List<SalaryEvent> findByEmployeeId(UUID employeeId);
+    @Query("""
+        SELECT s FROM SalaryEvent s 
+        WHERE s.companyId = :companyId
+          AND (s.startDate <= :endDate AND (s.endDate IS NULL OR s.endDate >= :startDate))
+    """)
+    List<SalaryEvent> findByCompanyInDateRange(
+            @Param("companyId") UUID companyId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
+
+    Optional<SalaryEvent> findByIdAndCompanyId(UUID id, UUID companyId);
 }

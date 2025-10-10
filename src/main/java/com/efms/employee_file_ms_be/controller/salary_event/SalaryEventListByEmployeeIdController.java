@@ -2,31 +2,36 @@ package com.efms.employee_file_ms_be.controller.salary_event;
 
 import com.efms.employee_file_ms_be.api.response.SalaryEventResponse;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventListByEmployeeIdCmd;
+import com.efms.employee_file_ms_be.controller.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
  * @author Josue Veliz
  */
 @RestController
-@RequestMapping("/api/salary-events")
+@RequestMapping(Constants.Path.SALARY_EVENT_PATH)
 @RequiredArgsConstructor
-@Tag(name = "SalaryEvent")
+@Tag(name = Constants.Tag.SALARY_EVENT)
 public class SalaryEventListByEmployeeIdController {
 
     private final SalaryEventListByEmployeeIdCmd command;
 
     @GetMapping("/employee/{employeeId}")
     @Operation(summary = "Get salary events by employee ID")
-    public ResponseEntity<List<SalaryEventResponse>> getByEmployee(@PathVariable String employeeId) {
+    public ResponseEntity<List<SalaryEventResponse>> getByEmployee(
+            @PathVariable String employeeId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        command.setStartDate(startDate);
+        command.setEndDate(endDate);
         command.setEmployeeId(employeeId);
         command.execute();
 

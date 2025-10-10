@@ -46,4 +46,7 @@ public class Absence extends Audit {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "salary_event_id")
     private SalaryEvent salaryEvent;
+
+    @Column(name = "company_id", nullable = false)
+    private UUID companyId;
 }

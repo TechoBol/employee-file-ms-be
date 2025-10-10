@@ -5,12 +5,15 @@ import com.efms.employee_file_ms_be.api.request.EmployeeCreateRequest;
 import com.efms.employee_file_ms_be.api.response.EmployeeResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.Employee;
 import com.efms.employee_file_ms_be.model.mapper.employee.EmployeeMapper;
 import com.efms.employee_file_ms_be.model.repository.EmployeeRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import java.util.UUID;
 
 @CommandExecute
 @RequiredArgsConstructor
@@ -28,7 +31,10 @@ public class EmployeeCreateCmd implements Command {
 
     @Override
     public void execute() {
-        Employee employee = repository.save(mapper.toEntity(employeeCreateRequest));
+        UUID companyId = UUID.fromString(TenantContext.getTenantId());
+        Employee employee = mapper.toEntity(employeeCreateRequest);
+        employee.setCompanyId(companyId);
+        employee = repository.save(employee);
         response = mapper.toDTO(employee);
     }
 }

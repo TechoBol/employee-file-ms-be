@@ -36,4 +36,7 @@ public class File {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private List<UnitFile> others;
+
+    @Column(name = "company_id", nullable = false)
+    private UUID companyId;
 }

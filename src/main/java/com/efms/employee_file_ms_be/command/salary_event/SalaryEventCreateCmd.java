@@ -4,12 +4,15 @@ import com.efms.employee_file_ms_be.api.request.SalaryEventCreateRequest;
 import com.efms.employee_file_ms_be.api.response.SalaryEventResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
 import com.efms.employee_file_ms_be.model.mapper.salary_event.SalaryEventMapper;
 import com.efms.employee_file_ms_be.model.repository.SalaryEventRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import java.util.UUID;
 
 @CommandExecute
 @RequiredArgsConstructor
@@ -30,7 +33,10 @@ public class SalaryEventCreateCmd implements Command {
 
     @Override
     public void execute() {
-        salaryEvent = repository.save(mapper.toEntity(salaryEventCreateRequest));
+        UUID companyId = UUID.fromString(TenantContext.getTenantId());
+        salaryEvent = mapper.toEntity(salaryEventCreateRequest);
+        salaryEvent.setCompanyId(companyId);
+        salaryEvent = repository.save(salaryEvent);
         salaryEventResponse = mapper.toDTO(salaryEvent);
     }
 }

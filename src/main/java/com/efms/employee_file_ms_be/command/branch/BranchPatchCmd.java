@@ -4,6 +4,7 @@ import com.efms.employee_file_ms_be.api.request.BranchUpdateRequest;
 import com.efms.employee_file_ms_be.api.response.BranchResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.BranchNotFoundException;
 import com.efms.employee_file_ms_be.model.domain.Branch;
 import com.efms.employee_file_ms_be.model.domain.Company;
@@ -38,7 +39,8 @@ public class BranchPatchCmd implements Command {
 
     @Override
     public void execute() {
-        Branch branch = repository.findById(UUID.fromString(id))
+        UUID companyId = UUID.fromString(TenantContext.getTenantId());
+        Branch branch = repository.findByIdAndCompanyId(UUID.fromString(id), companyId)
                 .orElseThrow(() -> new BranchNotFoundException(id));
         updateProperties(branch, branchUpdateRequest);
         branch = repository.save(branch);
@@ -47,10 +49,5 @@ public class BranchPatchCmd implements Command {
 
     private void updateProperties(Branch branch, BranchUpdateRequest branchUpdateRequest) {
         Optional.ofNullable(branchUpdateRequest.getName()).ifPresent(branch::setName);
-        Optional.ofNullable(branchUpdateRequest.getCompanyId()).ifPresent(companyId -> {
-            Company company = new Company();
-            company.setId(UUID.fromString(companyId));
-            branch.setCompany(company);
-        });
     }
 }

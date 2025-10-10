@@ -3,6 +3,7 @@ package com.efms.employee_file_ms_be.controller.company;
 import com.efms.employee_file_ms_be.api.request.CompanyUpdateRequest;
 import com.efms.employee_file_ms_be.api.response.CompanyResponse;
 import com.efms.employee_file_ms_be.command.company.CompanyUpdateCmd;
+import com.efms.employee_file_ms_be.controller.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -14,9 +15,9 @@ import org.springframework.web.bind.annotation.*;
  * @author Josue Veliz
  */
 @RestController
-@RequestMapping("/api/companies")
+@RequestMapping(Constants.Path.COMPANY_PATH)
 @RequiredArgsConstructor
-@Tag(name = "Company")
+@Tag(name = Constants.Tag.COMPANY)
 public class CompanyUpdateController {
 
     private final CompanyUpdateCmd command;

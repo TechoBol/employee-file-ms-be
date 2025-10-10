@@ -3,6 +3,7 @@ package com.efms.employee_file_ms_be.controller.location;
 import com.efms.employee_file_ms_be.api.request.LocationCreateRequest;
 import com.efms.employee_file_ms_be.api.response.LocationResponse;
 import com.efms.employee_file_ms_be.command.location.LocationCreateCmd;
+import com.efms.employee_file_ms_be.controller.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -18,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Josue Veliz
  */
 @RestController
-@RequestMapping("/api/locations")
+@RequestMapping(Constants.Path.LOCATION_PATH)
 @RequiredArgsConstructor
-@Tag(name = "Location")
+@Tag(name = Constants.Tag.LOCATION)
 public class LocationCreateController {
 
     private final LocationCreateCmd command;

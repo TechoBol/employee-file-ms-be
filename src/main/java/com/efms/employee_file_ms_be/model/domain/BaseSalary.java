@@ -37,4 +37,7 @@ public class BaseSalary extends Audit {
     @OneToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id", nullable = false, columnDefinition = "uuid")
     private Employee employee;
+
+    @Column(name = "company_id", nullable = false)
+    private UUID companyId;
 }

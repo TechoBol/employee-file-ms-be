@@ -3,12 +3,12 @@ package com.efms.employee_file_ms_be.command.location;
 import com.efms.employee_file_ms_be.api.response.LocationResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.Location;
 import com.efms.employee_file_ms_be.model.mapper.location.LocationMapper;
 import com.efms.employee_file_ms_be.model.repository.LocationRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,10 +18,7 @@ import java.util.UUID;
  */
 @CommandExecute
 @RequiredArgsConstructor
-public class LocationListByCompanyIdCmd implements Command {
-
-    @Setter
-    private String companyId;
+public class LocationListCmd implements Command {
 
     @Getter
     private List<LocationResponse> locations;
@@ -32,7 +29,8 @@ public class LocationListByCompanyIdCmd implements Command {
 
     @Override
     public void execute() {
-        List<Location> locationsByCompany = repository.findLocationsByCompanyId(UUID.fromString(companyId));
+        UUID companyId = UUID.fromString(TenantContext.getTenantId());
+        List<Location> locationsByCompany = repository.findAllByBranchCompanyId(companyId);
         locations = locationsByCompany.stream()
                 .map(mapper::toDTO)
                 .toList();

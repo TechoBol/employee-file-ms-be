@@ -7,6 +7,7 @@ import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventByAbsenceCreateCmd;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventDeleteByIdCmd;
+import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.AbsenceNotFoundException;
 import com.efms.employee_file_ms_be.exception.EndDateBeforeStartDateException;
 import com.efms.employee_file_ms_be.exception.RecordEditNotAllowedException;
@@ -46,7 +47,8 @@ public class AbsencePatchCmd implements Command {
 
     @Override
     public void execute() {
-        Absence absence = absenceRepository.findById(UUID.fromString(id))
+        UUID companyId = UUID.fromString(TenantContext.getTenantId());
+        Absence absence = absenceRepository.findByIdAndCompanyId(UUID.fromString(id), companyId)
                 .orElseThrow(() -> new AbsenceNotFoundException(id));
 
         validateEditingTimeframe(absence);

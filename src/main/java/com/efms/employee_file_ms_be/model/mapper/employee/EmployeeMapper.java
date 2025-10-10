@@ -29,7 +29,7 @@ public class EmployeeMapper implements CustomMapper<EmployeeResponse, EmployeeCr
                 .positionName(employee.getPosition().getName())
                 .locationId(employee.getLocation().getId().toString())
                 .locationName(employee.getLocation().getName())
-                .companyId(employee.getCompany().getId().toString())
+                .companyId(String.valueOf(employee.getCompanyId()))
                 .build();
     }
 
@@ -38,11 +38,9 @@ public class EmployeeMapper implements CustomMapper<EmployeeResponse, EmployeeCr
         Department department = new Department();
         Position position = new Position();
         Location location = new Location();
-        Company company = new Company();
         department.setId(UUID.fromString(employeeCreateRequest.getDepartmentId()));
         position.setId(UUID.fromString(employeeCreateRequest.getPositionId()));
         location.setId(UUID.fromString(employeeCreateRequest.getLocationId()));
-        company.setId(UUID.fromString(employeeCreateRequest.getCompanyId()));
         return Employee.builder()
                 .firstName(employeeCreateRequest.getFirstName())
                 .lastName(employeeCreateRequest.getLastName())
@@ -54,7 +52,6 @@ public class EmployeeMapper implements CustomMapper<EmployeeResponse, EmployeeCr
                 .department(department)
                 .position(position)
                 .location(location)
-                .company(company)
                 .status(EmployeeStatus.ACTIVE)
                 .isDeleted(false)
                 .build();

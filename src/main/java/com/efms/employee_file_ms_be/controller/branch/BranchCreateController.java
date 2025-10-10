@@ -3,6 +3,7 @@ package com.efms.employee_file_ms_be.controller.branch;
 import com.efms.employee_file_ms_be.api.request.BranchCreateRequest;
 import com.efms.employee_file_ms_be.api.response.BranchResponse;
 import com.efms.employee_file_ms_be.command.branch.BranchCreateCmd;
+import com.efms.employee_file_ms_be.controller.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -19,9 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-@RequestMapping("/api/branches")
+@RequestMapping(Constants.Path.BRANCH_PATH)
 @RequiredArgsConstructor
-@Tag(name = "Branch")
+@Tag(name = Constants.Tag.BRANCH)
 public class BranchCreateController {
 
     private final BranchCreateCmd command;

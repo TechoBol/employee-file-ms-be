@@ -4,6 +4,7 @@ import com.efms.employee_file_ms_be.api.request.LocationUpdateRequest;
 import com.efms.employee_file_ms_be.api.response.LocationResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.LocationNotFoundException;
 import com.efms.employee_file_ms_be.model.domain.Branch;
 import com.efms.employee_file_ms_be.model.domain.Location;
@@ -38,7 +39,8 @@ public class LocationPatchCmd implements Command {
 
     @Override
     public void execute() {
-        Location location = repository.findById(UUID.fromString(id))
+        UUID companyId = UUID.fromString(TenantContext.getTenantId());
+        Location location = repository.findByIdAndCompanyId(UUID.fromString(id), companyId)
                 .orElseThrow(() -> new LocationNotFoundException(id));
         updateProperties(location, locationUpdateRequest);
         location = repository.save(location);

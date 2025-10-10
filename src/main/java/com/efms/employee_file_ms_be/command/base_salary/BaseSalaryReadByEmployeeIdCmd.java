@@ -3,6 +3,7 @@ package com.efms.employee_file_ms_be.command.base_salary;
 import com.efms.employee_file_ms_be.api.response.BaseSalaryResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.BaseSalaryNotFoundException;
 import com.efms.employee_file_ms_be.model.domain.BaseSalary;
 import com.efms.employee_file_ms_be.model.mapper.base_salary.BaseSalaryMapper;
@@ -29,7 +30,8 @@ public class BaseSalaryReadByEmployeeIdCmd implements Command {
 
     @Override
     public void execute() {
-        BaseSalary baseSalary = repository.findByEmployeeId(UUID.fromString(employeeId))
+        UUID companyId = UUID.fromString(TenantContext.getTenantId());
+        BaseSalary baseSalary = repository.findByEmployeeIdAndCompanyId(UUID.fromString(employeeId), companyId)
                 .orElseThrow(BaseSalaryNotFoundException::new);
 
         baseSalaryResponse = mapper.toDTO(baseSalary);

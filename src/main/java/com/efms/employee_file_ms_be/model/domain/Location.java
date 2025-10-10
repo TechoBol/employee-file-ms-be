@@ -24,4 +24,7 @@ public class Location {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "branch_id", nullable = false)
     private Branch branch;
+
+    @Column(name = "company_id", nullable = false)
+    private UUID companyId;
 }

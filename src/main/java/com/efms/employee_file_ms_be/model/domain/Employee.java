@@ -80,7 +80,6 @@ public class Employee extends Audit {
     @JoinColumn(name = "location_id")
     private Location location;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "company_id", nullable = false)
-    private Company company;
+    @Column(name = "company_id", nullable = false)
+    private UUID companyId;
 }

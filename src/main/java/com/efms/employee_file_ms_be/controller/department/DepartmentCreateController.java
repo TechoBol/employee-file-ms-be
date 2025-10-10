@@ -3,6 +3,7 @@ package com.efms.employee_file_ms_be.controller.department;
 import com.efms.employee_file_ms_be.api.request.DepartmentCreateRequest;
 import com.efms.employee_file_ms_be.api.response.DepartmentResponse;
 import com.efms.employee_file_ms_be.command.department.DepartmentCreateCmd;
+import com.efms.employee_file_ms_be.controller.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -18,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Josue Veliz
  */
 @RestController
-@RequestMapping("/api/departments")
+@RequestMapping(Constants.Path.DEPARTMENT_PATH)
 @RequiredArgsConstructor
-@Tag(name = "Department")
+@Tag(name = Constants.Tag.DEPARTMENT)
 public class DepartmentCreateController {
 
     private final DepartmentCreateCmd command;

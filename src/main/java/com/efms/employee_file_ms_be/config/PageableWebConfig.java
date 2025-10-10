@@ -1,5 +1,6 @@
 package com.efms.employee_file_ms_be.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
@@ -14,6 +15,12 @@ import java.util.List;
 @Configuration
 public class PageableWebConfig implements WebMvcConfigurer {
 
+    @Value("${efms.pagination.max-page-size}")
+    private int maxPageSize;
+
+    @Value("${efms.pagination.default-size}")
+    private int defaultPageSize;
+
     /**
      * Configures how Spring resolves pagination parameters (Pageable) from HTTP requests.
      * - Sets a maximum page size to avoid excessive data loading.
@@ -25,9 +32,9 @@ public class PageableWebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
-        resolver.setMaxPageSize(Constants.StaticNumbers.MAX_PAGE_SIZE);
+        resolver.setMaxPageSize(maxPageSize);
         resolver.setOneIndexedParameters(false);
-        resolver.setFallbackPageable(PageRequest.of(0, 20));
+        resolver.setFallbackPageable(PageRequest.of(0, defaultPageSize));
         resolvers.add(resolver);
     }
 }

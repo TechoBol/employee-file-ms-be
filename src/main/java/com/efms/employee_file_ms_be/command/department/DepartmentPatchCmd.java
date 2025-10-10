@@ -4,6 +4,7 @@ import com.efms.employee_file_ms_be.api.request.DepartmentUpdateRequest;
 import com.efms.employee_file_ms_be.api.response.DepartmentResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.DepartmentNotFoundException;
 import com.efms.employee_file_ms_be.model.domain.Department;
 import com.efms.employee_file_ms_be.model.mapper.department.DepartmentMapper;
@@ -37,7 +38,8 @@ public class DepartmentPatchCmd implements Command {
 
     @Override
     public void execute() {
-        Department department = repository.findById(UUID.fromString(id))
+        UUID companyId = UUID.fromString(TenantContext.getTenantId());
+        Department department = repository.findByIdAndCompanyId(UUID.fromString(id), companyId)
                 .orElseThrow(() -> new DepartmentNotFoundException(id));
         updateProperties(department, departmentUpdateRequest);
         department = repository.save(department);

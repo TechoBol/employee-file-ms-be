@@ -6,6 +6,7 @@ import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventByAbsenceCreateCmd;
+import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.EndDateBeforeStartDateException;
 import com.efms.employee_file_ms_be.exception.MultiDayVacationMustBeFullDayException;
 import com.efms.employee_file_ms_be.model.domain.*;
@@ -14,6 +15,8 @@ import com.efms.employee_file_ms_be.model.repository.AbsenceRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import java.util.UUID;
 
 /**
  * @author Josue Veliz
@@ -35,7 +38,9 @@ public class AbsenceCreateCmd implements Command {
     @Override
     public void execute() {
         validateRequest();
+        UUID companyId = UUID.fromString(TenantContext.getTenantId());
         Absence absence = mapper.toEntity(absenceCreateRequest);
+        absence.setCompanyId(companyId);
 
         SalaryEvent salaryEvent = createSalaryEventForAbsence(absence);
 

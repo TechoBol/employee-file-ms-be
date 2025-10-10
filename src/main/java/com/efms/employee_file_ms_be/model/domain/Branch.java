@@ -22,9 +22,8 @@ public class Branch {
     @Column(nullable = false, length = 80)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "company_id", nullable = false)
-    private Company company;
+    @Column(name = "company_id", nullable = false)
+    private UUID companyId;
 
     @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Location> locations;

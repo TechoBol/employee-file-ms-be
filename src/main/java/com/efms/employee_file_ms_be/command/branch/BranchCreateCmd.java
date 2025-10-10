@@ -4,12 +4,15 @@ import com.efms.employee_file_ms_be.api.request.BranchCreateRequest;
 import com.efms.employee_file_ms_be.api.response.BranchResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.Branch;
 import com.efms.employee_file_ms_be.model.mapper.branch.BranchMapper;
 import com.efms.employee_file_ms_be.model.repository.BranchRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import java.util.UUID;
 
 /**
  * @author Josue Veliz
@@ -30,7 +33,11 @@ public class BranchCreateCmd implements Command {
 
     @Override
     public void execute() {
-        Branch branch = repository.save(mapper.toEntity(branchCreateRequest));
+        UUID companyId = UUID.fromString(TenantContext.getTenantId());
+        Branch branch = mapper.toEntity(branchCreateRequest);
+        branch.setCompanyId(companyId);
+        branch = repository.save(branch);
+        branch.setCompanyId(companyId);
         branchResponse = mapper.toDTO(branch);
     }
 }
