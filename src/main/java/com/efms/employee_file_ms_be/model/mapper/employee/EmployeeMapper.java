@@ -17,6 +17,7 @@ public class EmployeeMapper implements CustomMapper<EmployeeResponse, EmployeeCr
                 .id(String.valueOf(employee.getId()))
                 .firstName(employee.getFirstName())
                 .lastName(employee.getLastName())
+                .ci(employee.getCi())
                 .email(employee.getEmail())
                 .phone(employee.getPhone())
                 .address(employee.getAddress())
@@ -27,8 +28,6 @@ public class EmployeeMapper implements CustomMapper<EmployeeResponse, EmployeeCr
                 .departmentName(employee.getDepartment().getName())
                 .positionId(employee.getPosition().getId().toString())
                 .positionName(employee.getPosition().getName())
-                .locationId(employee.getLocation().getId().toString())
-                .locationName(employee.getLocation().getName())
                 .companyId(String.valueOf(employee.getCompanyId()))
                 .build();
     }
@@ -37,13 +36,12 @@ public class EmployeeMapper implements CustomMapper<EmployeeResponse, EmployeeCr
     public Employee toEntity(EmployeeCreateRequest employeeCreateRequest) {
         Department department = new Department();
         Position position = new Position();
-        Location location = new Location();
         department.setId(UUID.fromString(employeeCreateRequest.getDepartmentId()));
         position.setId(UUID.fromString(employeeCreateRequest.getPositionId()));
-        location.setId(UUID.fromString(employeeCreateRequest.getLocationId()));
         return Employee.builder()
                 .firstName(employeeCreateRequest.getFirstName())
                 .lastName(employeeCreateRequest.getLastName())
+                .ci(employeeCreateRequest.getCi())
                 .email(employeeCreateRequest.getEmail())
                 .phone(employeeCreateRequest.getPhone())
                 .address(employeeCreateRequest.getAddress())
@@ -51,7 +49,6 @@ public class EmployeeMapper implements CustomMapper<EmployeeResponse, EmployeeCr
                 .hireDate(employeeCreateRequest.getHireDate())
                 .department(department)
                 .position(position)
-                .location(location)
                 .status(EmployeeStatus.ACTIVE)
                 .isDeleted(false)
                 .build();

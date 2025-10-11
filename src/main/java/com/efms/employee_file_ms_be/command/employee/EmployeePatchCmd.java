@@ -46,6 +46,7 @@ public class EmployeePatchCmd implements Command {
     private void updateProperties(Employee employee, EmployeeUpdateRequest employeeUpdateRequest) {
         Optional.ofNullable(employeeUpdateRequest.getFirstName()).ifPresent(employee::setFirstName);
         Optional.ofNullable(employeeUpdateRequest.getLastName()).ifPresent(employee::setLastName);
+        Optional.ofNullable(employeeUpdateRequest.getCi()).ifPresent(employee::setCi);
         Optional.ofNullable(employeeUpdateRequest.getEmail()).ifPresent(employee::setEmail);
         Optional.ofNullable(employeeUpdateRequest.getPhone()).ifPresent(employee::setPhone);
         Optional.ofNullable(employeeUpdateRequest.getAddress()).ifPresent(employee::setAddress);
@@ -64,11 +65,6 @@ public class EmployeePatchCmd implements Command {
             Position position = new Position();
             position.setId(UUID.fromString(positionId));
             employee.setPosition(position);
-        });
-        Optional.ofNullable(employeeUpdateRequest.getLocationId()).ifPresent(locationId -> {
-            Location location = new Location();
-            location.setId(UUID.fromString(locationId));
-            employee.setLocation(location);
         });
     }
 }

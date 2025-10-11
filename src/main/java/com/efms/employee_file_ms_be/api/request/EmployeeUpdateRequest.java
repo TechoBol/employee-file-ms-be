@@ -11,6 +11,7 @@ import java.time.LocalDate;
 public class EmployeeUpdateRequest {
     private String firstName;
     private String lastName;
+    private String ci;
     private String email;
     private String phone;
     private String address;
@@ -20,6 +21,5 @@ public class EmployeeUpdateRequest {
     private EmergencyContact emergencyContact;
     private String departmentId;
     private String positionId;
-    private String locationId;
     private String companyId;
 }

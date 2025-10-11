@@ -36,7 +36,10 @@ public class Employee extends Audit {
     @Column(nullable = false, length = 150)
     private String lastName;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 15, unique = true)
+    private String ci;
+
+    @Column(nullable = false, length = 100, unique = true)
     private String email;
 
     @Column(length = 20)
@@ -75,10 +78,6 @@ public class Employee extends Audit {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "position_id", nullable = false)
     private Position position;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "location_id")
-    private Location location;
 
     @Column(name = "company_id", nullable = false)
     private UUID companyId;
