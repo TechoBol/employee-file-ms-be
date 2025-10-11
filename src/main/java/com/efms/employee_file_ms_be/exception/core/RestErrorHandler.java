@@ -26,7 +26,7 @@ public class RestErrorHandler {
     public ResponseEntity<RestErrorResponse> handleGenericException(Exception ex) {
         RestErrorResponse errorResponse = new RestErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()
+                ex.getMessage()
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }

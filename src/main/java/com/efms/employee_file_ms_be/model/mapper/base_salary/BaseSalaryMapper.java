@@ -30,6 +30,7 @@ public class BaseSalaryMapper implements CustomMapper<BaseSalaryResponse, BaseSa
     @Override
     public BaseSalaryResponse toDTO(BaseSalary baseSalary) {
         return BaseSalaryResponse.builder()
+                .id(baseSalary.getId().toString())
                 .amount(baseSalary.getAmount())
                 .startDate(baseSalary.getStartDate())
                 .endDate(baseSalary.getEndDate())

@@ -17,8 +17,6 @@ import java.util.UUID;
 public class BaseSalaryResponse {
     private String id;
     private String employeeId;
-    private String employeeFirstName;
-    private String employeeLastName;
     private BigDecimal amount;
     private LocalDate startDate;
     private LocalDate endDate;

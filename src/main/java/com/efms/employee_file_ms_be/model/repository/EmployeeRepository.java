@@ -13,6 +13,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 
     Optional<Employee> findByIdAndCompanyId(UUID id, UUID companyId);
 
-    @EntityGraph(attributePaths = {"department", "position", "location"})
+    @EntityGraph(attributePaths = {"department", "position"})
     Page<Employee> findAllByCompanyId(UUID companyId, Pageable pageable);
 }

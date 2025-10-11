@@ -90,6 +90,7 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
         payrollResponse.setDeductionAfpPercentage(generalSettings.getContributionAfpPercentage());
         payrollResponse.setDeductionAfp(afpContribution);
         payrollResponse.setDeductions(deductions);
+        payrollResponse.setTotalDeductions(totalDeductions);
         payrollResponse.setTotalAmount(totalAmount);
     }
 

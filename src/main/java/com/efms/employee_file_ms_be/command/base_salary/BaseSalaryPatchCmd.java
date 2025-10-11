@@ -51,10 +51,5 @@ public class BaseSalaryPatchCmd implements Command {
         Optional.ofNullable(baseSalaryUpdateRequest.getAmount()).ifPresent(baseSalary::setAmount);
         Optional.ofNullable(baseSalaryUpdateRequest.getStartDate()).ifPresent(baseSalary::setStartDate);
         Optional.ofNullable(baseSalaryUpdateRequest.getEndDate()).ifPresent(baseSalary::setEndDate);
-        Optional.ofNullable(baseSalaryUpdateRequest.getEmployeeId()).ifPresent(employeeId -> {
-            Employee employee = new Employee();
-            employee.setId(UUID.fromString(employeeId));
-            baseSalary.setEmployee(employee);
-        });
     }
 }

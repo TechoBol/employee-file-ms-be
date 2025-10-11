@@ -1,6 +1,7 @@
 package com.efms.employee_file_ms_be.model.domain;
 
 import com.efms.employee_file_ms_be.model.Constants;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -66,6 +67,7 @@ public class Employee extends Audit {
     private LocalDateTime deletedAt;
 
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private BaseSalary baseSalary;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)

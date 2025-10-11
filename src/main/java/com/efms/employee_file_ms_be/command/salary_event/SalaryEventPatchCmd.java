@@ -55,10 +55,5 @@ public class SalaryEventPatchCmd implements Command {
         Optional.ofNullable(salaryEventUpdateRequest.getFrequency()).ifPresent(SalaryEventFrequency::valueOf);
         Optional.ofNullable(salaryEventUpdateRequest.getStartDate()).ifPresent(salaryEvent::setStartDate);
         Optional.ofNullable(salaryEventUpdateRequest.getEndDate()).ifPresent(salaryEvent::setEndDate);
-        Optional.ofNullable(salaryEventUpdateRequest.getEmployeeId()).ifPresent(employeeId -> {
-            Employee employee = new Employee();
-            employee.setId(UUID.fromString(employeeId));
-            salaryEvent.setEmployee(employee);
-        });
     }
 }

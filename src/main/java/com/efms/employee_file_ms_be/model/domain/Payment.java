@@ -4,6 +4,8 @@ import com.efms.employee_file_ms_be.model.Constants;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -54,4 +56,8 @@ public class Payment {
 
     @Column(name = "company_id", nullable = false)
     private UUID companyId;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private PaymentDetails paymentDetails;
 }

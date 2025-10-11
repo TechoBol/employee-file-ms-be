@@ -21,5 +21,4 @@ public class EmployeeUpdateRequest {
     private EmergencyContact emergencyContact;
     private String departmentId;
     private String positionId;
-    private String companyId;
 }

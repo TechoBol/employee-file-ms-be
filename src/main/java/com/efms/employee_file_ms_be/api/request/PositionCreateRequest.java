@@ -12,8 +12,5 @@ import lombok.Setter;
 public class PositionCreateRequest {
 
     @NotBlank
-    private String companyId;
-
-    @NotBlank
     private String name;
 }

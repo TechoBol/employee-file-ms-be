@@ -1,6 +1,7 @@
 package com.efms.employee_file_ms_be.model.domain;
 
 import com.efms.employee_file_ms_be.model.Constants;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,6 +37,7 @@ public class BaseSalary extends Audit {
 
     @OneToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id", nullable = false, columnDefinition = "uuid")
+    @JsonManagedReference
     private Employee employee;
 
     @Column(name = "company_id", nullable = false)

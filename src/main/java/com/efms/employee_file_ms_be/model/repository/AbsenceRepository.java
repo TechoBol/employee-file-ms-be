@@ -24,7 +24,7 @@ public interface AbsenceRepository extends JpaRepository<Absence, UUID> {
 
     List<Absence> findByEmployeeIdAndCompanyIdAndType(UUID employeeId, UUID companyId, AbsenceType type);
 
-    List<Absence> findByCompanyIdAndEmployeeIdAndDateBetween(UUID companyId, UUID employeeId, LocalDate date, LocalDate date2);
+    List<Absence> findByCompanyIdAndEmployeeIdAndDateBetween(UUID companyId, UUID employeeId, LocalDate startDate, LocalDate endDate);
 
     List<Absence> findByCompanyIdAndDateBetween(UUID companyId, LocalDate startDate, LocalDate endDate);
 

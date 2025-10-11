@@ -14,8 +14,6 @@ import java.time.LocalDate;
 @Setter
 public class SalaryEventUpdateRequest {
 
-    private String employeeId;
-
     private SalaryEventType type;
 
     private String description;

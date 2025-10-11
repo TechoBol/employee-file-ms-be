@@ -34,7 +34,6 @@ public class BaseSalaryCreateCmd implements Command {
         BaseSalary baseSalary = mapper.toEntity(baseSalaryCreateRequest);
         baseSalary.setCompanyId(companyId);
         baseSalary = repository.save(baseSalary);
-        baseSalary.setCompanyId(companyId);
         baseSalaryResponse = mapper.toDTO(baseSalary);
     }
 }

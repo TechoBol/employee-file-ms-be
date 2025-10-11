@@ -24,7 +24,4 @@ public class EmployeeResponse {
     private String departmentName;
     private String positionId;
     private String positionName;
-    private String locationId;
-    private String locationName;
-    private String companyId;
 }

@@ -15,5 +15,4 @@ public class BaseSalaryUpdateRequest {
     private BigDecimal amount;
     private LocalDate startDate;
     private LocalDate endDate;
-    private String employeeId;
 }

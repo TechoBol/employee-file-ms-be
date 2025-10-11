@@ -28,7 +28,6 @@ public class EmployeeMapper implements CustomMapper<EmployeeResponse, EmployeeCr
                 .departmentName(employee.getDepartment().getName())
                 .positionId(employee.getPosition().getId().toString())
                 .positionName(employee.getPosition().getName())
-                .companyId(String.valueOf(employee.getCompanyId()))
                 .build();
     }
 

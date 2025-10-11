@@ -12,8 +12,5 @@ import lombok.Setter;
 public class DepartmentCreateRequest {
 
     @NotBlank
-    private String companyId;
-
-    @NotBlank
     private String name;
 }
