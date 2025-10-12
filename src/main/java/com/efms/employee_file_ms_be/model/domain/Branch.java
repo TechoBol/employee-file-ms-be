@@ -24,7 +24,4 @@ public class Branch {
 
     @Column(name = "company_id", nullable = false)
     private UUID companyId;
-
-    @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Location> locations;
 }

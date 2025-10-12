@@ -27,6 +27,10 @@ public class TenantInterceptor implements HandlerInterceptor {
             return true;
         }
 
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
+
         String companyId = request.getHeader(HEADER);
         if (companyId == null || companyId.isBlank()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

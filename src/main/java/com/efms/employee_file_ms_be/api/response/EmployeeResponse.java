@@ -13,6 +13,7 @@ public class EmployeeResponse {
     private String id;
     private String firstName;
     private String lastName;
+    private String ci;
     private String email;
     private String phone;
     private String address;
@@ -23,7 +24,4 @@ public class EmployeeResponse {
     private String departmentName;
     private String positionId;
     private String positionName;
-    private String locationId;
-    private String locationName;
-    private String companyId;
 }

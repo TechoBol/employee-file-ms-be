@@ -10,7 +10,6 @@ import com.efms.employee_file_ms_be.model.mapper.general_settings.GeneralSetting
 import com.efms.employee_file_ms_be.model.repository.GeneralSettingsRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 import java.util.UUID;
 
@@ -19,7 +18,7 @@ import java.util.UUID;
  */
 @CommandExecute
 @RequiredArgsConstructor
-public class GeneralSettingsReadByCompanyIdCmd implements Command {
+public class GeneralSettingsReadCmd implements Command {
 
     @Getter
     private GeneralSettingsResponse generalSettingsResponse;

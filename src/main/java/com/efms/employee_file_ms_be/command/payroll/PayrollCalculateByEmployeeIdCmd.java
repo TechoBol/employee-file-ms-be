@@ -8,8 +8,7 @@ import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
 import com.efms.employee_file_ms_be.command.employee.EmployeeReadByIdCmd;
-import com.efms.employee_file_ms_be.command.general_settings.GeneralSettingsReadByCompanyIdCmd;
-import com.efms.employee_file_ms_be.config.TenantContext;
+import com.efms.employee_file_ms_be.command.general_settings.GeneralSettingsReadCmd;
 import com.efms.employee_file_ms_be.model.domain.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -90,6 +89,7 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
         payrollResponse.setDeductionAfpPercentage(generalSettings.getContributionAfpPercentage());
         payrollResponse.setDeductionAfp(afpContribution);
         payrollResponse.setDeductions(deductions);
+        payrollResponse.setTotalDeductions(totalDeductions);
         payrollResponse.setTotalAmount(totalAmount);
     }
 
@@ -157,7 +157,7 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
     }
 
     private GeneralSettingsResponse findGeneralSettings() {
-        GeneralSettingsReadByCompanyIdCmd command = commandFactory.createCommand(GeneralSettingsReadByCompanyIdCmd.class);
+        GeneralSettingsReadCmd command = commandFactory.createCommand(GeneralSettingsReadCmd.class);
         command.execute();
         return command.getGeneralSettingsResponse();
     }

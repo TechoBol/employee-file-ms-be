@@ -13,7 +13,4 @@ public class BranchCreateRequest {
 
     @NotBlank
     private String name;
-
-    @NotBlank
-    private String companyId;
 }

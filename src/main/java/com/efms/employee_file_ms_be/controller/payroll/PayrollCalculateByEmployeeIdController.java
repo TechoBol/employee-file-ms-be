@@ -20,7 +20,7 @@ public class PayrollCalculateByEmployeeIdController {
 
     private final PayrollCalculateByEmployeeIdCmd command;
 
-    @PostMapping("/calculate/employees/{employeeId}")
+    @GetMapping("/calculate/employees/{employeeId}")
     @Operation(summary = "Calculate payroll for an employee")
     public ResponseEntity<PayrollResponse> calculateByEmployee(@PathVariable String employeeId) {
         command.setEmployeeId(employeeId);
