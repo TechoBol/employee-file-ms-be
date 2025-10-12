@@ -24,7 +24,7 @@ public class DepartmentListController {
 
     private final DepartmentListCmd command;
 
-    @GetMapping("")
+    @GetMapping
     @Operation(summary = "Get departments by company ID")
     public ResponseEntity<List<DepartmentResponse>> getByCompany() {
         command.execute();

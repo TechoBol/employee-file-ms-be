@@ -21,9 +21,7 @@ public class Constants {
 
         public static final String GENERAL_SETTINGS_PATH = BASE_PATH + "/general-settings";
 
-        public static final String LOCATION_PATH = BASE_PATH + "/locations";
-
-        public static final String PAYROLL_PATH = BASE_PATH + "/payroll";
+        public static final String PAYROLL_PATH = BASE_PATH + "/payrolls";
 
         public static final String POSITION_PATH = BASE_PATH + "/positions";
 
