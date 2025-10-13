@@ -11,4 +11,5 @@ import lombok.Setter;
 public class DepartmentUpdateRequest {
 
     private String name;
+    private String description;
 }

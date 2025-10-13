@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +22,21 @@ public class Branch {
 
     @Column(nullable = false, length = 80)
     private String name;
+
+    @Column(length = 180)
+    private String description;
+
+    @Column(length = 180)
+    private String location;
+
+    @Column(length = 80)
+    private String city;
+
+    @Column(length = 80)
+    private String country;
+
+    @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL)
+    private List<Employee> employees = new ArrayList<>();
 
     @Column(name = "company_id", nullable = false)
     private UUID companyId;

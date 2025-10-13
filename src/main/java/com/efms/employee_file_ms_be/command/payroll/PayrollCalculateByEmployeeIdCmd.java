@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -95,29 +96,54 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
 
     private int calculateWorkedDays(Employee employee) {
         LocalDate now = LocalDate.now();
-        LocalDate startOfMonth = now.withDayOfMonth(1);
-        int currentDay = now.getDayOfMonth();
+        LocalDate targetMonth;
 
-        // Si el empleado está eliminado y fue eliminado este mes
+        // Determinar el mes objetivo según la regla de los 5 días
+        if (now.getDayOfMonth() <= 5) {
+            targetMonth = now.minusMonths(1);
+        } else {
+            targetMonth = now;
+        }
+
+        LocalDate startOfTargetMonth = targetMonth.withDayOfMonth(1);
+        LocalDate endOfTargetMonth = targetMonth.withDayOfMonth(targetMonth.lengthOfMonth());
+
+        // Fecha de inicio efectiva (la más tardía entre inicio del mes y fecha de contratación)
+        LocalDate effectiveStartDate = employee.getHireDate().isBefore(startOfTargetMonth)
+                ? startOfTargetMonth
+                : employee.getHireDate();
+
+        // Fecha de fin efectiva
+        LocalDate effectiveEndDate = endOfTargetMonth;
+
+        // Si el empleado está eliminado, ajustar la fecha de fin
         if (employee.getStatus() == EmployeeStatus.DELETED && employee.getDeletedAt() != null) {
             LocalDate deletedDate = employee.getDeletedAt().toLocalDate();
-            if (deletedDate.getYear() == now.getYear() && deletedDate.getMonth() == now.getMonth()) {
-                return deletedDate.getDayOfMonth();
+            if (!deletedDate.isBefore(startOfTargetMonth) && !deletedDate.isAfter(endOfTargetMonth)) {
+                effectiveEndDate = deletedDate;
             }
         }
 
-        // Si estamos en los primeros 5 días del mes
-        if (currentDay <= 5) {
-            // Verificar si fue contratado este mes
-            LocalDate hireDate = employee.getHireDate();
-            if (hireDate.getYear() == now.getYear() && hireDate.getMonth() == now.getMonth()) {
-                return currentDay;
-            }
-            // Mes completo anterior
-            return 30;
+        // Si el mes objetivo es el actual y aún no ha terminado
+        if (targetMonth.getYear() == now.getYear() && targetMonth.getMonth() == now.getMonth()) {
+            effectiveEndDate = now;
         }
 
-        return currentDay;
+        // Verificar que el empleado estuvo activo en el mes objetivo
+        if (effectiveStartDate.isAfter(endOfTargetMonth) || effectiveEndDate.isBefore(startOfTargetMonth)) {
+            return 0;
+        }
+
+        // Asegurar que las fechas estén dentro del rango del mes
+        if (effectiveStartDate.isBefore(startOfTargetMonth)) {
+            effectiveStartDate = startOfTargetMonth;
+        }
+        if (effectiveEndDate.isAfter(endOfTargetMonth)) {
+            effectiveEndDate = endOfTargetMonth;
+        }
+
+        // Calcular días trabajados (inclusivo)
+        return (int) ChronoUnit.DAYS.between(effectiveStartDate, effectiveEndDate) + 1;
     }
 
     private BigDecimal calculateBasicEarnings(BigDecimal baseSalary, int workedDays) {

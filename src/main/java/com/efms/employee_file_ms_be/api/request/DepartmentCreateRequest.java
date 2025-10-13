@@ -13,4 +13,6 @@ public class DepartmentCreateRequest {
 
     @NotBlank
     private String name;
+
+    private String description;
 }

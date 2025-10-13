@@ -13,4 +13,12 @@ public class BranchCreateRequest {
 
     @NotBlank
     private String name;
+
+    private String description;
+
+    private String location;
+
+    private String city;
+
+    private String country;
 }

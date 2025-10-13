@@ -19,6 +19,6 @@ public class EmployeeUpdateRequest {
     private LocalDate hireDate;
     private String status;
     private EmergencyContact emergencyContact;
-    private String departmentId;
     private String positionId;
+    private String branchId;
 }

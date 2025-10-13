@@ -24,4 +24,6 @@ public class EmployeeResponse {
     private String departmentName;
     private String positionId;
     private String positionName;
+    private String branchId;
+    private String branchName;
 }

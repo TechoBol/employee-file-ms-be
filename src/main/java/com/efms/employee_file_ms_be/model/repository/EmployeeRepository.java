@@ -11,8 +11,9 @@ import java.util.UUID;
 
 public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 
+    @EntityGraph(attributePaths = {"position", "position.department"})
     Optional<Employee> findByIdAndCompanyId(UUID id, UUID companyId);
 
-    @EntityGraph(attributePaths = {"department", "position"})
+    @EntityGraph(attributePaths = {"position", "position.department", "branch"})
     Page<Employee> findAllByCompanyId(UUID companyId, Pageable pageable);
 }

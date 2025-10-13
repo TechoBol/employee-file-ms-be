@@ -20,6 +20,10 @@ efms:
   pagination:
     max-page-size: 100
     default-size: 20
+  general-settings:
+    working-days-per-month: 22
+    seniority-increase-percentage: 0.05
+    contribution-afp-percentage: 0.1271
 
 logging:
   level:

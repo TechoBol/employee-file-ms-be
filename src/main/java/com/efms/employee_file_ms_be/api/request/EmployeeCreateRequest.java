@@ -33,8 +33,8 @@ public class EmployeeCreateRequest {
     private LocalDate hireDate;
 
     @NotBlank
-    private String departmentId;
+    private String positionId;
 
     @NotBlank
-    private String positionId;
+    private String branchId;
 }

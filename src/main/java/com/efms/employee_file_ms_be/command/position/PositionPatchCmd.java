@@ -6,6 +6,7 @@ import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.PositionNotFound;
+import com.efms.employee_file_ms_be.model.domain.Department;
 import com.efms.employee_file_ms_be.model.domain.Position;
 import com.efms.employee_file_ms_be.model.mapper.position.PositionMapper;
 import com.efms.employee_file_ms_be.model.repository.PositionRepository;
@@ -48,5 +49,10 @@ public class PositionPatchCmd implements Command {
 
     private void updateProperties(Position position, PositionUpdateRequest positionUpdateRequest) {
         Optional.ofNullable(positionUpdateRequest.getName()).ifPresent(position::setName);
+        Optional.ofNullable(positionUpdateRequest.getDepartmentId()).ifPresent(departmentId -> {
+            Department department = new  Department();
+            department.setId(UUID.fromString(departmentId));
+            position.setDepartment(department);
+        });
     }
 }

@@ -11,4 +11,12 @@ import lombok.Setter;
 public class BranchUpdateRequest {
 
     private String name;
+
+    private String description;
+
+    private String location;
+
+    private String city;
+
+    private String country;
 }
