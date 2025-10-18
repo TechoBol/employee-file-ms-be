@@ -25,6 +25,7 @@ public class EmployeeMapper implements CustomMapper<EmployeeResponse, EmployeeCr
                 .birthDate(employee.getBirthDate())
                 .hireDate(employee.getHireDate())
                 .status(employee.getStatus().name())
+                .emergencyContact(employee.getEmergencyContact())
                 .departmentId(
                         Optional.ofNullable(employee.getPosition().getDepartment())
                                 .map(d -> d.getId().toString())

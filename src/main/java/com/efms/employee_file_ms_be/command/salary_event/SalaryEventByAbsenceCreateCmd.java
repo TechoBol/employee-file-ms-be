@@ -93,6 +93,7 @@ public class SalaryEventByAbsenceCreateCmd implements Command {
         SalaryEventCreateRequest request = new SalaryEventCreateRequest();
         request.setEmployeeId(absence.getEmployee().getId().toString());
         request.setType(SalaryEventType.DEDUCTION);
+        request.setCategory(SalaryEventCategory.ABSENCE);
         request.setDescription(buildDeductionDescription(absence));
         request.setAmount(deductionAmount);
         request.setFrequency(SalaryEventFrequency.ONE_TIME);

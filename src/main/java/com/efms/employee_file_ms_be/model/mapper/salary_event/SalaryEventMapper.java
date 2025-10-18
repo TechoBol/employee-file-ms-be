@@ -20,6 +20,7 @@ public class SalaryEventMapper implements CustomMapper<SalaryEventResponse, Sala
     public SalaryEvent toEntity(SalaryEventCreateRequest salaryEventCreateRequest) {
         SalaryEvent instance = new SalaryEvent();
         instance.setType(salaryEventCreateRequest.getType());
+        instance.setCategory(salaryEventCreateRequest.getCategory());
         instance.setDescription(salaryEventCreateRequest.getDescription());
         instance.setAmount(salaryEventCreateRequest.getAmount());
         instance.setFrequency(salaryEventCreateRequest.getFrequency());
@@ -39,6 +40,7 @@ public class SalaryEventMapper implements CustomMapper<SalaryEventResponse, Sala
                 .id(salaryEvent.getId().toString())
                 .employeeId(salaryEvent.getEmployee().getId().toString())
                 .type(String.valueOf(salaryEvent.getType()))
+                .category(salaryEvent.getCategory().toString())
                 .description(salaryEvent.getDescription())
                 .amount(salaryEvent.getAmount())
                 .frequency(String.valueOf(salaryEvent.getFrequency()))

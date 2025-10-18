@@ -4,11 +4,13 @@ import com.efms.employee_file_ms_be.api.response.GeneralSettingsResponse;
 import com.efms.employee_file_ms_be.api.response.payroll.PayrollDeductionResponse;
 import com.efms.employee_file_ms_be.api.response.payroll.PayrollResponse;
 import com.efms.employee_file_ms_be.command.absence.AbsenceListByEmployeeIdCmd;
+import com.efms.employee_file_ms_be.command.advance.AdvanceListByEmployeeIdCmd;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
 import com.efms.employee_file_ms_be.command.employee.EmployeeReadByIdCmd;
 import com.efms.employee_file_ms_be.command.general_settings.GeneralSettingsReadCmd;
+import com.efms.employee_file_ms_be.command.salary_event.SalaryEventListByEmployeeIdCmd;
 import com.efms.employee_file_ms_be.model.domain.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -49,27 +51,62 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
 
         BigDecimal seniorityBonus = calculateSeniorityBonus(salary.getAmount(), seniority, generalSettings.getSeniorityIncreasePercentage());
         BigDecimal afpContribution = calculateAfpContribution(salary.getAmount(), generalSettings.getContributionAfpPercentage());
+
         List<Absence> absences = findAbsenceByEmployeeId();
         Map<AbsenceType, List<Absence>> absencesByType = absences.stream()
                 .collect(Collectors.groupingBy(Absence::getType));
-        List<Absence> permissions = absencesByType.getOrDefault(AbsenceType.PERMISSION, Collections.emptyList());
-        List<Absence> absencesOnly = absencesByType.getOrDefault(AbsenceType.ABSENCE, Collections.emptyList());
-        List<Absence> vacations = absencesByType.getOrDefault(AbsenceType.VACATION, Collections.emptyList());
 
-        List<PayrollDeductionResponse> deductions = absencesByType.entrySet().stream()
-                .map(entry -> {
-                    PayrollDeductionResponse response = new PayrollDeductionResponse();
-                    response.setType(entry.getKey().name());
-                    response.setQty(entry.getValue().size());
-                    response.setTotalDeduction(
-                            entry.getValue().stream()
-                                    .filter(absence -> absence.getSalaryEvent() != null)
-                                    .map(absence -> absence.getSalaryEvent().getAmount())
-                                    .reduce(BigDecimal.ZERO, BigDecimal::add)
-                    );
-                    return response;
-                })
-                .toList();
+        List<Advance> advances = findAdvancesByEmployeeId();
+
+        List<SalaryEvent> manualSalaryEvents = findManualSalaryEventsByEmployeeId();
+
+        List<PayrollDeductionResponse> deductions = new ArrayList<>();
+
+        absencesByType.forEach((type, absenceList) -> {
+            PayrollDeductionResponse response = new PayrollDeductionResponse();
+            response.setType(type.name());
+            response.setQty(absenceList.size());
+            response.setTotalDeduction(
+                    absenceList.stream()
+                            .filter(absence -> absence.getSalaryEvent() != null)
+                            .map(absence -> absence.getSalaryEvent().getAmount())
+                            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            );
+            deductions.add(response);
+        });
+
+        if (!advances.isEmpty()) {
+            PayrollDeductionResponse advanceDeduction = new PayrollDeductionResponse();
+            advanceDeduction.setType("ADVANCE");
+            advanceDeduction.setQty(advances.size());
+            advanceDeduction.setTotalDeduction(
+                    advances.stream()
+                            .filter(advance -> advance.getSalaryEvent() != null)
+                            .map(advance -> advance.getSalaryEvent().getAmount())
+                            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            );
+            deductions.add(advanceDeduction);
+        }
+
+        BigDecimal manualBonuses = manualSalaryEvents.stream()
+                .filter(se -> se.getType() == SalaryEventType.BONUS)
+                .map(SalaryEvent::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal manualDeductions = manualSalaryEvents.stream()
+                .filter(se -> se.getType() == SalaryEventType.DEDUCTION)
+                .map(SalaryEvent::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if (!manualSalaryEvents.isEmpty() && manualDeductions.compareTo(BigDecimal.ZERO) > 0) {
+            PayrollDeductionResponse manualDeductionResponse = new PayrollDeductionResponse();
+            manualDeductionResponse.setType("OTHER");
+            manualDeductionResponse.setQty((int) manualSalaryEvents.stream()
+                    .filter(se -> se.getType() == SalaryEventType.DEDUCTION)
+                    .count());
+            manualDeductionResponse.setTotalDeduction(manualDeductions);
+            deductions.add(manualDeductionResponse);
+        }
 
         BigDecimal totalDeductions = deductions.stream()
                 .map(PayrollDeductionResponse::getTotalDeduction)
@@ -77,6 +114,7 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
 
         BigDecimal totalAmount = basicEarnings
                 .add(seniorityBonus)
+                .add(manualBonuses)
                 .subtract(afpContribution)
                 .subtract(totalDeductions);
 
@@ -98,7 +136,6 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
         LocalDate now = LocalDate.now();
         LocalDate targetMonth;
 
-        // Determinar el mes objetivo según la regla de los 5 días
         if (now.getDayOfMonth() <= 5) {
             targetMonth = now.minusMonths(1);
         } else {
@@ -108,15 +145,12 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
         LocalDate startOfTargetMonth = targetMonth.withDayOfMonth(1);
         LocalDate endOfTargetMonth = targetMonth.withDayOfMonth(targetMonth.lengthOfMonth());
 
-        // Fecha de inicio efectiva (la más tardía entre inicio del mes y fecha de contratación)
         LocalDate effectiveStartDate = employee.getHireDate().isBefore(startOfTargetMonth)
                 ? startOfTargetMonth
                 : employee.getHireDate();
 
-        // Fecha de fin efectiva
         LocalDate effectiveEndDate = endOfTargetMonth;
 
-        // Si el empleado está eliminado, ajustar la fecha de fin
         if (employee.getStatus() == EmployeeStatus.DELETED && employee.getDeletedAt() != null) {
             LocalDate deletedDate = employee.getDeletedAt().toLocalDate();
             if (!deletedDate.isBefore(startOfTargetMonth) && !deletedDate.isAfter(endOfTargetMonth)) {
@@ -124,17 +158,14 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
             }
         }
 
-        // Si el mes objetivo es el actual y aún no ha terminado
         if (targetMonth.getYear() == now.getYear() && targetMonth.getMonth() == now.getMonth()) {
             effectiveEndDate = now;
         }
 
-        // Verificar que el empleado estuvo activo en el mes objetivo
         if (effectiveStartDate.isAfter(endOfTargetMonth) || effectiveEndDate.isBefore(startOfTargetMonth)) {
             return 0;
         }
 
-        // Asegurar que las fechas estén dentro del rango del mes
         if (effectiveStartDate.isBefore(startOfTargetMonth)) {
             effectiveStartDate = startOfTargetMonth;
         }
@@ -142,7 +173,6 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
             effectiveEndDate = endOfTargetMonth;
         }
 
-        // Calcular días trabajados (inclusivo)
         return (int) ChronoUnit.DAYS.between(effectiveStartDate, effectiveEndDate) + 1;
     }
 
@@ -164,15 +194,6 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
         return baseSalaryAmount
                 .multiply(bonusRate)
                 .setScale(2, RoundingMode.HALF_UP);
-    }
-
-    private BigDecimal sumSalaryEvents(List<Absence> absences) {
-        return absences.stream()
-                .map(Absence::getSalaryEvent)
-                .filter(Objects::nonNull)
-                .map(SalaryEvent::getAmount)
-                .filter(Objects::nonNull)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private BigDecimal calculateAfpContribution(BigDecimal baseSalary, BigDecimal afpContributionPercentage) {
@@ -205,5 +226,20 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
         command.setEmployeeId(employeeId);
         command.execute();
         return command.getAbsenceList();
+    }
+
+    private List<Advance> findAdvancesByEmployeeId() {
+        AdvanceListByEmployeeIdCmd command = commandFactory.createCommand(AdvanceListByEmployeeIdCmd.class);
+        command.setEmployeeId(employeeId);
+        command.execute();
+        return command.getAdvanceList();
+    }
+
+    private List<SalaryEvent> findManualSalaryEventsByEmployeeId() {
+        SalaryEventListByEmployeeIdCmd command = commandFactory.createCommand(SalaryEventListByEmployeeIdCmd.class);
+        command.setEmployeeId(employeeId);
+        command.setCategory(SalaryEventCategory.MANUAL.name());
+        command.execute();
+        return command.getSalaryEventList();
     }
 }

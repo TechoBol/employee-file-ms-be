@@ -1,5 +1,6 @@
 package com.efms.employee_file_ms_be.api.request;
 
+import com.efms.employee_file_ms_be.model.domain.SalaryEventCategory;
 import com.efms.employee_file_ms_be.model.domain.SalaryEventFrequency;
 import com.efms.employee_file_ms_be.model.domain.SalaryEventType;
 import jakarta.validation.constraints.NotBlank;
@@ -18,6 +19,9 @@ public class SalaryEventCreateRequest {
 
     @NotNull
     private SalaryEventType type;
+
+    @NotNull
+    private SalaryEventCategory category;
 
     private String description;
 

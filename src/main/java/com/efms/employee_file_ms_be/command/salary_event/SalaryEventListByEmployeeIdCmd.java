@@ -5,6 +5,7 @@ import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
+import com.efms.employee_file_ms_be.model.domain.SalaryEventCategory;
 import com.efms.employee_file_ms_be.model.mapper.salary_event.SalaryEventMapper;
 import com.efms.employee_file_ms_be.model.repository.SalaryEventRepository;
 import com.efms.employee_file_ms_be.util.DateUtils;
@@ -32,6 +33,9 @@ public class SalaryEventListByEmployeeIdCmd implements Command {
     @Setter
     private String employeeId;
 
+    @Setter
+    private String category;
+
     @Getter
     private List<SalaryEventResponse> salaryEventResponseList;
 
@@ -47,7 +51,19 @@ public class SalaryEventListByEmployeeIdCmd implements Command {
         startDate = DateUtils.getStartDateOrDefault(startDate);
         endDate = DateUtils.getEndDateOrDefault(endDate);
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
-        salaryEventList = repository.findByEmployeeAndCompanyInDateRange(UUID.fromString(employeeId), companyId, startDate, endDate);
+
+        SalaryEventCategory categoryEnum = (category != null && !category.isBlank())
+                ? SalaryEventCategory.valueOf(category.toUpperCase())
+                : null;
+
+        salaryEventList = repository.findByEmployeeAndCompanyAndOptionalCategoryInDateRange(
+                UUID.fromString(employeeId),
+                companyId,
+                categoryEnum,
+                startDate,
+                endDate
+        );
+
         salaryEventResponseList = salaryEventList.stream()
                 .map(mapper::toDTO)
                 .toList();

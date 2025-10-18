@@ -27,6 +27,10 @@ public class SalaryEvent {
     @Column(nullable = false)
     private SalaryEventType type;
 
+    @Column(nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
+    private SalaryEventCategory category = SalaryEventCategory.MANUAL;
+
     @Column(length = 150)
     private String description;
 
