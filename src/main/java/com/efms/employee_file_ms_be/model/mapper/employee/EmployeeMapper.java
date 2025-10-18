@@ -6,6 +6,7 @@ import com.efms.employee_file_ms_be.model.domain.*;
 import com.efms.employee_file_ms_be.model.mapper.CustomMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -24,8 +25,16 @@ public class EmployeeMapper implements CustomMapper<EmployeeResponse, EmployeeCr
                 .birthDate(employee.getBirthDate())
                 .hireDate(employee.getHireDate())
                 .status(employee.getStatus().name())
-                .departmentId(employee.getPosition().getDepartment().getId().toString())
-                .departmentName(employee.getPosition().getDepartment().getName())
+                .departmentId(
+                        Optional.ofNullable(employee.getPosition().getDepartment())
+                                .map(d -> d.getId().toString())
+                                .orElse(null)
+                )
+                .departmentName(
+                        Optional.ofNullable(employee.getPosition().getDepartment())
+                                .map(Department::getName)
+                                .orElse(null)
+                )
                 .positionId(employee.getPosition().getId().toString())
                 .positionName(employee.getPosition().getName())
                 .branchId(employee.getBranch().getId().toString())

@@ -1,7 +1,7 @@
-package com.efms.employee_file_ms_be.controller.absence;
+package com.efms.employee_file_ms_be.controller.memorandum;
 
-import com.efms.employee_file_ms_be.api.response.AbsenceResponse;
-import com.efms.employee_file_ms_be.command.absence.AbsenceListByEmployeeIdCmd;
+import com.efms.employee_file_ms_be.api.response.MemorandumResponse;
+import com.efms.employee_file_ms_be.command.memorandum.MemorandumListByEmployeeIdCmd;
 import com.efms.employee_file_ms_be.controller.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,16 +17,16 @@ import java.util.List;
  * @author Josue Veliz
  */
 @RestController
-@RequestMapping(Constants.Path.ABSENCE_PATH)
+@RequestMapping(Constants.Path.MEMORANDUM_PATH)
 @RequiredArgsConstructor
-@Tag(name = Constants.Tag.ABSENCE)
-public class AbsenceListByEmployeeIdController {
+@Tag(name = Constants.Tag.MEMORANDUM)
+public class MemorandumListByEmployeeIdController {
 
-    private final AbsenceListByEmployeeIdCmd command;
+    private final MemorandumListByEmployeeIdCmd command;
 
     @GetMapping("/employees/{employeeId}")
-    @Operation(summary = "Get absences by employee ID")
-    public ResponseEntity<List<AbsenceResponse>> getAbsencesByEmployeeId(
+    @Operation(summary = "Get memorandums by employee ID")
+    public ResponseEntity<List<MemorandumResponse>> getMemorandumsByEmployeeId(
             @PathVariable String employeeId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
@@ -35,6 +35,6 @@ public class AbsenceListByEmployeeIdController {
         command.setEmployeeId(employeeId);
         command.execute();
 
-        return ResponseEntity.ok(command.getAbsenceResponseList());
+        return ResponseEntity.ok(command.getMemorandumResponseList());
     }
 }

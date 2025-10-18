@@ -21,7 +21,7 @@ efms:
     max-page-size: 100
     default-size: 20
   general-settings:
-    working-days-per-month: 22
+    working-days-per-month: 30
     seniority-increase-percentage: 0.05
     contribution-afp-percentage: 0.1271
 

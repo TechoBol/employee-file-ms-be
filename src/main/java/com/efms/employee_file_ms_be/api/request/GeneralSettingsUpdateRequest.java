@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @Setter
 public class GeneralSettingsUpdateRequest {
 
-    private Integer workingDaysPerYear;
+    private Integer workingDaysPerMonth;
 
     @DecimalMin(value = "0.0", message = "Seniority increase percentage must be positive")
     @DecimalMax(value = "100.0", message = "Seniority increase percentage cannot exceed 100")

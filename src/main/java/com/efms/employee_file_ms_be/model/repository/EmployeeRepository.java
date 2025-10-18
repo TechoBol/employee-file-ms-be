@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 
-    @EntityGraph(attributePaths = {"position", "position.department"})
+    @EntityGraph(attributePaths = {"position", "position.department", "branch"})
     Optional<Employee> findByIdAndCompanyId(UUID id, UUID companyId);
 
     @EntityGraph(attributePaths = {"position", "position.department", "branch"})

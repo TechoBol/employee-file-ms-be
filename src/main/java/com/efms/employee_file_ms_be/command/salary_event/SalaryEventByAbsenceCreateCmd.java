@@ -6,6 +6,7 @@ import com.efms.employee_file_ms_be.command.base_salary.BaseSalaryReadByEmployee
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
+import com.efms.employee_file_ms_be.command.general_settings.GeneralSettingsReadCmd;
 import com.efms.employee_file_ms_be.exception.CommonBadRequestException;
 import com.efms.employee_file_ms_be.exception.Constants;
 import com.efms.employee_file_ms_be.model.domain.*;
@@ -46,13 +47,18 @@ public class SalaryEventByAbsenceCreateCmd implements Command {
             return;
         }
 
+        GeneralSettings generalSettings = findGeneralSettings();
+
+        Integer workingDaysPerMonth = generalSettings.getWorkingDaysPerMonth();
+
         BigDecimal baseSalary = findBaseSalaryByEmployeeId(absence.getEmployee().getId().toString()).getAmount();
 
         BigDecimal deductionAmount = calculateDeductionAmount(
                 baseSalary,
                 absence.getType(),
                 absence.getDuration(),
-                getTotalDays(absence)
+                getTotalDays(absence),
+                workingDaysPerMonth
         );
 
         SalaryEventCreateRequest salaryEventCreateRequest = buildSalaryEventCreateRequest(
@@ -95,10 +101,10 @@ public class SalaryEventByAbsenceCreateCmd implements Command {
     }
 
     private BigDecimal calculateDeductionAmount(BigDecimal baseSalary, AbsenceType type,
-                                                AbsenceDuration duration, int totalDays) {
+                                                AbsenceDuration duration, int totalDays, int workingDaysPerMonth) {
 
         // Salario diario = salario base / 30
-        BigDecimal dailySalary = baseSalary.divide(BigDecimal.valueOf(30), 4, RoundingMode.HALF_UP);
+        BigDecimal dailySalary = baseSalary.divide(BigDecimal.valueOf(workingDaysPerMonth), 4, RoundingMode.HALF_UP);
 
         // Factor según duración
         BigDecimal durationFactor = duration == AbsenceDuration.HALF_DAY ?
@@ -158,5 +164,11 @@ public class SalaryEventByAbsenceCreateCmd implements Command {
         }
 
         return description.toString();
+    }
+
+    private GeneralSettings findGeneralSettings() {
+        GeneralSettingsReadCmd command = commandFactory.createCommand(GeneralSettingsReadCmd.class);
+        command.execute();
+        return command.getGeneralSettings();
     }
 }

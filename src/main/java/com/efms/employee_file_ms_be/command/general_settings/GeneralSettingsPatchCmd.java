@@ -48,7 +48,7 @@ public class GeneralSettingsPatchCmd implements Command {
     }
 
     private void updateProperties(GeneralSettings generalSettings, GeneralSettingsUpdateRequest generalSettingsUpdateRequest) {
-        Optional.ofNullable(generalSettingsUpdateRequest.getWorkingDaysPerYear())
+        Optional.ofNullable(generalSettingsUpdateRequest.getWorkingDaysPerMonth())
                 .ifPresent(generalSettings::setWorkingDaysPerMonth);
         Optional.ofNullable(generalSettingsUpdateRequest.getSeniorityIncreasePercentage())
                 .ifPresent(generalSettings::setSeniorityIncreasePercentage);

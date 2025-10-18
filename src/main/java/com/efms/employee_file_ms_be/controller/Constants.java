@@ -7,7 +7,7 @@ public class Constants {
     public static class Path {
         public static final String BASE_PATH = "/api";
 
-        public static final String ABSENCES_PATH = BASE_PATH + "/absences";
+        public static final String ABSENCE_PATH = BASE_PATH + "/absences";
 
         public static final String BASE_SALARY_PATH = BASE_PATH + "/base-salaries";
 
@@ -26,6 +26,12 @@ public class Constants {
         public static final String POSITION_PATH = BASE_PATH + "/positions";
 
         public static final String SALARY_EVENT_PATH = BASE_PATH + "/salary-events";
+
+        public static final String ADVANCE_PATH = BASE_PATH + "/advances";
+
+        public static final String MEMORANDUM_PATH = BASE_PATH + "/memorandums";
+
+        public static final String VACATION_PATH = BASE_PATH + "/vacations";
     }
 
     public static class Tag {
@@ -50,5 +56,11 @@ public class Constants {
         public static final String POSITION = "Position";
 
         public static final String SALARY_EVENT = "Salary Event";
+
+        public static final String ADVANCE = "Advance";
+
+        public static final String MEMORANDUM = "Memorandum";
+
+        public static final String VACATION = "Vacation";
     }
 }
