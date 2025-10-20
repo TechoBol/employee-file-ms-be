@@ -1,6 +1,6 @@
 package com.efms.employee_file_ms_be.command.salary_event;
 
-import com.efms.employee_file_ms_be.api.request.SalaryEventCreateRequest;
+import com.efms.employee_file_ms_be.api.request.SalaryEventUpdateRequest;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
@@ -11,21 +11,20 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.validation.annotation.Validated;
 
 import java.time.format.DateTimeFormatter;
 
-/**
- * @author Josue Veliz
- */
 @CommandExecute
 @RequiredArgsConstructor
-@Validated
-public class SalaryEventByAdvanceCreateCmd implements Command {
+public class SalaryEventByAdvancePatchCmd implements Command {
 
     @NotNull
     @Setter
     private Advance advance;
+
+    @NotNull
+    @Setter
+    private SalaryEvent existingSalaryEvent;
 
     @Getter
     private SalaryEvent salaryEvent;
@@ -36,9 +35,9 @@ public class SalaryEventByAdvanceCreateCmd implements Command {
     public void execute() {
         validateAdvance();
 
-        SalaryEventCreateRequest salaryEventCreateRequest = buildSalaryEventCreateRequest(advance);
+        SalaryEventUpdateRequest salaryEventUpdateRequest = buildSalaryEventUpdateRequest(advance);
 
-        salaryEvent = createSalaryEvent(salaryEventCreateRequest);
+        salaryEvent = updateSalaryEvent(salaryEventUpdateRequest);
     }
 
     private void validateAdvance() {
@@ -47,21 +46,21 @@ public class SalaryEventByAdvanceCreateCmd implements Command {
         }
     }
 
-    private SalaryEvent createSalaryEvent(SalaryEventCreateRequest request) {
-        SalaryEventCreateCmd command = commandFactory.createCommand(SalaryEventCreateCmd.class);
-        command.setSalaryEventCreateRequest(request);
+    private SalaryEvent updateSalaryEvent(SalaryEventUpdateRequest request) {
+        SalaryEventPatchCmd command = commandFactory.createCommand(SalaryEventPatchCmd.class);
+        command.setId(String.valueOf(existingSalaryEvent.getId()));
+        command.setSalaryEventUpdateRequest(request);
         command.execute();
         return command.getSalaryEvent();
     }
 
-    private SalaryEventCreateRequest buildSalaryEventCreateRequest(Advance advance) {
-        SalaryEventCreateRequest request = new SalaryEventCreateRequest();
-        request.setEmployeeId(advance.getEmployee().getId().toString());
+    private SalaryEventUpdateRequest buildSalaryEventUpdateRequest(Advance advance) {
+        SalaryEventUpdateRequest request = new SalaryEventUpdateRequest();
         request.setType(SalaryEventType.DEDUCTION);
         request.setCategory(SalaryEventCategory.ADVANCE);
         request.setDescription(buildDeductionDescription(advance));
         request.setAmount(advance.getAmount());
-        request.setFrequency(SalaryEventFrequency.ONE_TIME);
+        request.setFrequency(String.valueOf(SalaryEventFrequency.ONE_TIME));
         request.setStartDate(advance.getAdvanceDate());
         return request;
     }

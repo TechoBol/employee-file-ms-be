@@ -34,6 +34,9 @@ public class SalaryEventPatchCmd implements Command {
     @Getter
     private SalaryEventResponse salaryEventResponse;
 
+    @Getter
+    private SalaryEvent salaryEvent;
+
     private final SalaryEventRepository repository;
 
     private final SalaryEventMapper mapper;
@@ -41,7 +44,7 @@ public class SalaryEventPatchCmd implements Command {
     @Override
     public void execute() {
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
-        SalaryEvent salaryEvent = repository.findByIdAndCompanyId(UUID.fromString(id), companyId)
+        salaryEvent = repository.findByIdAndCompanyId(UUID.fromString(id), companyId)
                 .orElseThrow(() -> new SalaryEventNotFound(id));
         updateProperties(salaryEvent, salaryEventUpdateRequest);
         salaryEvent = repository.save(salaryEvent);

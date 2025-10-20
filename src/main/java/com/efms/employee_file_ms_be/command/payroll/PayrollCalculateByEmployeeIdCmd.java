@@ -112,9 +112,11 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
                 .map(PayrollDeductionResponse::getTotalDeduction)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal totalAmount = basicEarnings
+        BigDecimal grossAmount = basicEarnings
                 .add(seniorityBonus)
-                .add(manualBonuses)
+                .add(manualBonuses);
+
+        BigDecimal totalAmount = grossAmount
                 .subtract(afpContribution)
                 .subtract(totalDeductions);
 
@@ -125,6 +127,7 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
         payrollResponse.setSeniorityYears(seniority);
         payrollResponse.setSeniorityIncreasePercentage(generalSettings.getSeniorityIncreasePercentage());
         payrollResponse.setSeniorityBonus(seniorityBonus);
+        payrollResponse.setGrossAmount(grossAmount);
         payrollResponse.setDeductionAfpPercentage(generalSettings.getContributionAfpPercentage());
         payrollResponse.setDeductionAfp(afpContribution);
         payrollResponse.setDeductions(deductions);

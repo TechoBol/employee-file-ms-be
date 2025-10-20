@@ -20,9 +20,7 @@ public class AdvanceResponse {
 
     private String employeeId;
 
-    private BigDecimal totalAmount;
-
-    private BigDecimal percentageAmount;
+    private BigDecimal amount;
 
     private LocalDate advanceDate;
 }

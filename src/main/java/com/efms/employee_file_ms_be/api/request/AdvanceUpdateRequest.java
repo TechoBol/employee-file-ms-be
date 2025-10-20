@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Setter
 public class AdvanceUpdateRequest {
 
-    private BigDecimal percentageAmount;
+    private BigDecimal amount;
 
     private LocalDate advanceDate;
 }

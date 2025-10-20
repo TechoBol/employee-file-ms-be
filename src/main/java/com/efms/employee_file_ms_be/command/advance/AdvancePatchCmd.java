@@ -8,6 +8,7 @@ import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventByAdvanceCreateCmd;
+import com.efms.employee_file_ms_be.command.salary_event.SalaryEventByAdvancePatchCmd;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventDeleteByIdCmd;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.AdvanceNotFoundException;
@@ -52,13 +53,13 @@ public class AdvancePatchCmd implements Command {
         Advance advance = repository.findByIdAndCompanyId(UUID.fromString(id), companyId)
                 .orElseThrow(() -> new AdvanceNotFoundException(id));
         BaseSalaryResponse baseSalaryResponse = findBaseSalary(advance.getEmployee().getId().toString());
-        BigDecimal totalAmount = baseSalaryResponse.getAmount().multiply(advanceUpdateRequest.getPercentageAmount());
+        BigDecimal totalAmount = baseSalaryResponse.getAmount().multiply(advanceUpdateRequest.getAmount());
 
         validateEditingTimeframe(advance);
 
         updateProperties(advance, advanceUpdateRequest);
 
-        advance.setTotalAmount(totalAmount);
+        advance.setAmount(totalAmount);
 
         handleSalaryEventUpdate(advance);
 
@@ -80,7 +81,7 @@ public class AdvancePatchCmd implements Command {
     }
 
     private void updateProperties(Advance advance, AdvanceUpdateRequest request) {
-        Optional.ofNullable(request.getPercentageAmount()).ifPresent(advance::setPercentageAmount);
+        Optional.ofNullable(request.getAmount()).ifPresent(advance::setAmount);
         Optional.ofNullable(request.getAdvanceDate()).ifPresent(advance::setAdvanceDate);
     }
 
@@ -88,26 +89,20 @@ public class AdvancePatchCmd implements Command {
         boolean hadSalaryEvent = advance.getSalaryEvent() != null;
 
         if (hadSalaryEvent && hasRelevantChanges()) {
-            deleteSalaryEvent(advance.getSalaryEvent().getId());
-            SalaryEvent newSalaryEvent = createSalaryEventForAdvance(advance);
-            advance.setSalaryEvent(newSalaryEvent);
+            SalaryEvent updatedSalaryEvent = updateSalaryEvent(advance, advance.getSalaryEvent());
+            advance.setSalaryEvent(updatedSalaryEvent);
         }
     }
 
     private boolean hasRelevantChanges() {
-        return advanceUpdateRequest.getPercentageAmount() != null ||
+        return advanceUpdateRequest.getAmount() != null ||
                 advanceUpdateRequest.getAdvanceDate() != null;
     }
 
-    private void deleteSalaryEvent(UUID salaryEventId) {
-        SalaryEventDeleteByIdCmd command = commandFactory.createCommand(SalaryEventDeleteByIdCmd.class);
-        command.setId(salaryEventId);
-        command.execute();
-    }
-
-    private SalaryEvent createSalaryEventForAdvance(Advance advance) {
-        SalaryEventByAdvanceCreateCmd command = commandFactory.createCommand(SalaryEventByAdvanceCreateCmd.class);
+    private SalaryEvent updateSalaryEvent(Advance advance, SalaryEvent existingSalaryEvent) {
+        SalaryEventByAdvancePatchCmd command = commandFactory.createCommand(SalaryEventByAdvancePatchCmd.class);
         command.setAdvance(advance);
+        command.setExistingSalaryEvent(existingSalaryEvent);
         command.execute();
         return command.getSalaryEvent();
     }

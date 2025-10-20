@@ -1,5 +1,6 @@
 package com.efms.employee_file_ms_be.api.request;
 
+import com.efms.employee_file_ms_be.model.domain.SalaryEventCategory;
 import com.efms.employee_file_ms_be.model.domain.SalaryEventType;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +16,8 @@ import java.time.LocalDate;
 public class SalaryEventUpdateRequest {
 
     private SalaryEventType type;
+
+    private SalaryEventCategory category;
 
     private String description;
 

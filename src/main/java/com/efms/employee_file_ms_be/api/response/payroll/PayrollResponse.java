@@ -25,6 +25,8 @@ public class PayrollResponse {
 
     private BigDecimal seniorityBonus;
 
+    private BigDecimal grossAmount;
+
     private BigDecimal deductionAfpPercentage;
 
     private BigDecimal deductionAfp;

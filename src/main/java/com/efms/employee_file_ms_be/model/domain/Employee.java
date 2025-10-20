@@ -57,6 +57,9 @@ public class Employee extends Audit {
     @Column(nullable = false)
     private EmployeeStatus status;
 
+    @Column(nullable = false)
+    private EmployeeType type;
+
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private EmergencyContact emergencyContact;

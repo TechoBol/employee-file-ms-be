@@ -1,6 +1,8 @@
 package com.efms.employee_file_ms_be.model.repository;
 
 import com.efms.employee_file_ms_be.model.domain.Advance;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +16,8 @@ import java.util.UUID;
  * @author Josue Veliz
  */
 public interface AdvanceRepository extends JpaRepository<Advance, UUID> {
+
+    Page<Advance> findAllByCompanyId(UUID companyId, Pageable pageable);
 
     Optional<Advance> findByIdAndCompanyId(UUID id, UUID companyId);
 

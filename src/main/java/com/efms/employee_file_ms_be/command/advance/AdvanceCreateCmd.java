@@ -9,6 +9,8 @@ import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventByAdvanceCreateCmd;
 import com.efms.employee_file_ms_be.config.TenantContext;
+import com.efms.employee_file_ms_be.exception.CommonBadRequestException;
+import com.efms.employee_file_ms_be.exception.Constants;
 import com.efms.employee_file_ms_be.model.domain.Advance;
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
 import com.efms.employee_file_ms_be.model.mapper.advance.AdvanceMapper;
@@ -44,14 +46,19 @@ public class AdvanceCreateCmd implements Command {
     public void execute() {
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
         BaseSalaryResponse baseSalaryResponse = findBaseSalary(advanceCreateRequest.getEmployeeId());
-        BigDecimal totalAmount = baseSalaryResponse.getAmount().multiply(advanceCreateRequest.getPercentageAmount());
+
+        BigDecimal requestedAmount = advanceCreateRequest.getAmount();
+        BigDecimal baseSalaryAmount = baseSalaryResponse.getAmount();
+
+        if (requestedAmount.compareTo(baseSalaryAmount) > 0) {
+            throw new CommonBadRequestException(Constants.ExceptionMessage.ADVANCE_PAYMENT_EXCEED);
+        }
+
         advance = mapper.toEntity(advanceCreateRequest);
         advance.setCompanyId(companyId);
-
-        advance.setTotalAmount(totalAmount);
+        advance.setAmount(requestedAmount);
 
         SalaryEvent salaryEvent = createSalaryEventForAdvance(advance);
-
         if (salaryEvent != null) {
             advance.setSalaryEvent(salaryEvent);
         }

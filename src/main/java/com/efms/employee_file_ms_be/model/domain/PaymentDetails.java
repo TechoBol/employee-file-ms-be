@@ -23,6 +23,7 @@ public class PaymentDetails {
     private Integer seniorityYears;
     private BigDecimal seniorityIncreasePercentage;
     private BigDecimal seniorityBonus;
+    private BigDecimal grossAmount;
     private BigDecimal deductionAfpPercentage;
     private BigDecimal deductionAfp;
     private BigDecimal totalAmount;

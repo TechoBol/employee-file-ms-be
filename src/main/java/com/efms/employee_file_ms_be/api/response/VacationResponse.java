@@ -23,5 +23,7 @@ public class VacationResponse {
 
     private LocalDate endDate;
 
+    private int daysTaken;
+
     private String notes;
 }

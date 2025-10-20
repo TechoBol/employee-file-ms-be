@@ -21,8 +21,7 @@ public class AdvanceMapper implements CustomMapper<AdvanceResponse, AdvanceCreat
         return AdvanceResponse.builder()
                 .id(advance.getId())
                 .employeeId(String.valueOf(advance.getEmployee().getId()))
-                .totalAmount(advance.getTotalAmount())
-                .percentageAmount(advance.getPercentageAmount())
+                .amount(advance.getAmount())
                 .advanceDate(advance.getAdvanceDate())
                 .build();
     }

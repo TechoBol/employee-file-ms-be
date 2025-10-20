@@ -4,6 +4,7 @@ import com.efms.employee_file_ms_be.model.Constants;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Getter
 @Entity
 @Table(name = Constants.SalaryEvent.NAME)
+@SQLRestriction("status = 'OPEN'")
 public class SalaryEvent {
 
     @Id
@@ -51,4 +53,7 @@ public class SalaryEvent {
 
     @Column(name = "company_id", nullable = false)
     private UUID companyId;
+
+    @Column(nullable = false)
+    private PayrollStatus status;
 }

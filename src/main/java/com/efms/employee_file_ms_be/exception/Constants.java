@@ -26,5 +26,6 @@ public class Constants {
         public static final String MEMORANDUM_NOT_FOUND = "Memorandum with id {memorandumId} not found";
         public static final String ADVANCE_NOT_FOUND = "Advance with id {advanceId} not found";
         public static final String ADVANCE_EMPLOYEE_NOT_NULL = "The employee of the advance cannot be null";
+        public static final String ADVANCE_PAYMENT_EXCEED = "The advance payment cannot exceed the base salary.";
     }
 }

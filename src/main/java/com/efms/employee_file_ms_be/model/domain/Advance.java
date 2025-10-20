@@ -4,6 +4,7 @@ import com.efms.employee_file_ms_be.model.Constants;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.domain.Auditable;
 
 import java.io.Serializable;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Getter
 @Entity
 @Table(name = Constants.Advance.NAME)
+@SQLRestriction("status = 'OPEN'")
 public class Advance extends Audit {
 
     @Id
@@ -33,10 +35,7 @@ public class Advance extends Audit {
     private UUID companyId;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal totalAmount;
-
-    @Column(nullable = false, precision = 5, scale = 2)
-    private BigDecimal percentageAmount;
+    private BigDecimal amount;
 
     @Column(nullable = false)
     private LocalDate advanceDate;
@@ -47,4 +46,7 @@ public class Advance extends Audit {
 
     @Column
     private String createdBy;
+
+    @Column(nullable = false)
+    private PayrollStatus status;
 }

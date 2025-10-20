@@ -13,4 +13,5 @@ public interface EmployeeProjection {
     String getEmail();
     UUID getPositionId();
     UUID getBranchId();
+    String getType();
 }

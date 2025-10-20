@@ -47,7 +47,7 @@ public class AbsenceListByEmployeeIdCmd implements Command {
         startDate = DateUtils.getStartDateOrDefault(startDate);
         endDate = DateUtils.getEndDateOrDefault(endDate);
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
-        absenceList = absenceRepository.findByCompanyIdAndEmployeeIdAndDateBetween(companyId, UUID.fromString(employeeId), startDate, endDate);
+        absenceList = absenceRepository.findByEmployeeAndCompanyInDateRange(companyId, UUID.fromString(employeeId), startDate, endDate);
         absenceResponseList = absenceList.stream()
                 .map(absenceMapper::toDTO)
                 .toList();

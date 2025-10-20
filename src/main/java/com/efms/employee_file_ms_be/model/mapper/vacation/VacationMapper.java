@@ -8,7 +8,8 @@ import com.efms.employee_file_ms_be.model.mapper.CustomMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
-import java.time.temporal.ChronoUnit;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.UUID;
 
 /**
@@ -24,6 +25,7 @@ public class VacationMapper implements CustomMapper<VacationResponse, VacationCr
                 .employeeId(String.valueOf(vacation.getEmployee().getId()))
                 .startDate(vacation.getStartDate())
                 .endDate(vacation.getEndDate())
+                .daysTaken(vacation.getDaysTaken())
                 .notes(vacation.getNotes())
                 .build();
     }
@@ -38,10 +40,16 @@ public class VacationMapper implements CustomMapper<VacationResponse, VacationCr
         instance.setEmployee(employee);
 
         if (dto.getStartDate() != null && dto.getEndDate() != null) {
-            long days = ChronoUnit.DAYS.between(dto.getStartDate(), dto.getEndDate()) + 1;
-            instance.setDaysTaken((int) days);
+            int days = calculateWorkingDays(dto.getStartDate(), dto.getEndDate());
+            instance.setDaysTaken(days);
         }
 
         return instance;
+    }
+
+    private int calculateWorkingDays(LocalDate startDate, LocalDate endDate) {
+        return (int) startDate.datesUntil(endDate.plusDays(1))
+                .filter(date -> date.getDayOfWeek() != DayOfWeek.SUNDAY)
+                .count();
     }
 }

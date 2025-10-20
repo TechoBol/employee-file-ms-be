@@ -27,7 +27,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
                e.ci as ci,
                e.email as email,
                e.position.id as positionId,
-               e.branch.id as branchId
+               e.branch.id as branchId,
+               e.type as type
         FROM Employee e
         WHERE e.companyId = :companyId
         AND e.baseSalary IS NOT NULL

@@ -20,7 +20,7 @@ public class AdvanceCreateRequest {
 
     @NotNull
     @Positive
-    private BigDecimal percentageAmount;
+    private BigDecimal amount;
 
     @NotNull
     private LocalDate advanceDate;
