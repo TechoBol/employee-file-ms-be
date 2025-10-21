@@ -29,7 +29,8 @@ public class Memorandum extends Audit {
     @Column(name = "company_id", nullable = false)
     private UUID companyId;
 
-    @Column(name = "type", nullable = false, length = 100)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 100)
     private MemorandumType type;
 
     @Column(nullable = false, length = 1000)

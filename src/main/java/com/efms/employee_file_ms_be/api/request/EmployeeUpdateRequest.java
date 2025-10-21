@@ -1,6 +1,7 @@
 package com.efms.employee_file_ms_be.api.request;
 
 import com.efms.employee_file_ms_be.model.domain.EmergencyContact;
+import com.efms.employee_file_ms_be.model.domain.EmployeeType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +20,7 @@ public class EmployeeUpdateRequest {
     private LocalDate hireDate;
     private String status;
     private EmergencyContact emergencyContact;
+    private EmployeeType type;
     private String positionId;
     private String branchId;
 }

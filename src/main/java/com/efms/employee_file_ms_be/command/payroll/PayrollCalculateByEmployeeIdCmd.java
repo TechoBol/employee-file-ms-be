@@ -132,7 +132,7 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
         payrollResponse.setDeductionAfp(afpContribution);
         payrollResponse.setDeductions(deductions);
         payrollResponse.setTotalDeductions(totalDeductions);
-        payrollResponse.setTotalAmount(totalAmount);
+        payrollResponse.setNetAmount(totalAmount);
     }
 
     private int calculateWorkedDays(Employee employee) {

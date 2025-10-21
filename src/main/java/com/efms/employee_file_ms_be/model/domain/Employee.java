@@ -54,9 +54,11 @@ public class Employee extends Audit {
 
     private LocalDate hireDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EmployeeStatus status;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EmployeeType type;
 

@@ -35,5 +35,5 @@ public class PayrollResponse {
 
     private BigDecimal totalDeductions;
 
-    private BigDecimal totalAmount;
+    private BigDecimal netAmount;
 }

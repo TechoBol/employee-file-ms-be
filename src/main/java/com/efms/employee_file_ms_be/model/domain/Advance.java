@@ -47,6 +47,7 @@ public class Advance extends Audit {
     @Column
     private String createdBy;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PayrollStatus status;
 }

@@ -26,11 +26,12 @@ public class SalaryEvent {
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SalaryEventType type;
 
-    @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
     private SalaryEventCategory category = SalaryEventCategory.MANUAL;
 
     @Column(length = 150)
@@ -43,6 +44,7 @@ public class SalaryEvent {
     )
     private BigDecimal amount;
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 10, nullable = false)
     private SalaryEventFrequency frequency = SalaryEventFrequency.ONE_TIME;
 
@@ -54,6 +56,7 @@ public class SalaryEvent {
     @Column(name = "company_id", nullable = false)
     private UUID companyId;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PayrollStatus status;
 }

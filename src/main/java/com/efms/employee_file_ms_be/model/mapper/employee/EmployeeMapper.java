@@ -26,6 +26,7 @@ public class EmployeeMapper implements CustomMapper<EmployeeResponse, EmployeeCr
                 .hireDate(employee.getHireDate())
                 .status(employee.getStatus().name())
                 .emergencyContact(employee.getEmergencyContact())
+                .type(employee.getType().name())
                 .departmentId(
                         Optional.ofNullable(employee.getPosition().getDepartment())
                                 .map(d -> d.getId().toString())
@@ -58,6 +59,7 @@ public class EmployeeMapper implements CustomMapper<EmployeeResponse, EmployeeCr
                 .address(employeeCreateRequest.getAddress())
                 .birthDate(employeeCreateRequest.getBirthDate())
                 .hireDate(employeeCreateRequest.getHireDate())
+                .type(employeeCreateRequest.getType())
                 .position(position)
                 .branch(branch)
                 .status(EmployeeStatus.ACTIVE)

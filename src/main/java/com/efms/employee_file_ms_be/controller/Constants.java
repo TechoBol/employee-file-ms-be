@@ -23,6 +23,8 @@ public class Constants {
 
         public static final String PAYROLL_PATH = BASE_PATH + "/payrolls";
 
+        public static final String PAYMENT_PATH = BASE_PATH + "/payments";
+
         public static final String POSITION_PATH = BASE_PATH + "/positions";
 
         public static final String SALARY_EVENT_PATH = BASE_PATH + "/salary-events";
@@ -52,6 +54,8 @@ public class Constants {
         public static final String LOCATION = "Location";
 
         public static final String PAYROLL = "Payroll";
+
+        public static final String PAYMENT = "Payment";
 
         public static final String POSITION = "Position";
 

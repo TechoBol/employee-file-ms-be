@@ -52,6 +52,7 @@ public class Absence extends Audit {
     @Column(name = "company_id", nullable = false)
     private UUID companyId;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PayrollStatus status;
 }
