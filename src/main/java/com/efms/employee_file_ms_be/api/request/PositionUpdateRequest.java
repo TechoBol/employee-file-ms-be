@@ -10,4 +10,8 @@ import lombok.Setter;
 @Setter
 public class PositionUpdateRequest {
     private String name;
+
+    private String description;
+
+    private String departmentId;
 }

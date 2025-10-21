@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Josue Veliz
  */
 @RestController
-@RequestMapping(Constants.Path.ABSENCES_PATH)
+@RequestMapping(Constants.Path.ABSENCE_PATH)
 @RequiredArgsConstructor
 @Tag(name = Constants.Tag.ABSENCE)
 public class AbsencePatchController {

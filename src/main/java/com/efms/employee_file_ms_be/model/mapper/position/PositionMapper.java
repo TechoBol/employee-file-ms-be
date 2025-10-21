@@ -2,7 +2,7 @@ package com.efms.employee_file_ms_be.model.mapper.position;
 
 import com.efms.employee_file_ms_be.api.request.PositionCreateRequest;
 import com.efms.employee_file_ms_be.api.response.PositionResponse;
-import com.efms.employee_file_ms_be.model.domain.Company;
+import com.efms.employee_file_ms_be.model.domain.Department;
 import com.efms.employee_file_ms_be.model.domain.Position;
 import com.efms.employee_file_ms_be.model.mapper.CustomMapper;
 import org.springframework.beans.BeanUtils;
@@ -19,7 +19,10 @@ public class PositionMapper implements CustomMapper<PositionResponse, PositionCr
     @Override
     public Position toEntity(PositionCreateRequest positionCreateRequest) {
         Position instance = new Position();
+        Department department = new Department();
+        department.setId(UUID.fromString(positionCreateRequest.getDepartmentId()));
         BeanUtils.copyProperties(positionCreateRequest, instance);
+        instance.setDepartment(department);
         return instance;
     }
 
@@ -28,6 +31,8 @@ public class PositionMapper implements CustomMapper<PositionResponse, PositionCr
         return PositionResponse.builder()
                 .id(position.getId().toString())
                 .name(position.getName())
+                .description(position.getDescription())
+                .departmentId(position.getDepartment().getId().toString())
                 .build();
     }
 }

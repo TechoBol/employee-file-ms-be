@@ -17,7 +17,7 @@ import java.util.List;
  * @author Josue Veliz
  */
 @RestController
-@RequestMapping(Constants.Path.ABSENCES_PATH)
+@RequestMapping(Constants.Path.ABSENCE_PATH)
 @RequiredArgsConstructor
 @Tag(name = Constants.Tag.ABSENCE)
 public class AbsenceListByEmployeeIdController {

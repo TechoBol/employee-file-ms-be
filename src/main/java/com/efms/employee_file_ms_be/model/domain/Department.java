@@ -22,9 +22,12 @@ public class Department {
     @Column(nullable = false, length = 80)
     private String name;
 
+    @Column(length = 180)
+    private String description;
+
     @Column(name = "company_id", nullable = false)
     private UUID companyId;
 
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Employee> employees;
+    private List<Position> positions;
 }

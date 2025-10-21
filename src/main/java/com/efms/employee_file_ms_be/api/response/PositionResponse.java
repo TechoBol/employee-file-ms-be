@@ -13,4 +13,6 @@ import lombok.Setter;
 public class PositionResponse {
     private String id;
     private String name;
+    private String description;
+    private String departmentId;
 }

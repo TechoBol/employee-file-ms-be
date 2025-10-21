@@ -13,4 +13,8 @@ public class PositionCreateRequest {
 
     @NotBlank
     private String name;
+
+    private String description;
+
+    private String departmentId;
 }

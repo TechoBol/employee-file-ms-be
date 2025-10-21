@@ -6,6 +6,7 @@ import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventByAbsenceCreateCmd;
+import com.efms.employee_file_ms_be.command.salary_event.SalaryEventByAbsencePatchCmd;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventDeleteByIdCmd;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.AbsenceNotFoundException;
@@ -112,22 +113,10 @@ public class AbsencePatchCmd implements Command {
 
     private void handleSalaryEventUpdate(Absence absence, AbsenceType previousType) {
         boolean hadSalaryEvent = absence.getSalaryEvent() != null;
-        boolean shouldHaveSalaryEvent = absence.getType() != AbsenceType.VACATION;
 
-        if (hadSalaryEvent && !shouldHaveSalaryEvent) {
-            deleteSalaryEvent(absence.getSalaryEvent().getId());
-            absence.setSalaryEvent(null);
-
-        } else if (!hadSalaryEvent && shouldHaveSalaryEvent) {
-            SalaryEvent salaryEvent = createSalaryEventForAbsence(absence);
-            absence.setSalaryEvent(salaryEvent);
-
-        } else if (hadSalaryEvent && shouldHaveSalaryEvent) {
-            if (hasRelevantChanges(absence, previousType)) {
-                deleteSalaryEvent(absence.getSalaryEvent().getId());
-                SalaryEvent newSalaryEvent = createSalaryEventForAbsence(absence);
-                absence.setSalaryEvent(newSalaryEvent);
-            }
+        if (hadSalaryEvent && hasRelevantChanges(absence, previousType)) {
+            SalaryEvent updatedSalaryEvent = updateSalaryEvent(absence, absence.getSalaryEvent());
+            absence.setSalaryEvent(updatedSalaryEvent);
         }
     }
 
@@ -138,15 +127,10 @@ public class AbsencePatchCmd implements Command {
                 absenceUpdateRequest.getEndDate() != null;
     }
 
-    private void deleteSalaryEvent(UUID salaryEventId) {
-        SalaryEventDeleteByIdCmd command = commandFactory.createCommand(SalaryEventDeleteByIdCmd.class);
-        command.setId(salaryEventId);
-        command.execute();
-    }
-
-    private SalaryEvent createSalaryEventForAbsence(Absence absence) {
-        SalaryEventByAbsenceCreateCmd command = commandFactory.createCommand(SalaryEventByAbsenceCreateCmd.class);
+    private SalaryEvent updateSalaryEvent(Absence absence, SalaryEvent existingSalaryEvent) {
+        SalaryEventByAbsencePatchCmd command = commandFactory.createCommand(SalaryEventByAbsencePatchCmd.class);
         command.setAbsence(absence);
+        command.setExistingSalaryEvent(existingSalaryEvent);
         command.execute();
         return command.getSalaryEvent();
     }

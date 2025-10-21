@@ -27,7 +27,7 @@ public class Payment {
 
     private Integer period;
 
-    private LocalDateTime payment_date;
+    private LocalDateTime paymentDate;
 
     @Column(
             precision = Constants.TypeSpecifications.NUMERIC_PRECISION,

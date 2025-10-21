@@ -18,6 +18,8 @@ public class SalaryEventResponse {
 
     private String type;
 
+    private String category;
+
     private String description;
 
     private BigDecimal amount;

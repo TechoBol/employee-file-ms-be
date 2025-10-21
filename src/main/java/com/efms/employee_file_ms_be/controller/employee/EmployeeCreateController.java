@@ -10,10 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Josue Veliz
@@ -28,8 +25,10 @@ public class EmployeeCreateController {
 
     @PostMapping
     @Operation(summary = "Create a new Employee")
-    public ResponseEntity<EmployeeResponse> create(@Valid @RequestBody EmployeeCreateRequest request) {
+    public ResponseEntity<EmployeeResponse> create(@Valid @RequestBody EmployeeCreateRequest request,
+                                                   @RequestParam(name = "includeDetails", defaultValue = "true") boolean includeDetails) {
         command.setEmployeeCreateRequest(request);
+        command.setIncludeDetails(includeDetails);
         command.execute();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(command.getResponse());

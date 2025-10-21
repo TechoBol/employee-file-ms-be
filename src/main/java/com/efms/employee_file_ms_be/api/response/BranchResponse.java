@@ -16,7 +16,11 @@ public class BranchResponse {
 
     private String name;
 
-    private String companyId;
+    private String description;
 
-//    private String companyName;
+    private String location;
+
+    private String city;
+
+    private String country;
 }

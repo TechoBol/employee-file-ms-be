@@ -27,6 +27,9 @@ public class GeneralSettingsCreateCmd implements Command {
     @Getter
     private GeneralSettingsResponse generalSettingsResponse;
 
+    @Getter
+    private GeneralSettings generalSettings;
+
     private final GeneralSettingsRepository repository;
 
     private final GeneralSettingsMapper mapper;
@@ -34,7 +37,7 @@ public class GeneralSettingsCreateCmd implements Command {
     @Override
     public void execute() {
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
-        GeneralSettings generalSettings = mapper.toEntity(generalSettingsCreateRequest);
+        generalSettings = mapper.toEntity(generalSettingsCreateRequest);
         generalSettings.setCompanyId(companyId);
         generalSettings = repository.save(generalSettings);
         generalSettingsResponse = mapper.toDTO(generalSettings);

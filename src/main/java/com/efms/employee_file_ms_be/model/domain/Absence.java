@@ -4,6 +4,7 @@ import com.efms.employee_file_ms_be.model.Constants;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Getter
 @Entity
 @Table(name = Constants.Absence.NAME)
+@SQLRestriction("status = 'OPEN'")
 public class Absence extends Audit {
 
     @Id
@@ -49,4 +51,8 @@ public class Absence extends Audit {
 
     @Column(name = "company_id", nullable = false)
     private UUID companyId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PayrollStatus status;
 }

@@ -22,5 +22,10 @@ public class Constants {
         public static final String COMMON_BAD_REQUEST = "Bad Request: {message}";
         public static final String ABSENCE_EMPLOYEE_NOT_NULL = "The employee of the absence cannot be null";
         public static final String GENERAL_SETTINGS_NOT_FOUND = "General settings with id {settingsId} not found";
+        public static final String VACATION_NOT_FOUND = "Vacation with id {vacationId} not found";
+        public static final String MEMORANDUM_NOT_FOUND = "Memorandum with id {memorandumId} not found";
+        public static final String ADVANCE_NOT_FOUND = "Advance with id {advanceId} not found";
+        public static final String ADVANCE_EMPLOYEE_NOT_NULL = "The employee of the advance cannot be null";
+        public static final String ADVANCE_PAYMENT_EXCEED = "The advance payment cannot exceed the base salary.";
     }
 }

@@ -37,8 +37,8 @@ public class Constants {
         public static final String NAME = "branch";
     }
 
-    public static class Location {
-        public static final String NAME = "location";
+    public static class Memorandum {
+        public static final String NAME = "memorandum";
     }
 
     public static class File {
@@ -49,13 +49,32 @@ public class Constants {
         public static final String NAME = "absence";
     }
 
+    public static class Advance {
+        public static final String NAME = "advance";
+    }
+
     public static class GeneralSettings {
         public static final String NAME = "general_settings";
+    }
+
+    public static class Vacation {
+        public static final String NAME = "vacation";
     }
 
     public static class TypeSpecifications {
         public static final int NUMERIC_PRECISION = 12;
 
         public static final int NUMERIC_SCALE = 2;
+    }
+
+    public static class MemorandumType {
+        public static final String VERBAL_WARNING = "Amonestación Verbal";
+        public static final String WRITTEN_WARNING = "Amonestación Escrita";
+        public static final String SUSPENSION = "Suspensión";
+        public static final String CALL_TO_ATTENTION = "Llamada de Atención";
+        public static final String RECOGNITION = "Reconocimiento";
+        public static final String CONGRATULATION = "Felicitación";
+        public static final String PERFORMANCE_BONUS = "Bono por Desempeño";
+        public static final String OTHER = "Otro";
     }
 }

@@ -28,6 +28,7 @@ public class DepartmentMapper implements CustomMapper<DepartmentResponse, Depart
         return DepartmentResponse.builder()
                 .id(department.getId().toString())
                 .name(department.getName())
+                .description(department.getDescription())
                 .build();
     }
 }

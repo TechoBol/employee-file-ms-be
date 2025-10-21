@@ -1,5 +1,6 @@
 package com.efms.employee_file_ms_be.api.request;
 
+import com.efms.employee_file_ms_be.model.domain.EmployeeType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,8 +34,11 @@ public class EmployeeCreateRequest {
     private LocalDate hireDate;
 
     @NotBlank
-    private String departmentId;
+    private EmployeeType type;
 
     @NotBlank
     private String positionId;
+
+    @NotBlank
+    private String branchId;
 }

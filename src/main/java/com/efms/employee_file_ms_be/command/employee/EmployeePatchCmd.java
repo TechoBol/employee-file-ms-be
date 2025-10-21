@@ -56,11 +56,6 @@ public class EmployeePatchCmd implements Command {
                 status -> employee.setStatus(EmployeeStatus.valueOf(status))
         );
         Optional.ofNullable(employeeUpdateRequest.getEmergencyContact()).ifPresent(employee::setEmergencyContact);
-        Optional.ofNullable(employeeUpdateRequest.getDepartmentId()).ifPresent(departmentId -> {
-            Department department = new  Department();
-            department.setId(UUID.fromString(departmentId));
-            employee.setDepartment(department);
-        });
         Optional.ofNullable(employeeUpdateRequest.getPositionId()).ifPresent(positionId -> {
             Position position = new Position();
             position.setId(UUID.fromString(positionId));

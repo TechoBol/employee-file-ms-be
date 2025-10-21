@@ -3,11 +3,9 @@ package com.efms.employee_file_ms_be.model.mapper.branch;
 import com.efms.employee_file_ms_be.api.request.BranchCreateRequest;
 import com.efms.employee_file_ms_be.api.response.BranchResponse;
 import com.efms.employee_file_ms_be.model.domain.Branch;
-import com.efms.employee_file_ms_be.model.domain.Company;
 import com.efms.employee_file_ms_be.model.mapper.CustomMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
-
-import java.util.UUID;
 
 /**
  * @author Josue Veliz
@@ -18,7 +16,7 @@ public class BranchMapper implements CustomMapper<BranchResponse, BranchCreateRe
     @Override
     public Branch toEntity(BranchCreateRequest branchCreateRequest) {
         Branch instance = new Branch();
-        instance.setName(branchCreateRequest.getName());
+        BeanUtils.copyProperties(branchCreateRequest, instance);
 
         return instance;
     }
@@ -28,7 +26,10 @@ public class BranchMapper implements CustomMapper<BranchResponse, BranchCreateRe
         return BranchResponse.builder()
                 .id(branch.getId().toString())
                 .name(branch.getName())
-                .companyId(String.valueOf(branch.getCompanyId()))
+                .description(branch.getDescription())
+                .city(branch.getCity())
+                .country(branch.getCountry())
+                .location(branch.getLocation())
                 .build();
     }
 }

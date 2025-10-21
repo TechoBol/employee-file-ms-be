@@ -10,6 +10,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,8 +54,13 @@ public class Employee extends Audit {
 
     private LocalDate hireDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EmployeeStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EmployeeType type;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
@@ -73,13 +79,16 @@ public class Employee extends Audit {
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Payment> payments;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "department_id", nullable = false)
-    private Department department;
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Memorandum> memorandums;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "position_id", nullable = false)
     private Position position;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "branch_id", nullable = false)
+    private Branch branch;
 
     @Column(name = "company_id", nullable = false)
     private UUID companyId;

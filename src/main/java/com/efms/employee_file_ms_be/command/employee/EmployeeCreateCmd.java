@@ -22,6 +22,9 @@ public class EmployeeCreateCmd implements Command {
     @Setter
     private EmployeeCreateRequest employeeCreateRequest;
 
+    @Setter
+    private boolean includeDetails;
+
     @Getter
     private EmployeeResponse response;
 
@@ -35,6 +38,10 @@ public class EmployeeCreateCmd implements Command {
         Employee employee = mapper.toEntity(employeeCreateRequest);
         employee.setCompanyId(companyId);
         employee = repository.save(employee);
+        if (includeDetails) {
+            employee = repository.findByIdAndCompanyId(employee.getId(), companyId)
+                    .orElse(employee);
+        }
         response = mapper.toDTO(employee);
     }
 }
