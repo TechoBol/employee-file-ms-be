@@ -17,6 +17,12 @@ spring:
       hibernate:
         default_schema: ${DB_SCHEMA:efms_test}
 
+  web:
+    cors:
+      allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+      allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
+      max-age: ${CORS_MAX_AGE:3600}
+
 efms:
   tenant:
     excluded-paths: ${TENANT_EXCLUDED_PATHS:/swagger-ui,/v3/api-docs,/api/companies}

@@ -4,6 +4,7 @@ import com.efms.employee_file_ms_be.api.request.AbsenceCreateRequest;
 import com.efms.employee_file_ms_be.api.response.AbsenceResponse;
 import com.efms.employee_file_ms_be.model.domain.Absence;
 import com.efms.employee_file_ms_be.model.domain.Employee;
+import com.efms.employee_file_ms_be.model.domain.PayrollStatus;
 import com.efms.employee_file_ms_be.model.mapper.CustomMapper;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +29,8 @@ public class AbsenceMapper implements CustomMapper<AbsenceResponse, AbsenceCreat
         Employee employee = new Employee();
         employee.setId(UUID.fromString(absenceCreateRequest.getEmployeeId()));
         instance.setEmployee(employee);
+
+        instance.setStatus(PayrollStatus.OPEN);
 
         return instance;
     }
