@@ -40,7 +40,7 @@ public class Advance extends Audit {
     @Column(nullable = false)
     private LocalDate advanceDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "salary_event_id")
     private SalaryEvent salaryEvent;
 

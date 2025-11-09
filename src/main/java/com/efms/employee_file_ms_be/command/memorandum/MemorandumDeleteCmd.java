@@ -1,9 +1,9 @@
-package com.efms.employee_file_ms_be.command.salary_event;
+package com.efms.employee_file_ms_be.command.memorandum;
 
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.config.TenantContext;
-import com.efms.employee_file_ms_be.model.repository.SalaryEventRepository;
+import com.efms.employee_file_ms_be.model.repository.MemorandumRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -15,7 +15,7 @@ import java.util.UUID;
  */
 @CommandExecute
 @RequiredArgsConstructor
-public class SalaryEventDeleteByIdCmd implements Command {
+public class MemorandumDeleteCmd implements Command {
 
     @Setter
     private String id;
@@ -23,11 +23,11 @@ public class SalaryEventDeleteByIdCmd implements Command {
     @Getter
     private int response;
 
-    private final SalaryEventRepository salaryEventRepository;
+    private final MemorandumRepository memorandumRepository;
 
     @Override
     public void execute() {
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
-        response = salaryEventRepository.deleteByIdAndCompanyId(UUID.fromString(id), companyId);
+        response = memorandumRepository.deleteByIdAndCompanyId(UUID.fromString(id), companyId);
     }
 }

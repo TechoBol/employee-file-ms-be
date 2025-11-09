@@ -29,4 +29,6 @@ public interface BaseSalaryRepository extends JpaRepository<BaseSalary, UUID> {
     AND e.isDeleted = false
    \s""")
     Page<BaseSalary> findAllByCompanyIdAndActiveEmployees(@Param("companyId") UUID companyId, Pageable pageable);
+
+    int deleteByIdAndCompanyId(UUID id, UUID companyId);
 }

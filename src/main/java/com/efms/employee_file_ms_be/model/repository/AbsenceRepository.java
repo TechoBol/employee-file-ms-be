@@ -48,4 +48,6 @@ public interface AbsenceRepository extends JpaRepository<Absence, UUID> {
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+
+    int deleteByIdAndCompanyId(UUID id, UUID companyId);
 }

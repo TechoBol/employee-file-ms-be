@@ -7,14 +7,11 @@ import com.efms.employee_file_ms_be.command.base_salary.BaseSalaryReadByEmployee
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
-import com.efms.employee_file_ms_be.command.salary_event.SalaryEventByAdvanceCreateCmd;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventByAdvancePatchCmd;
-import com.efms.employee_file_ms_be.command.salary_event.SalaryEventDeleteByIdCmd;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.AdvanceNotFoundException;
 import com.efms.employee_file_ms_be.exception.RecordEditNotAllowedException;
 import com.efms.employee_file_ms_be.model.domain.Advance;
-import com.efms.employee_file_ms_be.model.domain.BaseSalary;
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
 import com.efms.employee_file_ms_be.model.mapper.advance.AdvanceMapper;
 import com.efms.employee_file_ms_be.model.repository.AdvanceRepository;

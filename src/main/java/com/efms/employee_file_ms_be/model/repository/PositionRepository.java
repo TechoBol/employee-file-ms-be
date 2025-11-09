@@ -14,4 +14,6 @@ public interface PositionRepository extends JpaRepository<Position, UUID> {
     List<Position> findAllByCompanyId(UUID companyId);
 
     Optional<Position> findByIdAndCompanyId(UUID id, UUID companyId);
+
+    int deleteByIdAndCompanyId(UUID id, UUID companyId);
 }

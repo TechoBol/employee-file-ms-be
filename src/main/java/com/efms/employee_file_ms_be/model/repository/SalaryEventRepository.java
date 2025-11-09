@@ -44,4 +44,6 @@ public interface SalaryEventRepository extends JpaRepository<SalaryEvent, UUID> 
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+
+    int deleteByIdAndCompanyId(UUID id, UUID companyId);
 }
