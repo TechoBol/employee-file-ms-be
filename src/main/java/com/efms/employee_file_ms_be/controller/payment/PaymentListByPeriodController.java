@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +26,10 @@ public class PaymentListByPeriodController {
     @Operation(summary = "List payments for all employees in a specific period with pagination")
     public ResponseEntity<Page<PaymentEmployeeResponse>> listByPeriod(
             @PathVariable Integer period,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            Pageable page
     ) {
-        Pageable pageable = PageRequest.of(page, size);
         command.setPeriod(period);
-        command.setPageable(pageable);
+        command.setPageable(page);
         command.execute();
 
         return ResponseEntity.ok(command.getPaymentResponsePage());

@@ -30,20 +30,20 @@ public class PaymentProcessSummary {
                 .sum();
     }
 
-    public int getTotalSuccessfulPayments() {
+    public long getTotalSuccessfulPayments() {
         return companyResults.stream()
                 .mapToInt(CompanyProcessResult::getSuccessfulPayments)
                 .sum();
     }
 
-    public int getTotalFailedPayments() {
+    public long getTotalFailedPayments() {
         return companyResults.stream()
                 .mapToInt(CompanyProcessResult::getFailedPayments)
                 .sum();
     }
 
     public double getSuccessRate() {
-        int total = getTotalSuccessfulPayments() + getTotalFailedPayments();
+        long total = getTotalSuccessfulPayments() + getTotalFailedPayments();
         if (total == 0) return 0.0;
         return (getTotalSuccessfulPayments() * 100.0) / total;
     }

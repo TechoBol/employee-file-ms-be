@@ -19,7 +19,6 @@ import java.util.UUID;
 @Getter
 @Entity
 @Table(name = Constants.Advance.NAME)
-@SQLRestriction("status = 'OPEN'")
 public class Advance extends Audit {
 
     @Id

@@ -34,7 +34,7 @@ public class AbsenceProcessCmd implements Command {
     @Override
     @Transactional
     public void execute() {
-        Page<Absence> page = repository.findAllByCompanyId(companyId, pageable);
+        Page<Absence> page = repository.findAllByCompanyId(companyId, null, pageable);
 
         if (page.isEmpty()) {
             processedList = List.of();

@@ -47,7 +47,7 @@ public class AdvancePatchCmd implements Command {
     @Override
     public void execute() {
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
-        Advance advance = repository.findByIdAndCompanyId(UUID.fromString(id), companyId)
+        Advance advance = repository.findByIdAndCompanyId(UUID.fromString(id), companyId, null)
                 .orElseThrow(() -> new AdvanceNotFoundException(id));
         BaseSalaryResponse baseSalaryResponse = findBaseSalary(advance.getEmployee().getId().toString());
         BigDecimal totalAmount = baseSalaryResponse.getAmount().multiply(advanceUpdateRequest.getAmount());

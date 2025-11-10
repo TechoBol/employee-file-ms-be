@@ -47,7 +47,7 @@ public class AbsencePatchCmd implements Command {
     @Override
     public void execute() {
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
-        Absence absence = absenceRepository.findByIdAndCompanyId(UUID.fromString(id), companyId)
+        Absence absence = absenceRepository.findByIdAndCompanyId(UUID.fromString(id), companyId, null)
                 .orElseThrow(() -> new AbsenceNotFoundException(id));
 
         validateEditingTimeframe(absence);

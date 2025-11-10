@@ -34,7 +34,7 @@ public class SalaryEventProcessCmd implements Command {
     @Override
     @Transactional
     public void execute() {
-        Page<SalaryEvent> page = repository.findAllByCompanyId(companyId, pageable);
+        Page<SalaryEvent> page = repository.findAllByCompanyId(companyId, null, pageable);
 
         if (page.isEmpty()) {
             processedList = List.of();

@@ -20,4 +20,17 @@ public final class DateUtils {
         LocalDate resolvedEnd = getEndDateOrDefault(endDate);
         return new LocalDate[]{resolvedStart, resolvedEnd};
     }
+
+    public static boolean shouldSearchIgnoringStatus(LocalDate start, LocalDate end) {
+        LocalDate now = LocalDate.now();
+
+        if (now.getDayOfMonth() <= 5) {
+            return false;
+        }
+
+        LocalDate lastMonthStart = now.minusMonths(1).withDayOfMonth(1);
+        LocalDate lastMonthEnd = now.withDayOfMonth(1).minusDays(1);
+
+        return !start.isAfter(lastMonthEnd) && !end.isBefore(lastMonthStart);
+    }
 }

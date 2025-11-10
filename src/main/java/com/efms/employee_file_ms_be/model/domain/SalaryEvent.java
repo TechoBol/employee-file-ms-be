@@ -14,7 +14,6 @@ import java.util.UUID;
 @Getter
 @Entity
 @Table(name = Constants.SalaryEvent.NAME)
-@SQLRestriction("status = 'OPEN'")
 public class SalaryEvent {
 
     @Id

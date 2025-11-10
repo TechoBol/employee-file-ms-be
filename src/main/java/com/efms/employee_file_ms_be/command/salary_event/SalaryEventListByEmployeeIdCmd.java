@@ -4,6 +4,7 @@ import com.efms.employee_file_ms_be.api.response.SalaryEventResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.config.TenantContext;
+import com.efms.employee_file_ms_be.model.domain.PayrollStatus;
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
 import com.efms.employee_file_ms_be.model.domain.SalaryEventCategory;
 import com.efms.employee_file_ms_be.model.mapper.salary_event.SalaryEventMapper;
@@ -16,6 +17,8 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+
+import static com.efms.employee_file_ms_be.util.DateUtils.shouldSearchIgnoringStatus;
 
 /**
  * @author Josue Veliz
@@ -43,7 +46,6 @@ public class SalaryEventListByEmployeeIdCmd implements Command {
     private List<SalaryEvent> salaryEventList;
 
     private final SalaryEventRepository repository;
-
     private final SalaryEventMapper mapper;
 
     @Override
@@ -51,14 +53,18 @@ public class SalaryEventListByEmployeeIdCmd implements Command {
         startDate = DateUtils.getStartDateOrDefault(startDate);
         endDate = DateUtils.getEndDateOrDefault(endDate);
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
+        UUID employeeUUID = UUID.fromString(employeeId);
 
         SalaryEventCategory categoryEnum = (category != null && !category.isBlank())
                 ? SalaryEventCategory.valueOf(category.toUpperCase())
                 : null;
 
+        PayrollStatus statusToUse = shouldSearchIgnoringStatus(startDate, endDate) ? null : PayrollStatus.PROCESSED;
+
         salaryEventList = repository.findByEmployeeAndCompanyAndOptionalCategoryInDateRange(
-                UUID.fromString(employeeId),
+                employeeUUID,
                 companyId,
+                statusToUse,
                 categoryEnum,
                 startDate,
                 endDate
