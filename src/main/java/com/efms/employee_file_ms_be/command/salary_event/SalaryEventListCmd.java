@@ -47,7 +47,7 @@ public class SalaryEventListCmd implements Command {
         endDate = DateUtils.getEndDateOrDefault(endDate);
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
 
-        PayrollStatus statusToUse = shouldSearchIgnoringStatus(startDate, endDate) ? null : PayrollStatus.PROCESSED;
+        PayrollStatus statusToUse = shouldSearchIgnoringStatus(startDate, endDate) ? PayrollStatus.OPEN : PayrollStatus.PROCESSED;
 
         salaryEventList = repository.findByCompanyInDateRange(
                 companyId,

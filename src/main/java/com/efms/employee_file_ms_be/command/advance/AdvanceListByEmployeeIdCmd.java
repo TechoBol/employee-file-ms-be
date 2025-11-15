@@ -51,7 +51,7 @@ public class AdvanceListByEmployeeIdCmd implements Command {
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
         UUID employeeUUID = UUID.fromString(employeeId);
 
-        PayrollStatus statusToUse = shouldSearchIgnoringStatus(startDate, endDate) ? null : PayrollStatus.PROCESSED;
+        PayrollStatus statusToUse = shouldSearchIgnoringStatus(startDate, endDate) ? PayrollStatus.OPEN : PayrollStatus.PROCESSED;
 
         advanceList = repository.findByEmployeeAndCompanyInDateRange(
                 employeeUUID,

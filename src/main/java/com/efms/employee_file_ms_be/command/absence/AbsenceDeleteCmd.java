@@ -7,6 +7,7 @@ import com.efms.employee_file_ms_be.model.repository.AbsenceRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -25,6 +26,7 @@ public class AbsenceDeleteCmd implements Command {
 
     private final AbsenceRepository absenceRepository;
 
+    @Transactional
     @Override
     public void execute() {
         UUID companyId = UUID.fromString(TenantContext.getTenantId());

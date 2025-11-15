@@ -49,6 +49,7 @@ public class PositionPatchCmd implements Command {
 
     private void updateProperties(Position position, PositionUpdateRequest positionUpdateRequest) {
         Optional.ofNullable(positionUpdateRequest.getName()).ifPresent(position::setName);
+        Optional.ofNullable(positionUpdateRequest.getDescription()).ifPresent(position::setDescription);
         Optional.ofNullable(positionUpdateRequest.getDepartmentId()).ifPresent(departmentId -> {
             Department department = new  Department();
             department.setId(UUID.fromString(departmentId));

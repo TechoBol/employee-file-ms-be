@@ -48,7 +48,7 @@ public class AbsenceListCmd implements Command {
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
 
         PayrollStatus statusToUse = shouldSearchIgnoringStatus(startDate, endDate)
-                ? null
+                ? PayrollStatus.OPEN
                 : PayrollStatus.PROCESSED;
 
         absenceList = absenceRepository.findByCompanyInDateRange(

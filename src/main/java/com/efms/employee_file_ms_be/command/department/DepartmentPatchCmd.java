@@ -48,5 +48,6 @@ public class DepartmentPatchCmd implements Command {
 
     private void updateProperties(Department department, DepartmentUpdateRequest departmentUpdateRequest) {
         Optional.ofNullable(departmentUpdateRequest.getName()).ifPresent(department::setName);
+        Optional.ofNullable(departmentUpdateRequest.getDescription()).ifPresent(department::setDescription);
     }
 }

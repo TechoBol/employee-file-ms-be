@@ -4,7 +4,6 @@ import com.efms.employee_file_ms_be.model.Constants;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -58,4 +57,10 @@ public class SalaryEvent {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PayrollStatus status;
+
+    @OneToOne(mappedBy = "salaryEvent")
+    private Absence absence;
+
+    @OneToOne(mappedBy = "salaryEvent")
+    private Advance advance;
 }

@@ -171,6 +171,7 @@ public class PaymentProcessAllCompaniesCmd implements Command {
         // Assuming you have a way to filter by company, adjust as needed
         PayrollCalculateByPageableCmd cmd = commandFactory.createCommand(PayrollCalculateByPageableCmd.class);
         cmd.setPageable(pageable);
+        cmd.setPeriod(period);
         cmd.execute();
         return cmd.getPayrollPageResponse();
     }

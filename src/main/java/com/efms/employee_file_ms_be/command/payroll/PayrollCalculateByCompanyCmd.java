@@ -32,6 +32,9 @@ public class PayrollCalculateByCompanyCmd implements Command {
     @Setter
     private Pageable pageable;
 
+    @Setter
+    private Integer period;
+
     @Getter
     private Page<PayrollEmployeeResponse> payrollPageResponse;
 
@@ -94,6 +97,9 @@ public class PayrollCalculateByCompanyCmd implements Command {
     private PayrollResponse calculatePayroll(String employeeId) {
         PayrollCalculateByEmployeeIdCmd command = commandFactory.createCommand(PayrollCalculateByEmployeeIdCmd.class);
         command.setEmployeeId(employeeId);
+        if (period != null) {
+            command.setPeriod(period);
+        }
         command.execute();
         return command.getPayrollResponse();
     }

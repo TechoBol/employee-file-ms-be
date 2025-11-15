@@ -185,6 +185,7 @@ public class PaymentProcessSingleCompanyCmd implements Command {
         PayrollCalculateByCompanyCmd cmd = commandFactory.createCommand(PayrollCalculateByCompanyCmd.class);
         cmd.setCompanyId(companyId);
         cmd.setPageable(pageable);
+        cmd.setPeriod(period);
         cmd.execute();
         return cmd.getPayrollPageResponse();
     }

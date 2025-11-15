@@ -28,7 +28,7 @@ public class Position {
     @Column(name = "company_id", nullable = false)
     private UUID companyId;
 
-    @OneToMany(mappedBy = "position", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "position")
     private List<Employee> employees;
 
     @ManyToOne(fetch = FetchType.LAZY)

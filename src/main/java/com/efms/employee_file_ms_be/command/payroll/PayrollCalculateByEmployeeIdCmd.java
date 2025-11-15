@@ -12,6 +12,7 @@ import com.efms.employee_file_ms_be.command.employee.EmployeeReadByIdCmd;
 import com.efms.employee_file_ms_be.command.general_settings.GeneralSettingsReadCmd;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventListByEmployeeIdCmd;
 import com.efms.employee_file_ms_be.model.domain.*;
+import com.efms.employee_file_ms_be.util.DateUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -34,6 +35,15 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
     @Setter
     private String employeeId;
 
+    @Setter
+    private LocalDate startDate;
+
+    @Setter
+    private LocalDate endDate;
+
+    @Setter
+    private Integer period;
+
     @Getter
     private PayrollResponse payrollResponse;
 
@@ -41,6 +51,13 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
 
     @Override
     public void execute() {
+        if (period != null) {
+            startDate = DateUtils.getStartDateFromPeriod(period);
+            endDate = DateUtils.getEndDateFromPeriod(period);
+        } else {
+            startDate = DateUtils.getStartDateOrDefault(startDate);
+            endDate = DateUtils.getEndDateOrDefault(endDate);
+        }
         GeneralSettingsResponse generalSettings = findGeneralSettings();
         Employee employee = findEmployee();
         BaseSalary salary = employee.getBaseSalary();
@@ -136,44 +153,22 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
     }
 
     private int calculateWorkedDays(Employee employee) {
-        LocalDate now = LocalDate.now();
-        LocalDate targetMonth;
+        LocalDate effectiveStartDate = startDate;
+        LocalDate effectiveEndDate = endDate;
 
-        if (now.getDayOfMonth() <= 5) {
-            targetMonth = now.minusMonths(1);
-        } else {
-            targetMonth = now;
+        if (employee.getHireDate().isAfter(effectiveStartDate)) {
+            effectiveStartDate = employee.getHireDate();
         }
-
-        LocalDate startOfTargetMonth = targetMonth.withDayOfMonth(1);
-        LocalDate endOfTargetMonth = targetMonth.withDayOfMonth(targetMonth.lengthOfMonth());
-
-        LocalDate effectiveStartDate = employee.getHireDate().isBefore(startOfTargetMonth)
-                ? startOfTargetMonth
-                : employee.getHireDate();
-
-        LocalDate effectiveEndDate = endOfTargetMonth;
 
         if (employee.getStatus() == EmployeeStatus.DELETED && employee.getDeletedAt() != null) {
             LocalDate deletedDate = employee.getDeletedAt().toLocalDate();
-            if (!deletedDate.isBefore(startOfTargetMonth) && !deletedDate.isAfter(endOfTargetMonth)) {
+            if (deletedDate.isBefore(effectiveEndDate)) {
                 effectiveEndDate = deletedDate;
             }
         }
 
-        if (targetMonth.getYear() == now.getYear() && targetMonth.getMonth() == now.getMonth()) {
-            effectiveEndDate = now;
-        }
-
-        if (effectiveStartDate.isAfter(endOfTargetMonth) || effectiveEndDate.isBefore(startOfTargetMonth)) {
+        if (effectiveStartDate.isAfter(effectiveEndDate)) {
             return 0;
-        }
-
-        if (effectiveStartDate.isBefore(startOfTargetMonth)) {
-            effectiveStartDate = startOfTargetMonth;
-        }
-        if (effectiveEndDate.isAfter(endOfTargetMonth)) {
-            effectiveEndDate = endOfTargetMonth;
         }
 
         return (int) ChronoUnit.DAYS.between(effectiveStartDate, effectiveEndDate) + 1;
@@ -227,6 +222,8 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
     private List<Absence> findAbsenceByEmployeeId() {
         AbsenceListByEmployeeIdCmd command = commandFactory.createCommand(AbsenceListByEmployeeIdCmd.class);
         command.setEmployeeId(employeeId);
+        command.setStartDate(startDate);
+        command.setEndDate(endDate);
         command.execute();
         return command.getAbsenceList();
     }
@@ -234,6 +231,8 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
     private List<Advance> findAdvancesByEmployeeId() {
         AdvanceListByEmployeeIdCmd command = commandFactory.createCommand(AdvanceListByEmployeeIdCmd.class);
         command.setEmployeeId(employeeId);
+        command.setStartDate(startDate);
+        command.setEndDate(endDate);
         command.execute();
         return command.getAdvanceList();
     }
@@ -241,7 +240,9 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
     private List<SalaryEvent> findManualSalaryEventsByEmployeeId() {
         SalaryEventListByEmployeeIdCmd command = commandFactory.createCommand(SalaryEventListByEmployeeIdCmd.class);
         command.setEmployeeId(employeeId);
-        command.setCategory(SalaryEventCategory.MANUAL.name());
+        command.setCategory(SalaryEventCategory.MANUAL);
+        command.setStartDate(startDate);
+        command.setEndDate(endDate);
         command.execute();
         return command.getSalaryEventList();
     }

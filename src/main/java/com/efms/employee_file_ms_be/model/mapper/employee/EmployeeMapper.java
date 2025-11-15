@@ -41,6 +41,8 @@ public class EmployeeMapper implements CustomMapper<EmployeeResponse, EmployeeCr
                 .positionName(employee.getPosition().getName())
                 .branchId(employee.getBranch().getId().toString())
                 .branchName(employee.getBranch().getName())
+                .isDisassociated(employee.getIsDisassociated())
+                .disassociatedAt(employee.getDisassociatedAt())
                 .build();
     }
 
@@ -64,6 +66,7 @@ public class EmployeeMapper implements CustomMapper<EmployeeResponse, EmployeeCr
                 .branch(branch)
                 .status(EmployeeStatus.ACTIVE)
                 .isDeleted(false)
+                .isDisassociated(false)
                 .build();
     }
 }

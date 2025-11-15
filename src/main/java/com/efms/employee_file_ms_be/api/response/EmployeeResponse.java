@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -27,4 +28,6 @@ public class EmployeeResponse {
     private String type;
     private String branchId;
     private String branchName;
+    private boolean isDisassociated;
+    private LocalDateTime disassociatedAt;
 }

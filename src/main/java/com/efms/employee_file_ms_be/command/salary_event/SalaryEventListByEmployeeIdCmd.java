@@ -37,7 +37,7 @@ public class SalaryEventListByEmployeeIdCmd implements Command {
     private String employeeId;
 
     @Setter
-    private String category;
+    private SalaryEventCategory category;
 
     @Getter
     private List<SalaryEventResponse> salaryEventResponseList;
@@ -55,17 +55,13 @@ public class SalaryEventListByEmployeeIdCmd implements Command {
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
         UUID employeeUUID = UUID.fromString(employeeId);
 
-        SalaryEventCategory categoryEnum = (category != null && !category.isBlank())
-                ? SalaryEventCategory.valueOf(category.toUpperCase())
-                : null;
-
-        PayrollStatus statusToUse = shouldSearchIgnoringStatus(startDate, endDate) ? null : PayrollStatus.PROCESSED;
+        PayrollStatus statusToUse = shouldSearchIgnoringStatus(startDate, endDate) ? PayrollStatus.OPEN : PayrollStatus.PROCESSED;
 
         salaryEventList = repository.findByEmployeeAndCompanyAndOptionalCategoryInDateRange(
                 employeeUUID,
                 companyId,
                 statusToUse,
-                categoryEnum,
+                category,
                 startDate,
                 endDate
         );

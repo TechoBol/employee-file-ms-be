@@ -3,6 +3,7 @@ package com.efms.employee_file_ms_be.controller.salary_event;
 import com.efms.employee_file_ms_be.api.response.SalaryEventResponse;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventListByEmployeeIdCmd;
 import com.efms.employee_file_ms_be.controller.Constants;
+import com.efms.employee_file_ms_be.model.domain.SalaryEventCategory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +25,14 @@ public class SalaryEventListByEmployeeIdController {
 
     private final SalaryEventListByEmployeeIdCmd command;
 
-    @GetMapping("/employee/{employeeId}")
+    @GetMapping("/employees/{employeeId}")
     @Operation(summary = "Get salary events by employee ID")
     public ResponseEntity<List<SalaryEventResponse>> getByEmployee(
             @PathVariable String employeeId,
+            @RequestParam(required = false) SalaryEventCategory category,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        command.setCategory(category);
         command.setStartDate(startDate);
         command.setEndDate(endDate);
         command.setEmployeeId(employeeId);

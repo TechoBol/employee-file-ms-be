@@ -28,6 +28,6 @@ public class Department {
     @Column(name = "company_id", nullable = false)
     private UUID companyId;
 
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "department", orphanRemoval = true)
     private List<Position> positions;
 }

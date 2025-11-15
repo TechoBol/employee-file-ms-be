@@ -52,7 +52,7 @@ public class AbsenceListByEmployeeIdCmd implements Command {
         UUID employeeUUID = UUID.fromString(employeeId);
 
         PayrollStatus statusToUse = shouldSearchIgnoringStatus(startDate, endDate)
-                ? null
+                ? PayrollStatus.OPEN
                 : PayrollStatus.PROCESSED;
 
         absenceList = absenceRepository.findByEmployeeAndCompanyInDateRange(
