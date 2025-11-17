@@ -59,7 +59,7 @@ public class Employee extends Audit {
     private EmployeeStatus status;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column
     private EmployeeType type;
 
     @JdbcTypeCode(SqlTypes.JSON)

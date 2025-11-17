@@ -15,7 +15,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
-        default_schema: ${DB_SCHEMA:efms_test}
+        default_schema: ${DB_SCHEMA:public}
 
   web:
     cors:

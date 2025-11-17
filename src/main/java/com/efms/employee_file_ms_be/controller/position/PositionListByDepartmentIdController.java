@@ -28,7 +28,8 @@ public class PositionListByDepartmentIdController {
 
     @GetMapping("/departments/{departmentId}")
     @Operation(summary = "Get positions by company ID")
-    public ResponseEntity<List<PositionResponse>> getByCompanyAndDepartmentId(@PathVariable("departmentId") UUID departmentId) {
+    public ResponseEntity<List<PositionResponse>> getByCompanyAndDepartmentId(@PathVariable("departmentId") String departmentId) {
+        command.setDepartmentId(departmentId);
         command.execute();
 
         return ResponseEntity.ok(command.getPositions());
