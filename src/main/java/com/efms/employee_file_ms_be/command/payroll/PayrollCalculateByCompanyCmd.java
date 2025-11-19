@@ -1,5 +1,6 @@
 package com.efms.employee_file_ms_be.command.payroll;
 
+import com.efms.employee_file_ms_be.api.response.EmployeeResponse;
 import com.efms.employee_file_ms_be.api.response.payroll.PayrollEmployeeResponse;
 import com.efms.employee_file_ms_be.api.response.payroll.PayrollResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
@@ -49,7 +50,7 @@ public class PayrollCalculateByCompanyCmd implements Command {
         log.debug("Calculating payroll for company {} - Page: {}, Size: {}",
                 companyId, pageable.getPageNumber(), pageable.getPageSize());
 
-        Page<EmployeeProjection> employeesPage = findEmployeesByCompany();
+        Page<EmployeeResponse> employeesPage = findEmployeesByCompany();
 
         if (employeesPage.isEmpty()) {
             log.debug("No employees found for company {}", companyId);
@@ -87,11 +88,11 @@ public class PayrollCalculateByCompanyCmd implements Command {
                 payrollResponses.size(), employeesPage.getNumberOfElements());
     }
 
-    private Page<EmployeeProjection> findEmployeesByCompany() {
-        EmployeeProjectionReadByPageableCmd command = commandFactory.createCommand(EmployeeProjectionReadByPageableCmd.class);
+    private Page<EmployeeResponse> findEmployeesByCompany() {
+        EmployeeReadByPageableCmd command = commandFactory.createCommand(EmployeeReadByPageableCmd.class);
         command.setPageable(pageable);
         command.execute();
-        return command.getEmployeeProjectionPage();
+        return command.getEmployees();
     }
 
     private PayrollResponse calculatePayroll(String employeeId) {

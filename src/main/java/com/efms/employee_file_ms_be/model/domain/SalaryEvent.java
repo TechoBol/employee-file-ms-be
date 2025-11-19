@@ -32,7 +32,7 @@ public class SalaryEvent {
     @Column(nullable = false, length = 50)
     private SalaryEventCategory category = SalaryEventCategory.MANUAL;
 
-    @Column(length = 150)
+    @Column(length = 250)
     private String description;
 
     @Column(

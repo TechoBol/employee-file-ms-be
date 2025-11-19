@@ -1,11 +1,13 @@
 package com.efms.employee_file_ms_be.command.payroll;
 
+import com.efms.employee_file_ms_be.api.response.EmployeeResponse;
 import com.efms.employee_file_ms_be.api.response.payroll.PayrollEmployeeResponse;
 import com.efms.employee_file_ms_be.api.response.payroll.PayrollResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
 import com.efms.employee_file_ms_be.command.employee.EmployeeProjectionReadByPageableCmd;
+import com.efms.employee_file_ms_be.command.employee.EmployeeReadByPageableCmd;
 import com.efms.employee_file_ms_be.model.repository.projection.EmployeeProjection;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +38,7 @@ public class PayrollCalculateByPageableCmd implements Command {
 
     @Override
     public void execute() {
-        Page<EmployeeProjection> employeesPage = findEmployees();
+        Page<EmployeeResponse> employeesPage = findEmployees();
 
         List<PayrollEmployeeResponse> payrollResponses = employeesPage.getContent().stream()
                 .map(employee -> {
@@ -55,11 +57,11 @@ public class PayrollCalculateByPageableCmd implements Command {
         );
     }
 
-    private Page<EmployeeProjection> findEmployees() {
-        EmployeeProjectionReadByPageableCmd command = commandFactory.createCommand(EmployeeProjectionReadByPageableCmd.class);
+    private Page<EmployeeResponse> findEmployees() {
+        EmployeeReadByPageableCmd command = commandFactory.createCommand(EmployeeReadByPageableCmd.class);
         command.setPageable(pageable);
         command.execute();
-        return command.getEmployeeProjectionPage();
+        return command.getEmployees();
     }
 
     private PayrollResponse calculatePayroll(String employeeId) {

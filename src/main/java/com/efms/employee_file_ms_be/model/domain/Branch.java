@@ -20,10 +20,10 @@ public class Branch {
     @Column(updatable = false, nullable = false)
     private UUID id;
 
-    @Column(nullable = false, length = 80)
+    @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(length = 180)
+    @Column(length = 250)
     private String description;
 
     @Column(length = 180)

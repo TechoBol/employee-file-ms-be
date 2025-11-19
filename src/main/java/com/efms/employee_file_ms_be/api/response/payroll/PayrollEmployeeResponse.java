@@ -1,5 +1,6 @@
 package com.efms.employee_file_ms_be.api.response.payroll;
 
+import com.efms.employee_file_ms_be.api.response.EmployeeResponse;
 import com.efms.employee_file_ms_be.model.repository.projection.EmployeeProjection;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PayrollEmployeeResponse {
-    private EmployeeProjection employee;
+    private EmployeeResponse employee;
     private PayrollResponse payroll;
 }
