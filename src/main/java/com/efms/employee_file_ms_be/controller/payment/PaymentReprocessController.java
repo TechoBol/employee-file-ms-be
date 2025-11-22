@@ -17,7 +17,7 @@ public class PaymentReprocessController {
 
     private final PaymentReprocessCmd cmd;
 
-    @PostMapping("/periods/{period}")
+    @PostMapping("/periods/{period}/reprocess")
     @Operation(summary = "Reprocess payments for all employees in a specific period with pagination")
     public ResponseEntity<PaymentReprocessSummary> listByPeriod(
             @PathVariable Integer period

@@ -96,6 +96,9 @@ public class Employee extends Audit {
     @JoinColumn(name = "branch_id", nullable = false)
     private Branch branch;
 
+    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private File file;
+
     @Column(name = "company_id", nullable = false)
     private UUID companyId;
 }

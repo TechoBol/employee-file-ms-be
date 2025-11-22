@@ -34,6 +34,8 @@ public class Constants {
         public static final String MEMORANDUM_PATH = BASE_PATH + "/memorandums";
 
         public static final String VACATION_PATH = BASE_PATH + "/vacations";
+
+        public static final String FILE_PATH = BASE_PATH + "/files";
     }
 
     public static class Tag {
@@ -66,5 +68,7 @@ public class Constants {
         public static final String MEMORANDUM = "Memorandum";
 
         public static final String VACATION = "Vacation";
+
+        public static final String FILE = "File";
     }
 }

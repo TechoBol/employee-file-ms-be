@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.data.domain.Auditable;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Getter
 @Entity
 @Table(name = Constants.File.NAME)
-public class File {
+public class File extends Audit {
 
     @Id
     @GeneratedValue
@@ -23,19 +24,11 @@ public class File {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    private List<UnitFile> personalInfo;
+    private List<UnitFile> sections;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    private List<UnitFile> salary;
-
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    private List<UnitFile> memos;
-
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    private List<UnitFile> others;
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "employee_id", unique = true)
+    private Employee employee;
 
     @Column(name = "company_id", nullable = false)
     private UUID companyId;

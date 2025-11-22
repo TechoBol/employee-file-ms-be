@@ -27,5 +27,10 @@ public class Constants {
         public static final String ADVANCE_NOT_FOUND = "Advance with id {advanceId} not found";
         public static final String ADVANCE_EMPLOYEE_NOT_NULL = "The employee of the advance cannot be null";
         public static final String ADVANCE_PAYMENT_EXCEED = "The advance payment cannot exceed the base salary.";
+        public static final String FILE_DELETE_EXCEPTION = "Error deleting file {uuidFileName}, error: {error}";
+        public static final String FILE_EMPTY_EXCEPTION = "File {fileName} is empty";
+        public static final String NO_FILES_PROVIDED_EXCEPTION = "At least one file must be provided.";
+        public static final String FILE_SECTION_MISMATCH_EXCEPTION = "The number of files ({fileCount}) does not match the number of sections ({sectionCount}).";
+        public static final String FILE_NOT_FOUND = "File of employee {employeeId} not found.}";
     }
 }
