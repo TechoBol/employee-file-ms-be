@@ -61,16 +61,20 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
         GeneralSettingsResponse generalSettings = findGeneralSettings();
         Employee employee = findEmployee();
         BaseSalary salary = employee.getBaseSalary();
-        int seniority = getSeniority(employee);
 
+        BigDecimal baseSalaryAmount = (salary != null && salary.getAmount() != null)
+                ? salary.getAmount()
+                : BigDecimal.ZERO;
+
+        int seniority = getSeniority(employee);
         int workedDays = calculateWorkedDays(employee);
         Integer workingDaysPerMonth = generalSettings.getWorkingDaysPerMonth();
 
         // Sueldo básico = (haber básico * días trabajados) / días del mes
-        BigDecimal basicEarnings = calculateBasicEarnings(salary.getAmount(), workedDays, workingDaysPerMonth);
+        BigDecimal basicEarnings = calculateBasicEarnings(baseSalaryAmount, workedDays, workingDaysPerMonth);
 
-        BigDecimal seniorityBonus = calculateSeniorityBonus(salary.getAmount(), seniority, generalSettings.getSeniorityIncreasePercentage());
-        BigDecimal afpContribution = calculateAfpContribution(salary.getAmount(), generalSettings.getContributionAfpPercentage());
+        BigDecimal seniorityBonus = calculateSeniorityBonus(baseSalaryAmount, seniority, generalSettings.getSeniorityIncreasePercentage());
+        BigDecimal afpContribution = calculateAfpContribution(baseSalaryAmount, generalSettings.getContributionAfpPercentage());
 
         List<Absence> absences = findAbsenceByEmployeeId();
         Map<AbsenceType, List<Absence>> absencesByType = absences.stream()
@@ -145,7 +149,7 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
                 .subtract(totalDeductions);
 
         payrollResponse = new PayrollResponse();
-        payrollResponse.setBaseSalary(salary.getAmount()); // Haber básico
+        payrollResponse.setBaseSalary(baseSalaryAmount); // Haber básico
         payrollResponse.setWorkedDays(workedDays);
         payrollResponse.setWorkingDaysPerMonth(workingDaysPerMonth);
         payrollResponse.setBasicEarnings(basicEarnings); // Sueldo básico calculado
