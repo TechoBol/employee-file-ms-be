@@ -31,6 +31,6 @@ public class Constants {
         public static final String FILE_EMPTY_EXCEPTION = "File {fileName} is empty";
         public static final String NO_FILES_PROVIDED_EXCEPTION = "At least one file must be provided.";
         public static final String FILE_SECTION_MISMATCH_EXCEPTION = "The number of files ({fileCount}) does not match the number of sections ({sectionCount}).";
-        public static final String FILE_NOT_FOUND = "File of employee {employeeId} not found.}";
+        public static final String FILE_NOT_FOUND = "File of employee {employeeId} not found.";
     }
 }
