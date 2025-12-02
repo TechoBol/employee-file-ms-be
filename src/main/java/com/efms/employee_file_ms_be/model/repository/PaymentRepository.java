@@ -40,4 +40,7 @@ public interface PaymentRepository extends JpaRepository<Payment, UUID> {
             Integer period,
             Pageable pageable
     );
+
+    @EntityGraph(attributePaths = {"employee"})
+    List<Payment> findAllByCompanyIdAndPeriod(UUID companyId, Integer period);
 }

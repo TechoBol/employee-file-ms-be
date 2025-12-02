@@ -74,7 +74,9 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
         BigDecimal basicEarnings = calculateBasicEarnings(baseSalaryAmount, workedDays, workingDaysPerMonth);
 
         BigDecimal seniorityBonus = calculateSeniorityBonus(baseSalaryAmount, seniority, generalSettings.getSeniorityIncreasePercentage());
-        BigDecimal afpContribution = calculateAfpContribution(baseSalaryAmount, generalSettings.getContributionAfpPercentage());
+        BigDecimal afpContribution = employee.getType() == EmployeeType.CONSULTANT
+                ? BigDecimal.ZERO
+                : calculateAfpContribution(baseSalaryAmount, generalSettings.getContributionAfpPercentage());
 
         List<Absence> absences = findAbsenceByEmployeeId();
         Map<AbsenceType, List<Absence>> absencesByType = absences.stream()

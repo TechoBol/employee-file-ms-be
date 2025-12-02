@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,6 +21,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 
     @EntityGraph(attributePaths = {"position", "position.department", "branch"})
     Page<Employee> findAllByCompanyId(UUID companyId, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"position", "position.department", "branch"})
+    List<Employee> findAllByCompanyId(UUID companyId);
 
     @Query("""
         SELECT e.id as id,
