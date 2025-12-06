@@ -49,6 +49,8 @@ public class EmployeeDeleteAllDisassociateCmd implements Command {
     }
 
     private void processDisassociatedEmployees(UUID companyId, LocalDateTime now) {
+        LocalDateTime deletionThreshold = now.minusDays(30);
+
         Pageable pageable = PageRequest.of(0, 100);
         Page<Employee> employeesPage;
         int totalProcessed = 0;
@@ -57,7 +59,7 @@ public class EmployeeDeleteAllDisassociateCmd implements Command {
             employeesPage = employeeRepository.findAllByCompanyIdAndIsDisassociatedAndDisassociatedAtBefore(
                     companyId,
                     true,
-                    now,
+                    deletionThreshold,
                     pageable
             );
 

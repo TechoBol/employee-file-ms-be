@@ -8,11 +8,33 @@ import java.time.LocalDate;
 public final class DateUtils {
 
     public static LocalDate getStartDateOrDefault(LocalDate startDate) {
-        return startDate != null ? startDate : LocalDate.now().withDayOfMonth(1);
+        if (startDate != null) {
+            return startDate;
+        }
+
+        LocalDate today = LocalDate.now();
+
+        if (today.getDayOfMonth() <= 6) {
+            return today.minusMonths(1).withDayOfMonth(1);
+        }
+
+        return today.withDayOfMonth(1);
     }
 
     public static LocalDate getEndDateOrDefault(LocalDate endDate) {
-        return endDate != null ? endDate : LocalDate.now();
+        if (endDate != null) {
+            return endDate;
+        }
+
+        LocalDate today = LocalDate.now();
+
+        if (today.getDayOfMonth() <= 6) {
+            return today.minusMonths(1).withDayOfMonth(
+                    today.minusMonths(1).lengthOfMonth()
+            );
+        }
+
+        return today;
     }
 
     public static LocalDate[] resolveDateRange(LocalDate startDate, LocalDate endDate) {
