@@ -43,6 +43,8 @@ public class EmployeeMapper implements CustomMapper<EmployeeResponse, EmployeeCr
                 .branchName(employee.getBranch().getName())
                 .isDisassociated(employee.getIsDisassociated())
                 .disassociatedAt(employee.getDisassociatedAt())
+                .disassociationDate(employee.getDisassociationDate())
+                .disassociationReason(employee.getDisassociationReason())
                 .build();
     }
 

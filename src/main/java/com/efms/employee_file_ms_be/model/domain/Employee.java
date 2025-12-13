@@ -78,6 +78,12 @@ public class Employee extends Audit {
     @Column
     private LocalDateTime disassociatedAt;
 
+    @Column
+    private LocalDate disassociationDate;
+
+    @Column(length = 800)
+    private String disassociationReason;
+
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private BaseSalary baseSalary;

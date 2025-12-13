@@ -40,6 +40,8 @@ public class EmployeeAssociateCmd implements Command {
 
         employee.setIsDisassociated(false);
         employee.setDisassociatedAt(null);
+        employee.setDisassociationDate(null);
+        employee.setDisassociationReason(null);
         employee.setStatus(EmployeeStatus.ACTIVE);
 
         employee = repository.save(employee);

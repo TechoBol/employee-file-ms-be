@@ -67,13 +67,13 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
                 : BigDecimal.ZERO;
 
         int seniority = getSeniority(employee);
-        int workedDays = calculateWorkedDays(employee);
+        int workedDays = Math.min(calculateWorkedDays(employee), generalSettings.getWorkingDaysPerMonth());
         Integer workingDaysPerMonth = generalSettings.getWorkingDaysPerMonth();
 
-        // Sueldo básico = (haber básico * días trabajados) / días del mes
         BigDecimal basicEarnings = calculateBasicEarnings(baseSalaryAmount, workedDays, workingDaysPerMonth);
 
-        BigDecimal seniorityBonus = calculateSeniorityBonus(baseSalaryAmount, seniority, generalSettings.getSeniorityIncreasePercentage());
+        BigDecimal seniorityPercentage = getSeniorityPercentage(seniority);
+        BigDecimal seniorityBonus = calculateSeniorityBonus(baseSalaryAmount, seniorityPercentage);
         BigDecimal afpContribution = employee.getType() == EmployeeType.CONSULTANT
                 ? BigDecimal.ZERO
                 : calculateAfpContribution(baseSalaryAmount, generalSettings.getContributionAfpPercentage());
@@ -114,13 +114,11 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
             deductions.add(advanceDeduction);
         }
 
-        // Otros bonos (bonos manuales)
         BigDecimal otherBonuses = manualSalaryEvents.stream()
                 .filter(se -> se.getType() == SalaryEventType.BONUS)
                 .map(SalaryEvent::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // Total de bonos (antigüedad + otros)
         BigDecimal totalBonuses = seniorityBonus.add(otherBonuses);
 
         BigDecimal manualDeductions = manualSalaryEvents.stream()
@@ -140,42 +138,41 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
 
         BigDecimal totalDeductions = deductions.stream()
                 .map(PayrollDeductionResponse::getTotalDeduction)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .add(afpContribution);
 
-        // Total ganado = sueldo básico + total de bonos
         BigDecimal totalEarnings = basicEarnings.add(totalBonuses);
 
-        // Líquido pagable = total ganado - AFP - total descuentos
-        BigDecimal netAmount = totalEarnings
-                .subtract(afpContribution)
-                .subtract(totalDeductions);
+        BigDecimal netAmount = totalEarnings.subtract(totalDeductions);
 
         payrollResponse = new PayrollResponse();
-        payrollResponse.setBaseSalary(baseSalaryAmount); // Haber básico
+        payrollResponse.setBaseSalary(baseSalaryAmount);
         payrollResponse.setWorkedDays(workedDays);
         payrollResponse.setWorkingDaysPerMonth(workingDaysPerMonth);
-        payrollResponse.setBasicEarnings(basicEarnings); // Sueldo básico calculado
+        payrollResponse.setBasicEarnings(basicEarnings);
         payrollResponse.setSeniorityYears(seniority);
-        payrollResponse.setSeniorityIncreasePercentage(generalSettings.getSeniorityIncreasePercentage());
+        payrollResponse.setSeniorityIncreasePercentage(seniorityPercentage);
         payrollResponse.setSeniorityBonus(seniorityBonus);
-        payrollResponse.setOtherBonuses(otherBonuses); // Otros bonos (manuales)
-        payrollResponse.setTotalBonuses(totalBonuses); // Total de bonos
-        payrollResponse.setTotalEarnings(totalEarnings); // Total ganado
+        payrollResponse.setOtherBonuses(otherBonuses);
+        payrollResponse.setTotalBonuses(totalBonuses);
+        payrollResponse.setTotalEarnings(totalEarnings);
         payrollResponse.setDeductionAfpPercentage(generalSettings.getContributionAfpPercentage());
         payrollResponse.setDeductionAfp(afpContribution);
         payrollResponse.setDeductions(deductions);
         payrollResponse.setTotalDeductions(totalDeductions);
-        payrollResponse.setNetAmount(netAmount); // Líquido pagable
+        payrollResponse.setNetAmount(netAmount);
     }
 
     private int calculateWorkedDays(Employee employee) {
         LocalDate effectiveStartDate = startDate;
         LocalDate effectiveEndDate = endDate;
 
+        // Si el empleado fue contratado después del inicio del período
         if (employee.getHireDate().isAfter(effectiveStartDate)) {
             effectiveStartDate = employee.getHireDate();
         }
 
+        // Si el empleado fue eliminado antes del fin del período
         if (employee.getStatus() == EmployeeStatus.DELETED && employee.getDeletedAt() != null) {
             LocalDate deletedDate = employee.getDeletedAt().toLocalDate();
             if (deletedDate.isBefore(effectiveEndDate)) {
@@ -183,6 +180,13 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
             }
         }
 
+        // NUEVO: Asegurar que no se cuenten días fuera del período de consulta
+        LocalDate today = LocalDate.now();
+        if (effectiveEndDate.isAfter(today)) {
+            effectiveEndDate = today;
+        }
+
+        // Si las fechas son inválidas, retornar 0
         if (effectiveStartDate.isAfter(effectiveEndDate)) {
             return 0;
         }
@@ -199,18 +203,25 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
                 .divide(BigDecimal.valueOf(workingDaysPerMonth), 2, RoundingMode.HALF_UP);
     }
 
-    private BigDecimal calculateSeniorityBonus(BigDecimal baseSalaryAmount, int seniority, BigDecimal seniorityIncreasePercentage) {
-        if (seniority <= 0) {
+    private BigDecimal getSeniorityPercentage(int seniority) {
+        if (seniority >= 2 && seniority <= 4) {
+            return new BigDecimal("5");
+        } else if (seniority >= 5 && seniority <= 7) {
+            return new BigDecimal("11");
+        } else if (seniority >= 8 && seniority <= 10) {
+            return new BigDecimal("18");
+        } else if (seniority > 10) {
+            return new BigDecimal("18");
+        }
+        return BigDecimal.ZERO;
+    }
+
+    private BigDecimal calculateSeniorityBonus(BigDecimal baseSalary, BigDecimal percentage) {
+        if (percentage.compareTo(BigDecimal.ZERO) == 0) {
             return BigDecimal.ZERO;
         }
-
-        BigDecimal bonusRate = seniorityIncreasePercentage
-                .divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP)
-                .multiply(BigDecimal.valueOf(seniority));
-
-        return baseSalaryAmount
-                .multiply(bonusRate)
-                .setScale(2, RoundingMode.HALF_UP);
+        return baseSalary.multiply(percentage)
+                .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
     }
 
     private BigDecimal calculateAfpContribution(BigDecimal baseSalary, BigDecimal afpContributionPercentage) {

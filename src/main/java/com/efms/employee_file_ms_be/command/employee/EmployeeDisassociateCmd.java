@@ -1,8 +1,10 @@
 package com.efms.employee_file_ms_be.command.employee;
 
+import com.efms.employee_file_ms_be.api.request.EmployeeUpdateRequest;
 import com.efms.employee_file_ms_be.api.response.EmployeeResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
+import com.efms.employee_file_ms_be.command.core.CommandFactory;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.EmployeeNotFoundException;
 import com.efms.employee_file_ms_be.model.domain.Employee;
@@ -15,6 +17,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -28,12 +31,17 @@ public class EmployeeDisassociateCmd implements Command {
     @Setter
     private String id;
 
+    @Setter
+    private EmployeeUpdateRequest employeeUpdateRequest;
+
     @Getter
     private EmployeeResponse employeeResponse;
 
     private final EmployeeRepository repository;
 
     private final EmployeeMapper mapper;
+
+    private final CommandFactory factory;
 
     @Override
     public void execute() {
@@ -46,6 +54,9 @@ public class EmployeeDisassociateCmd implements Command {
         employee.setIsDisassociated(true);
         employee.setDisassociatedAt(LocalDateTime.now());
         employee.setStatus(EmployeeStatus.INACTIVE);
+
+        Optional.ofNullable(employeeUpdateRequest.getDisassociationDate()).ifPresent(employee::setDisassociationDate);
+        Optional.ofNullable(employeeUpdateRequest.getDisassociationReason()).ifPresent(employee::setDisassociationReason);
 
         employee = repository.save(employee);
         employeeResponse = mapper.toDTO(employee);

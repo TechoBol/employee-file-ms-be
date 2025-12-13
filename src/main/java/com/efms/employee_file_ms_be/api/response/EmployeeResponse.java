@@ -30,4 +30,6 @@ public class EmployeeResponse {
     private String branchName;
     private Boolean isDisassociated;
     private LocalDateTime disassociatedAt;
+    private LocalDate disassociationDate;
+    private String disassociationReason;
 }

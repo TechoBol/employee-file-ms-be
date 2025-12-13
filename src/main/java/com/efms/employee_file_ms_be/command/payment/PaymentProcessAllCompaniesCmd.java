@@ -168,7 +168,6 @@ public class PaymentProcessAllCompaniesCmd implements Command {
     }
 
     private Page<PayrollEmployeeResponse> fetchPayrollPage(UUID companyId, Pageable pageable) {
-        // Assuming you have a way to filter by company, adjust as needed
         PayrollCalculateByPageableCmd cmd = commandFactory.createCommand(PayrollCalculateByPageableCmd.class);
         cmd.setPageable(pageable);
         cmd.setPeriod(period);

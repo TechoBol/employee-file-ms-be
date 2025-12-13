@@ -14,7 +14,7 @@ public final class DateUtils {
 
         LocalDate today = LocalDate.now();
 
-        if (today.getDayOfMonth() <= 6) {
+        if (today.getDayOfMonth() <= 15) {
             return today.minusMonths(1).withDayOfMonth(1);
         }
 
@@ -28,13 +28,13 @@ public final class DateUtils {
 
         LocalDate today = LocalDate.now();
 
-        if (today.getDayOfMonth() <= 6) {
+        if (today.getDayOfMonth() <= 15) {
             return today.minusMonths(1).withDayOfMonth(
                     today.minusMonths(1).lengthOfMonth()
             );
         }
 
-        return today;
+        return today.withDayOfMonth(today.lengthOfMonth());
     }
 
     public static LocalDate[] resolveDateRange(LocalDate startDate, LocalDate endDate) {

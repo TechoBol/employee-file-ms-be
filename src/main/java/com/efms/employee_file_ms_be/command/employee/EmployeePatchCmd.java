@@ -61,5 +61,7 @@ public class EmployeePatchCmd implements Command {
             position.setId(UUID.fromString(positionId));
             employee.setPosition(position);
         });
+        Optional.ofNullable(employeeUpdateRequest.getDisassociationDate()).ifPresent(employee::setDisassociationDate);
+        Optional.ofNullable(employeeUpdateRequest.getDisassociationReason()).ifPresent(employee::setDisassociationReason);
     }
 }

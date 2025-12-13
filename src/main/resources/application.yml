@@ -36,7 +36,7 @@ efms:
   scheduler:
     payment:
       process:
-        # Runs on the 5th of each month at 23:00
+        # Runs on the 14th of each month at 23:00
         cron: ${PAYMENT_PROCESS_CRON:0 0 23 14 * ?}
       auto-process: ${PAYMENT_AUTO_PROCESS:true}
       allow-reprocess: ${PAYMENT_ALLOW_REPROCESS:false}

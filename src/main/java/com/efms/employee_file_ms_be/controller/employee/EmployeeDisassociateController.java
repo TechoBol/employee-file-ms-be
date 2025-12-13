@@ -1,16 +1,15 @@
 package com.efms.employee_file_ms_be.controller.employee;
 
+import com.efms.employee_file_ms_be.api.request.EmployeeUpdateRequest;
 import com.efms.employee_file_ms_be.api.response.EmployeeResponse;
 import com.efms.employee_file_ms_be.command.employee.EmployeeDisassociateCmd;
 import com.efms.employee_file_ms_be.controller.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Josue Veliz
@@ -25,8 +24,10 @@ public class EmployeeDisassociateController {
 
     @PatchMapping("/{id}/disassociate")
     @Operation(summary = "Disassociate an Employee")
-    public ResponseEntity<EmployeeResponse> disassociate(@PathVariable String id) {
+    public ResponseEntity<EmployeeResponse> disassociate(@PathVariable String id,
+                                                         @Valid @RequestBody EmployeeUpdateRequest request) {
         command.setId(id);
+        command.setEmployeeUpdateRequest(request);
         command.execute();
 
         return ResponseEntity.ok(command.getEmployeeResponse());
