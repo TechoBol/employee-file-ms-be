@@ -24,6 +24,8 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.efms.employee_file_ms_be.command.Constants.MAX_DAYS_TO_EDIT;
+
 /**
  * @author Josue Veliz
  */
@@ -69,7 +71,7 @@ public class AbsencePatchCmd implements Command {
 
         LocalDate lastDayOfAbsenceMonth = absenceDate.withDayOfMonth(absenceDate.lengthOfMonth());
 
-        LocalDate fifthDayOfNextMonth = lastDayOfAbsenceMonth.plusDays(5);
+        LocalDate fifthDayOfNextMonth = lastDayOfAbsenceMonth.plusDays(MAX_DAYS_TO_EDIT);
 
         if (now.isAfter(fifthDayOfNextMonth)) {
             throw new RecordEditNotAllowedException();

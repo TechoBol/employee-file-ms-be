@@ -11,7 +11,7 @@ public class Constants {
         public static final String END_DATE_BEFORE_DATE = "End date cannot be earlier than start date.";
         public static final String ABSENCE_NOT_FOUND = "Absence with id {absenceId} not found.";
         public static final String VACATIONS_FULL_DAY = "Multi-day vacations must be full-day.";
-        public static final String RECORD_EDIT_NOT_ALLOWED = "The record cannot be edited. Editing is only allowed during the registration month or until the 5th day of the following month.";
+        public static final String RECORD_EDIT_NOT_ALLOWED = "The record cannot be edited. Editing is only allowed during the registration month or until the 15th day of the following month.";
         public static final String BASE_SALARY_NOT_FOUND = "Base salary with id {baseSalaryId} not found";
         public static final String BRANCH_NOT_FOUND = "Branch with id {branchId} not found";
         public static final String COMPANY_NOT_FOUND = "Company with id {companyId} not found";

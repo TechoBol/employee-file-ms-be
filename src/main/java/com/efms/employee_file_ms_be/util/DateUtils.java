@@ -2,6 +2,8 @@ package com.efms.employee_file_ms_be.util;
 
 import java.time.LocalDate;
 
+import static com.efms.employee_file_ms_be.command.Constants.MAX_DAYS_TO_EDIT;
+
 /**
  * @author Josue Veliz
  */
@@ -53,7 +55,7 @@ public final class DateUtils {
             return true;
         }
 
-        if (now.getDayOfMonth() <= 5) {
+        if (now.getDayOfMonth() <= MAX_DAYS_TO_EDIT) {
             return !start.isAfter(lastMonthEnd) && !end.isBefore(lastMonthStart);
         }
 

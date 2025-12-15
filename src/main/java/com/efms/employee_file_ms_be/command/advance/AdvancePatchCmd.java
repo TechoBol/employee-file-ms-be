@@ -24,6 +24,8 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.efms.employee_file_ms_be.command.Constants.MAX_DAYS_TO_EDIT;
+
 /**
  * @author Josue Veliz
  */
@@ -70,7 +72,7 @@ public class AdvancePatchCmd implements Command {
 
         LocalDate lastDayOfAdvanceMonth = advanceDate.withDayOfMonth(advanceDate.lengthOfMonth());
 
-        LocalDate fifthDayOfNextMonth = lastDayOfAdvanceMonth.plusDays(5);
+        LocalDate fifthDayOfNextMonth = lastDayOfAdvanceMonth.plusDays(MAX_DAYS_TO_EDIT);
 
         if (now.isAfter(fifthDayOfNextMonth)) {
             throw new RecordEditNotAllowedException();
