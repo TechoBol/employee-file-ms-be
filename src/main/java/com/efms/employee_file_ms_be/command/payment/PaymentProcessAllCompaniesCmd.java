@@ -14,10 +14,7 @@ import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
 import com.efms.employee_file_ms_be.command.payroll.PayrollCalculateByPageableCmd;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventProcessCmd;
-import com.efms.employee_file_ms_be.model.domain.Employee;
-import com.efms.employee_file_ms_be.model.domain.Payment;
-import com.efms.employee_file_ms_be.model.domain.PaymentDeduction;
-import com.efms.employee_file_ms_be.model.domain.PaymentDetails;
+import com.efms.employee_file_ms_be.model.domain.*;
 import com.efms.employee_file_ms_be.model.repository.EmployeeRepository;
 import com.efms.employee_file_ms_be.model.repository.PaymentRepository;
 import jakarta.transaction.Transactional;
@@ -142,21 +139,21 @@ public class PaymentProcessAllCompaniesCmd implements Command {
             // Process advances
             AdvanceProcessCmd advanceCmd = commandFactory.createCommand(AdvanceProcessCmd.class);
             advanceCmd.setCompanyId(companyId);
-            advanceCmd.setPageable(Pageable.unpaged());
+            advanceCmd.setPeriod(period);
             advanceCmd.execute();
             result.setProcessedAdvances(advanceCmd.getProcessedList().size());
 
             // Process absences
             AbsenceProcessCmd absenceCmd = commandFactory.createCommand(AbsenceProcessCmd.class);
             absenceCmd.setCompanyId(companyId);
-            absenceCmd.setPageable(Pageable.unpaged());
+            absenceCmd.setPeriod(period);
             absenceCmd.execute();
             result.setProcessedAbsences(absenceCmd.getProcessedList().size());
 
             // Process salary events
             SalaryEventProcessCmd eventCmd = commandFactory.createCommand(SalaryEventProcessCmd.class);
             eventCmd.setCompanyId(companyId);
-            eventCmd.setPageable(Pageable.unpaged());
+            eventCmd.setPeriod(period);
             eventCmd.execute();
             result.setProcessedEvents(eventCmd.getProcessedList().size());
 
@@ -209,7 +206,8 @@ public class PaymentProcessAllCompaniesCmd implements Command {
 
         // Set employee relationship
         Employee employee = employeeRepository.getReferenceById(UUID.fromString(payrollEmployee.getEmployee().getId()));
-        payment.setEmployee(employee);
+        payment.setEmployeeDetails(buildEmployeeDetails(employee));
+        payment.setEmployeeId(employee.getId());
 
         // Map payroll details to payment details
         PaymentDetails details = mapToPaymentDetails(payrollEmployee.getPayroll());
@@ -287,5 +285,29 @@ public class PaymentProcessAllCompaniesCmd implements Command {
                         result.getCompanyName(), result.getFailedPayments(), result.getTotalEmployees());
             }
         });
+    }
+
+    private EmployeeDetails buildEmployeeDetails(Employee employee){
+        EmployeeDetails employeeDetails = new EmployeeDetails();
+        employeeDetails.setId(employee.getId());
+        employeeDetails.setFirstName(employee.getFirstName());
+        employeeDetails.setLastName(employee.getLastName());
+        employeeDetails.setCi(employee.getCi());
+        employeeDetails.setEmail(employee.getEmail());
+        employeeDetails.setPhone(employee.getPhone());
+        employeeDetails.setAddress(employee.getAddress());
+        employeeDetails.setBirthDate(employee.getBirthDate());
+        employeeDetails.setHireDate(employee.getHireDate());
+        employeeDetails.setStatus(employee.getStatus());
+        employeeDetails.setType(employee.getType());
+        employeeDetails.setIsDeleted(employee.getIsDeleted());
+        employeeDetails.setDeletedAt(employee.getDeletedAt());
+        employeeDetails.setIsDisassociated(employee.getIsDisassociated());
+        employeeDetails.setDisassociationDate(employee.getDisassociationDate());
+        employeeDetails.setDisassociationReason(employee.getDisassociationReason());
+        employeeDetails.setBranchId(employee.getBranch().getId());
+        employeeDetails.setPositionId(employee.getPosition().getId());
+        employeeDetails.setCompanyId(employee.getCompanyId());
+        return employeeDetails;
     }
 }

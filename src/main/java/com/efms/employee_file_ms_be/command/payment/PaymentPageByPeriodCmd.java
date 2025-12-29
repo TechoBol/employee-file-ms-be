@@ -56,7 +56,7 @@ public class PaymentPageByPeriodCmd implements Command {
 
     private PaymentEmployeeResponse toPaymentEmployeeResponse(Payment payment) {
         PaymentEmployeeResponse paymentEmployeeResponse = new PaymentEmployeeResponse();
-        paymentEmployeeResponse.setEmployee(employeeMapper.toDTO(payment.getEmployee()));
+        paymentEmployeeResponse.setEmployee(payment.getEmployeeDetails());
         paymentEmployeeResponse.setPayment(mapper.toDTO(payment));
         return paymentEmployeeResponse;
     }

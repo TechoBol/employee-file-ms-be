@@ -10,11 +10,13 @@ import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+
+import static com.efms.employee_file_ms_be.util.DateUtils.getStartDateFromPeriod;
+import static com.efms.employee_file_ms_be.util.DateUtils.getEndDateFromPeriod;
 
 @CommandExecute
 @RequiredArgsConstructor
@@ -24,7 +26,7 @@ public class AdvanceProcessCmd implements Command {
     private UUID companyId;
 
     @Setter
-    private Pageable pageable;
+    private Integer period;
 
     @Getter
     private List<ProcessedData> processedList;
@@ -34,17 +36,19 @@ public class AdvanceProcessCmd implements Command {
     @Override
     @Transactional
     public void execute() {
-        Page<Advance> page = repository.findAllByCompanyId(companyId, null, pageable);
+        LocalDate startDate = getStartDateFromPeriod(period);
+        LocalDate endDate = getEndDateFromPeriod(period);
+        List<Advance> advances = repository.findByCompanyInDateRange(companyId, PayrollStatus.OPEN, startDate, endDate);
 
-        if (page.isEmpty()) {
+        if (advances.isEmpty()) {
             processedList = List.of();
             return;
         }
 
-        page.getContent().forEach(advance -> advance.setStatus(PayrollStatus.PROCESSED));
-        repository.saveAll(page.getContent());
+        advances.forEach(advance -> advance.setStatus(PayrollStatus.PROCESSED));
+        repository.saveAll(advances);
 
-        processedList = page.getContent().stream().map(advance -> {
+        processedList = advances.stream().map(advance -> {
             ProcessedData dto = new ProcessedData();
             dto.setId(advance.getId());
             dto.setEmployeeId(advance.getEmployee().getId());

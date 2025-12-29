@@ -53,7 +53,8 @@ public class AbsenceListByEmployeeIdCmd implements Command {
 
         PayrollStatus statusToUse = shouldSearchIgnoringStatus(startDate, endDate)
                 ? PayrollStatus.OPEN
-                : PayrollStatus.PROCESSED;
+                : null;
+        // use PayrollStatus.PROCESSED instead of null if you want to ignore.
 
         absenceList = absenceRepository.findByEmployeeAndCompanyInDateRange(
                 employeeUUID,
@@ -63,8 +64,11 @@ public class AbsenceListByEmployeeIdCmd implements Command {
                 endDate
         );
 
+        boolean isProcessed = statusToUse == null;
+
         absenceResponseList = absenceList.stream()
                 .map(absenceMapper::toDTO)
+                .peek(absenceResponse -> absenceResponse.setProcessed(isProcessed))
                 .toList();
     }
 }

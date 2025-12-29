@@ -10,11 +10,13 @@ import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+
+import static com.efms.employee_file_ms_be.util.DateUtils.getEndDateFromPeriod;
+import static com.efms.employee_file_ms_be.util.DateUtils.getStartDateFromPeriod;
 
 @CommandExecute
 @RequiredArgsConstructor
@@ -24,7 +26,7 @@ public class AbsenceProcessCmd implements Command {
     private UUID companyId;
 
     @Setter
-    private Pageable pageable;
+    private Integer period;
 
     @Getter
     private List<ProcessedData> processedList;
@@ -34,17 +36,19 @@ public class AbsenceProcessCmd implements Command {
     @Override
     @Transactional
     public void execute() {
-        Page<Absence> page = repository.findAllByCompanyId(companyId, null, pageable);
+        LocalDate startDate = getStartDateFromPeriod(period);
+        LocalDate endDate = getEndDateFromPeriod(period);
+        List<Absence> absences = repository.findByCompanyInDateRange(companyId, PayrollStatus.OPEN, startDate, endDate);
 
-        if (page.isEmpty()) {
+        if (absences.isEmpty()) {
             processedList = List.of();
             return;
         }
 
-        page.getContent().forEach(absence -> absence.setStatus(PayrollStatus.PROCESSED));
-        repository.saveAll(page.getContent());
+        absences.forEach(absence -> absence.setStatus(PayrollStatus.PROCESSED));
+        repository.saveAll(absences);
 
-        processedList = page.getContent().stream().map(absence -> {
+        processedList = absences.stream().map(absence -> {
             ProcessedData dto = new ProcessedData();
             dto.setId(absence.getId());
             dto.setEmployeeId(absence.getEmployee().getId());

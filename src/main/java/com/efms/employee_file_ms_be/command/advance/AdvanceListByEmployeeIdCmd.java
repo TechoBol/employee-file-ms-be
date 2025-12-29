@@ -51,7 +51,11 @@ public class AdvanceListByEmployeeIdCmd implements Command {
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
         UUID employeeUUID = UUID.fromString(employeeId);
 
-        PayrollStatus statusToUse = shouldSearchIgnoringStatus(startDate, endDate) ? PayrollStatus.OPEN : PayrollStatus.PROCESSED;
+
+        PayrollStatus statusToUse = shouldSearchIgnoringStatus(startDate, endDate)
+                ? PayrollStatus.OPEN
+                : null;
+        // use PayrollStatus.PROCESSED instead of null if you want to ignore.
 
         advanceList = repository.findByEmployeeAndCompanyInDateRange(
                 employeeUUID,
@@ -61,8 +65,11 @@ public class AdvanceListByEmployeeIdCmd implements Command {
                 endDate
         );
 
+        boolean isProcessed = statusToUse == null;
+
         advanceResponseList = advanceList.stream()
                 .map(mapper::toDTO)
+                .peek(advanceResponse -> advanceResponse.setProcessed(isProcessed))
                 .toList();
     }
 }

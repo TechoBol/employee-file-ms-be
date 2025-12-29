@@ -6,19 +6,14 @@ import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
 import com.efms.employee_file_ms_be.config.TenantContext;
-import com.efms.employee_file_ms_be.model.domain.Payment;
 import com.efms.employee_file_ms_be.model.repository.PaymentRepository;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @CommandExecute
@@ -39,7 +34,7 @@ public class PaymentReprocessCmd implements Command {
 
     @Override
     public void execute() {
-        UUID companyId = UUID.fromString(TenantContext.getTenantId());
+        companyId = UUID.fromString(TenantContext.getTenantId());
         log.info("=== Starting payment reprocessing - Period: {}, CompanyId: {} ===",
                 period, companyId);
 
@@ -99,46 +94,20 @@ public class PaymentReprocessCmd implements Command {
 
     private long countExistingPayments() {
         if (companyId != null) {
-            return paymentRepository.findAllByCompanyIdAndEmployeeIdAndPeriod(
-                    companyId, null, period).size();
+            return paymentRepository.countByCompanyIdAndPeriod(companyId, period);
         } else {
             return paymentRepository.countByPeriod(period);
         }
     }
 
     private void deleteByCompanyAndPeriod(UUID companyId, Integer period) {
-        Pageable pageable = PageRequest.of(0, 100);
-        Page<Payment> page;
-
-        do {
-            page = paymentRepository.findAllByCompanyIdAndPeriod(companyId, period, pageable);
-            if (!page.isEmpty()) {
-                paymentRepository.deleteAll(page.getContent());
-                log.debug("Deleted batch of {} payments", page.getNumberOfElements());
-            }
-            pageable = pageable.next();
-        } while (page.hasNext());
+        int paymentsDeleted = paymentRepository.deleteByCompanyIdAndPeriod(companyId, period);
+        log.debug("Deleted batch of {} payments", paymentsDeleted);
     }
 
     private void deleteByPeriod(Integer period) {
-        Pageable pageable = PageRequest.of(0, 100);
-        Page<Payment> page;
-
-        do {
-            List<Payment> payments = paymentRepository.findAll().stream()
-                    .filter(p -> p.getPeriod().equals(period))
-                    .limit(100)
-                    .toList();
-
-            if (!payments.isEmpty()) {
-                paymentRepository.deleteAll(payments);
-                log.debug("Deleted batch of {} payments", payments.size());
-            }
-
-            long remaining = paymentRepository.countByPeriod(period);
-            if (remaining == 0) break;
-
-        } while (true);
+        int paymentsDeleted = paymentRepository.deleteByPeriod(period);
+        log.debug("Deleted batch of {} payments", paymentsDeleted);
     }
 
     private void reprocessPayments() {

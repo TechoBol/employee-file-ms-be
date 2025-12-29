@@ -89,9 +89,6 @@ public class Employee extends Audit {
     private BaseSalary baseSalary;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Payment> payments;
-
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Memorandum> memorandums;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

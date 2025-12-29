@@ -29,6 +29,7 @@ public class AbsenceResponse {
     private BigDecimal deductionAmount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private boolean processed = false;
 
     public int getTotalDays() {
         if (endDate == null) {
