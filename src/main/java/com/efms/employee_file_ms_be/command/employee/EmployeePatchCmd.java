@@ -81,6 +81,11 @@ public class EmployeePatchCmd implements Command {
             position.setId(UUID.fromString(positionId));
             employee.setPosition(position);
         });
+        Optional.ofNullable(employeeUpdateRequest.getBranchId()).ifPresent(branchId -> {
+            Branch branch = new Branch();
+            branch.setId(UUID.fromString(branchId));
+            employee.setBranch(branch);
+        });
         Optional.ofNullable(employeeUpdateRequest.getDisassociationDate()).ifPresent(employee::setDisassociationDate);
         Optional.ofNullable(employeeUpdateRequest.getDisassociationReason()).ifPresent(employee::setDisassociationReason);
     }
@@ -132,6 +137,13 @@ public class EmployeePatchCmd implements Command {
             String currentPositionId = employee.getPosition() != null ? employee.getPosition().getId().toString() : null;
             if (!request.getPositionId().equals(currentPositionId)) {
                 changes.put("positionId", createFieldChange("positionId", currentPositionId, request.getPositionId(), now));
+            }
+        }
+
+        if (request.getPositionId() != null) {
+            String currentBranchId = employee.getBranch() != null ? employee.getBranch().getId().toString() : null;
+            if (!request.getBranchId().equals(currentBranchId)) {
+                changes.put("branchId", createFieldChange("branchId", currentBranchId, request.getBranchId(), now));
             }
         }
 

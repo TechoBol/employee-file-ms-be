@@ -49,6 +49,8 @@ public class EmployeeReadByPageableCmd implements Command {
                     searchRequest.getEmail(),
                     searchRequest.getPhone(),
                     searchRequest.getType(),
+                    searchRequest.getStatus(),
+                    searchRequest.getIsDisassociated(),
                     searchRequest.getBranchId(),
                     searchRequest.getPositionId(),
                     companyId
@@ -71,6 +73,8 @@ public class EmployeeReadByPageableCmd implements Command {
                 || (searchRequest.getEmail() != null && !searchRequest.getEmail().isBlank())
                 || (searchRequest.getPhone() != null && !searchRequest.getPhone().isBlank())
                 || searchRequest.getType() != null
+                || searchRequest.getStatus() != null
+                || searchRequest.getIsDisassociated() != null
                 || searchRequest.getBranchId() != null
                 || searchRequest.getPositionId() != null;
     }

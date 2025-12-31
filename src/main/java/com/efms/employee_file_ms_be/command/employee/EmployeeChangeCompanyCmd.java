@@ -30,6 +30,9 @@ public class EmployeeChangeCompanyCmd implements Command {
     private UUID newCompanyId;
 
     @Setter
+    private String newCompanyName;
+
+    @Setter
     private String userName;
 
     @Setter
@@ -58,15 +61,14 @@ public class EmployeeChangeCompanyCmd implements Command {
         employee = repository.save(employee);
 
         String eventDescription = String.format(
-                "Company changed from %s to %s%s",
-                currentCompanyId,
-                newCompanyId,
-                reason != null ? ". Reason: " + reason : ""
+                "Cambio de Empresa a %s%s",
+                newCompanyName,
+                reason != null ? ". Razón: " + reason : ""
         );
 
         historyService.saveEmployeeHistoryAsync(
                 employee,
-                ChangeType.UPDATE,
+                ChangeType.COMPANY_CHANGE,
                 userName,
                 eventDescription
         );

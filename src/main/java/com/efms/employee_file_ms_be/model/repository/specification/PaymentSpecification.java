@@ -1,5 +1,6 @@
 package com.efms.employee_file_ms_be.model.repository.specification;
 
+import com.efms.employee_file_ms_be.model.domain.EmployeeStatus;
 import com.efms.employee_file_ms_be.model.domain.EmployeeType;
 import com.efms.employee_file_ms_be.model.domain.Payment;
 import jakarta.persistence.criteria.Expression;
@@ -18,6 +19,8 @@ public class PaymentSpecification {
             String email,
             String phone,
             EmployeeType type,
+            EmployeeStatus status,
+            Boolean isDisassociated,
             UUID branchId,
             UUID positionId,
             Integer period,
@@ -125,6 +128,28 @@ public class PaymentSpecification {
                 );
 
                 predicates.add(criteriaBuilder.equal(typeExpr, type.name()));
+            }
+
+            if (status != null) {
+                Expression<String> statusExpr = criteriaBuilder.function(
+                        "jsonb_extract_path_text",
+                        String.class,
+                        root.get("employeeDetails"),
+                        criteriaBuilder.literal("status")
+                );
+
+                predicates.add(criteriaBuilder.equal(statusExpr, status.name()));
+            }
+
+            if (isDisassociated != null) {
+                Expression<String> isDisassociatedExpr = criteriaBuilder.function(
+                        "jsonb_extract_path_text",
+                        String.class,
+                        root.get("employeeDetails"),
+                        criteriaBuilder.literal("isDisassociated")
+                );
+
+                predicates.add(criteriaBuilder.equal(isDisassociatedExpr, isDisassociated.toString()));
             }
 
             if (branchId != null) {

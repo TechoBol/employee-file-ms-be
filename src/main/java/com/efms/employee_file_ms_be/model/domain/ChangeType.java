@@ -11,4 +11,5 @@ public enum ChangeType {
     DISASSOCIATE,
     REACTIVATE,
     ASSOCIATE,
+    COMPANY_CHANGE,
 }

@@ -4,6 +4,7 @@ import com.efms.employee_file_ms_be.api.request.EmployeeSearchRequest;
 import com.efms.employee_file_ms_be.api.response.EmployeeResponse;
 import com.efms.employee_file_ms_be.command.employee.EmployeeReadByPageableCmd;
 import com.efms.employee_file_ms_be.controller.Constants;
+import com.efms.employee_file_ms_be.model.domain.EmployeeStatus;
 import com.efms.employee_file_ms_be.model.domain.EmployeeType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,6 +38,8 @@ public class EmployeeReadByPageableController {
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String phone,
             @RequestParam(required = false) EmployeeType type,
+            @RequestParam(required = false) EmployeeStatus status,
+            @RequestParam(required = false) Boolean isDisassociated,
             @RequestParam(required = false) UUID branchId,
             @RequestParam(required = false) UUID positionId,
             Pageable pageable
@@ -47,6 +50,8 @@ public class EmployeeReadByPageableController {
                 .email(email)
                 .phone(phone)
                 .type(type)
+                .status(status)
+                .isDisassociated(isDisassociated)
                 .branchId(branchId)
                 .positionId(positionId)
                 .pageable(pageable)

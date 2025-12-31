@@ -51,6 +51,8 @@ public class EmployeeSearchCmd implements Command {
                 searchRequest.getEmail(),
                 searchRequest.getPhone(),
                 searchRequest.getType(),
+                searchRequest.getStatus(),
+                searchRequest.getIsDisassociated(),
                 searchRequest.getBranchId(),
                 searchRequest.getPositionId(),
                 companyId

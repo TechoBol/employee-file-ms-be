@@ -32,6 +32,7 @@ public class EmployeeChangeCompanyController {
 
         command.setEmployeeId(employeeId);
         command.setNewCompanyId(request.getNewCompanyId());
+        command.setNewCompanyName(request.getNewCompanyName());
         command.setReason(request.getReason());
         command.setUserName(userName);
         command.execute();

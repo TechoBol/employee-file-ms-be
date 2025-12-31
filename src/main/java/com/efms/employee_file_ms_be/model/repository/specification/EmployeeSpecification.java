@@ -1,7 +1,9 @@
 package com.efms.employee_file_ms_be.model.repository.specification;
 
 import com.efms.employee_file_ms_be.model.domain.Employee;
+import com.efms.employee_file_ms_be.model.domain.EmployeeStatus;
 import com.efms.employee_file_ms_be.model.domain.EmployeeType;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -20,6 +22,8 @@ public class EmployeeSpecification {
             String email,
             String phone,
             EmployeeType type,
+            EmployeeStatus status,
+            Boolean isDisassociated,
             UUID branchId,
             UUID positionId,
             UUID companyId
@@ -78,6 +82,14 @@ public class EmployeeSpecification {
                 predicates.add(criteriaBuilder.equal(root.get("type"), type));
             }
 
+            if (status != null) {
+                predicates.add(criteriaBuilder.equal(root.get("status"), status));
+            }
+
+            if (isDisassociated != null) {
+                predicates.add(criteriaBuilder.equal(root.get("isDisassociated"), isDisassociated));
+            }
+
             if (branchId != null) {
                 predicates.add(criteriaBuilder.equal(root.get("branch").get("id"), branchId));
             }
@@ -87,8 +99,8 @@ public class EmployeeSpecification {
             }
 
             if (query != null) {
-                root.fetch("position").fetch("department");
-                root.fetch("branch");
+                root.fetch("position", JoinType.LEFT).fetch("department", JoinType.LEFT);
+                root.fetch("branch", JoinType.LEFT);
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

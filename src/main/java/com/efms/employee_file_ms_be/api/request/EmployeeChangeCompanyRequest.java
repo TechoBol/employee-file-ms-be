@@ -21,6 +21,9 @@ public class EmployeeChangeCompanyRequest {
     @NotNull(message = "New company ID is required")
     private UUID newCompanyId;
 
+    @NotNull
+    private String newCompanyName;
+
     @Size(max = 500, message = "Reason must not exceed 500 characters")
     private String reason;
 }
