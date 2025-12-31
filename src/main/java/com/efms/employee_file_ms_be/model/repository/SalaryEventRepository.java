@@ -58,7 +58,9 @@ public interface SalaryEventRepository extends JpaRepository<SalaryEvent, UUID> 
           AND s.companyId = :companyId
           AND (:status IS NULL OR s.status = :status)
           AND (:category IS NULL OR s.category = :category)
-          AND (s.startDate <= :endDate AND (s.endDate IS NULL OR s.endDate >= :startDate))
+          AND s.startDate <= :endDate
+          AND (s.endDate IS NULL AND s.startDate >= :startDate 
+               OR s.endDate IS NOT NULL AND s.endDate >= :startDate)
     """)
     List<SalaryEvent> findByEmployeeAndCompanyAndOptionalCategoryInDateRange(
             @Param("employeeId") UUID employeeId,

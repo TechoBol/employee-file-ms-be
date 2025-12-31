@@ -9,6 +9,10 @@ public class Constants {
         public static final String NAME = "employee";
     }
 
+    public static class EmployeeHistoryTable {
+        public static final String NAME = "employee_history";
+    }
+
     public static class BaseSalaryTable {
         public static final String NAME = "base_salary";
     }

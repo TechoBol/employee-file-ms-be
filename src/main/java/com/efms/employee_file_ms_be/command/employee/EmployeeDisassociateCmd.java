@@ -7,10 +7,12 @@ import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.EmployeeNotFoundException;
+import com.efms.employee_file_ms_be.model.domain.ChangeType;
 import com.efms.employee_file_ms_be.model.domain.Employee;
 import com.efms.employee_file_ms_be.model.domain.EmployeeStatus;
 import com.efms.employee_file_ms_be.model.mapper.employee.EmployeeMapper;
 import com.efms.employee_file_ms_be.model.repository.EmployeeRepository;
+import com.efms.employee_file_ms_be.service.EmployeeHistoryService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -34,6 +36,9 @@ public class EmployeeDisassociateCmd implements Command {
     @Setter
     private EmployeeUpdateRequest employeeUpdateRequest;
 
+    @Setter
+    private String userName;
+
     @Getter
     private EmployeeResponse employeeResponse;
 
@@ -42,6 +47,7 @@ public class EmployeeDisassociateCmd implements Command {
     private final EmployeeMapper mapper;
 
     private final CommandFactory factory;
+    private final EmployeeHistoryService historyService;
 
     @Override
     public void execute() {
@@ -60,6 +66,18 @@ public class EmployeeDisassociateCmd implements Command {
 
         employee = repository.save(employee);
         employeeResponse = mapper.toDTO(employee);
+
+        String reason = String.format("Empleado desvinculado. Razón: %s",
+                employeeUpdateRequest.getDisassociationReason() != null
+                        ? employeeUpdateRequest.getDisassociationReason()
+                        : "No especificada");
+
+        historyService.saveEmployeeHistoryAsync(
+                employee,
+                ChangeType.DISASSOCIATE,
+                userName,
+                reason
+        );
 
         log.info("Employee {} successfully disassociated", id);
     }

@@ -5,8 +5,10 @@ import com.efms.employee_file_ms_be.command.company.CompanyListCmd;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
+import com.efms.employee_file_ms_be.model.domain.ChangeType;
 import com.efms.employee_file_ms_be.model.domain.Employee;
 import com.efms.employee_file_ms_be.model.repository.EmployeeRepository;
+import com.efms.employee_file_ms_be.service.EmployeeHistoryService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 /**
@@ -31,6 +35,8 @@ public class EmployeeDeleteAllDisassociateCmd implements Command {
     private final EmployeeRepository employeeRepository;
 
     private final CommandFactory commandFactory;
+
+    private final EmployeeHistoryService historyService;
 
     @Override
     public void execute() {
@@ -67,6 +73,7 @@ public class EmployeeDeleteAllDisassociateCmd implements Command {
                 List<Employee> employees = getEmployees(companyId, now, employeesPage);
 
                 employeeRepository.saveAll(employees);
+                saveHistoryForDeletedEmployees(employees, deletionThreshold);
                 totalProcessed += employees.size();
 
                 log.debug("Processed batch of {} employees for company: {}", employees.size(), companyId);
@@ -101,5 +108,27 @@ public class EmployeeDeleteAllDisassociateCmd implements Command {
         CompanyListCmd companyListCmd = commandFactory.createCommand(CompanyListCmd.class);
         companyListCmd.execute();
         return companyListCmd.getCompanies();
+    }
+
+    private void saveHistoryForDeletedEmployees(List<Employee> employees, LocalDateTime deletionThreshold) {
+        historyService.saveEmployeeHistoryBatchAsync(
+                employees,
+                ChangeType.DELETE_AUTO,
+                employee -> {
+                    long daysSinceDisassociation = ChronoUnit.DAYS.between(
+                            employee.getDisassociatedAt(),
+                            LocalDateTime.now()
+                    );
+
+                    return String.format(
+                            "Eliminación automática por política de retención. " +
+                                    "Empleado desvinculado hace %d días (fecha de desvinculación: %s). " +
+                                    "Umbral de eliminación: 30 días desde la desvinculación.",
+                            daysSinceDisassociation,
+                            employee.getDisassociatedAt() != null ?
+                                    employee.getDisassociatedAt().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : "N/A"
+                    );
+                }
+        );
     }
 }

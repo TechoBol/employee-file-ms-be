@@ -71,4 +71,9 @@ public class Constants {
 
         public static final String FILE = "File";
     }
+
+    public static class Header {
+        public static final String X_USER_ID = "X-USER-ID";
+        public static final String X_USER_NAME = "X-USER-NAME";
+    }
 }

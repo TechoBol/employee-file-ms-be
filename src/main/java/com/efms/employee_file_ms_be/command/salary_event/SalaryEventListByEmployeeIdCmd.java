@@ -1,5 +1,6 @@
 package com.efms.employee_file_ms_be.command.salary_event;
 
+import com.efms.employee_file_ms_be.api.response.AbsenceResponse;
 import com.efms.employee_file_ms_be.api.response.SalaryEventResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
@@ -69,11 +70,13 @@ public class SalaryEventListByEmployeeIdCmd implements Command {
                 endDate
         );
 
-        boolean isProcessed = statusToUse == null;
-
         salaryEventResponseList = salaryEventList.stream()
-                .map(mapper::toDTO)
-                .peek(salaryEvent -> salaryEvent.setProcessed(isProcessed))
+                .map(salaryEvent -> {
+                    SalaryEventResponse response = mapper.toDTO(salaryEvent);
+                    boolean isProcessed = salaryEvent.getStatus() != PayrollStatus.OPEN;
+                    response.setProcessed(isProcessed);
+                    return response;
+                })
                 .toList();
     }
 }

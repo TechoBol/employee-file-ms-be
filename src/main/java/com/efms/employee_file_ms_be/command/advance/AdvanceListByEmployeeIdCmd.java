@@ -1,5 +1,6 @@
 package com.efms.employee_file_ms_be.command.advance;
 
+import com.efms.employee_file_ms_be.api.response.AbsenceResponse;
 import com.efms.employee_file_ms_be.api.response.AdvanceResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
@@ -65,11 +66,13 @@ public class AdvanceListByEmployeeIdCmd implements Command {
                 endDate
         );
 
-        boolean isProcessed = statusToUse == null;
-
         advanceResponseList = advanceList.stream()
-                .map(mapper::toDTO)
-                .peek(advanceResponse -> advanceResponse.setProcessed(isProcessed))
+                .map(advance -> {
+                    AdvanceResponse response = mapper.toDTO(advance);
+                    boolean isProcessed = advance.getStatus() != PayrollStatus.OPEN;
+                    response.setProcessed(isProcessed);
+                    return response;
+                })
                 .toList();
     }
 }

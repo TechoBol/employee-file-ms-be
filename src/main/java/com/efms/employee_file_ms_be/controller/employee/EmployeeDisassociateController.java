@@ -25,9 +25,11 @@ public class EmployeeDisassociateController {
     @PatchMapping("/{id}/disassociate")
     @Operation(summary = "Disassociate an Employee")
     public ResponseEntity<EmployeeResponse> disassociate(@PathVariable String id,
-                                                         @Valid @RequestBody EmployeeUpdateRequest request) {
+                                                         @Valid @RequestBody EmployeeUpdateRequest request,
+                                                         @RequestHeader(Constants.Header.X_USER_NAME) String userName) {
         command.setId(id);
         command.setEmployeeUpdateRequest(request);
+        command.setUserName(userName);
         command.execute();
 
         return ResponseEntity.ok(command.getEmployeeResponse());

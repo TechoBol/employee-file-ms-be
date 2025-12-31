@@ -64,11 +64,13 @@ public class AbsenceListByEmployeeIdCmd implements Command {
                 endDate
         );
 
-        boolean isProcessed = statusToUse == null;
-
         absenceResponseList = absenceList.stream()
-                .map(absenceMapper::toDTO)
-                .peek(absenceResponse -> absenceResponse.setProcessed(isProcessed))
+                .map(absence -> {
+                    AbsenceResponse response = absenceMapper.toDTO(absence);
+                    boolean isProcessed = absence.getStatus() != PayrollStatus.OPEN;
+                    response.setProcessed(isProcessed);
+                    return response;
+                })
                 .toList();
     }
 }

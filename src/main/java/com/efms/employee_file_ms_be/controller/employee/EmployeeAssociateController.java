@@ -7,10 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Josue Veliz
@@ -25,8 +22,10 @@ public class EmployeeAssociateController {
 
     @PatchMapping("/{id}/associate")
     @Operation(summary = "Associate an Employee")
-    public ResponseEntity<EmployeeResponse> disassociate(@PathVariable String id) {
+    public ResponseEntity<EmployeeResponse> disassociate(@PathVariable String id,
+                                                         @RequestHeader(Constants.Header.X_USER_NAME) String userName) {
         command.setId(id);
+        command.setUserName(userName);
         command.execute();
 
         return ResponseEntity.ok(command.getEmployeeResponse());

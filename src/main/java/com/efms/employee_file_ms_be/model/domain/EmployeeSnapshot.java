@@ -7,9 +7,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * @author Josue Veliz
+ */
 @Setter
 @Getter
-public class EmployeeDetails {
+public class EmployeeSnapshot {
     private UUID id;
     private String firstName;
     private String lastName;
@@ -22,7 +25,7 @@ public class EmployeeDetails {
     private EmployeeStatus status;
     private EmployeeType type;
     private EmergencyContact emergencyContact;
-    private Boolean isDeleted = Boolean.FALSE;
+    private Boolean isDeleted;
     private LocalDateTime deletedAt;
     private Boolean isDisassociated;
     private LocalDateTime disassociatedAt;
@@ -32,5 +35,4 @@ public class EmployeeDetails {
     private String branchName;
     private UUID positionId;
     private String positionName;
-    private UUID companyId;
 }

@@ -321,7 +321,9 @@ public class PaymentProcessSingleCompanyCmd implements Command {
         employeeDetails.setDisassociationDate(employee.getDisassociationDate());
         employeeDetails.setDisassociationReason(employee.getDisassociationReason());
         employeeDetails.setBranchId(employee.getBranch().getId());
+        employeeDetails.setBranchName(employee.getBranch().getName());
         employeeDetails.setPositionId(employee.getPosition().getId());
+        employeeDetails.setPositionName(employee.getPosition().getName());
         employeeDetails.setCompanyId(employee.getCompanyId());
         return employeeDetails;
     }

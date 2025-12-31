@@ -26,9 +26,11 @@ public class EmployeeCreateController {
     @PostMapping
     @Operation(summary = "Create a new Employee")
     public ResponseEntity<EmployeeResponse> create(@Valid @RequestBody EmployeeCreateRequest request,
-                                                   @RequestParam(name = "includeDetails", defaultValue = "true") boolean includeDetails) {
+                                                   @RequestParam(name = "includeDetails", defaultValue = "true") boolean includeDetails,
+                                                   @RequestHeader(Constants.Header.X_USER_NAME) String userName) {
         command.setEmployeeCreateRequest(request);
         command.setIncludeDetails(includeDetails);
+        command.setUserName(userName);
         command.execute();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(command.getResponse());
