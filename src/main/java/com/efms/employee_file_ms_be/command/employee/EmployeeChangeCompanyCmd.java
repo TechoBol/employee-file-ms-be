@@ -5,14 +5,17 @@ import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.EmployeeNotFoundException;
+import com.efms.employee_file_ms_be.model.domain.BaseSalary;
 import com.efms.employee_file_ms_be.model.domain.ChangeType;
 import com.efms.employee_file_ms_be.model.domain.Employee;
+import com.efms.employee_file_ms_be.model.domain.File;
 import com.efms.employee_file_ms_be.model.mapper.employee.EmployeeMapper;
 import com.efms.employee_file_ms_be.model.repository.EmployeeRepository;
 import com.efms.employee_file_ms_be.service.EmployeeHistoryService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -47,6 +50,7 @@ public class EmployeeChangeCompanyCmd implements Command {
 
     private final EmployeeHistoryService historyService;
 
+    @Transactional
     @Override
     public void execute() {
         UUID currentCompanyId = UUID.fromString(TenantContext.getTenantId());
@@ -56,6 +60,16 @@ public class EmployeeChangeCompanyCmd implements Command {
 
         employee.setBranch(null);
         employee.setPosition(null);
+
+        BaseSalary employeeSalary = employee.getBaseSalary();
+        if (employeeSalary != null) {
+            employeeSalary.setCompanyId(newCompanyId);
+        }
+
+        File employeeFile = employee.getFile();
+        if (employeeFile != null) {
+            employeeFile.setCompanyId(newCompanyId);
+        }
 
         employee.setCompanyId(newCompanyId);
         employee = repository.save(employee);

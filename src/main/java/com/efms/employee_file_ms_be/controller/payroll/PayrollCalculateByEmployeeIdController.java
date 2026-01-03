@@ -27,10 +27,12 @@ public class PayrollCalculateByEmployeeIdController {
     @Operation(summary = "Calculate payroll for an employee")
     public ResponseEntity<PayrollResponse> calculateByEmployee(@PathVariable String employeeId,
                                                                @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                                               @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+                                                               @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+                                                               @RequestParam(required = false) Boolean useActualDate) {
         command.setEmployeeId(employeeId);
         command.setStartDate(startDate);
         command.setEndDate(endDate);
+        command.setUseActualDate(useActualDate);
         command.execute();
 
         return ResponseEntity.ok(command.getPayrollResponse());

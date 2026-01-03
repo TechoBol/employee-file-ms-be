@@ -29,6 +29,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -305,10 +306,15 @@ public class PaymentProcessAllCompaniesCmd implements Command {
         employeeDetails.setIsDisassociated(employee.getIsDisassociated());
         employeeDetails.setDisassociationDate(employee.getDisassociationDate());
         employeeDetails.setDisassociationReason(employee.getDisassociationReason());
-        employeeDetails.setBranchId(employee.getBranch().getId());
-        employeeDetails.setBranchName(employee.getBranch().getName());
-        employeeDetails.setPositionId(employee.getPosition().getId());
-        employeeDetails.setPositionName(employee.getPosition().getName());
+        Optional.ofNullable(employee.getBranch()).ifPresent(b -> {
+            employeeDetails.setBranchId(b.getId());
+            employeeDetails.setBranchName(b.getName());
+        });
+
+        Optional.ofNullable(employee.getPosition()).ifPresent(p -> {
+            employeeDetails.setPositionId(p.getId());
+            employeeDetails.setPositionName(p.getName());
+        });
         employeeDetails.setCompanyId(employee.getCompanyId());
         return employeeDetails;
     }

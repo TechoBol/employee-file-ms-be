@@ -1,7 +1,8 @@
-package com.efms.employee_file_ms_be.command.employee;
+package com.efms.employee_file_ms_be.controller.employee;
 
 import com.efms.employee_file_ms_be.api.request.EmployeeChangeCompanyRequest;
 import com.efms.employee_file_ms_be.api.response.EmployeeResponse;
+import com.efms.employee_file_ms_be.command.employee.EmployeeChangeCompanyCmd;
 import com.efms.employee_file_ms_be.controller.Constants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

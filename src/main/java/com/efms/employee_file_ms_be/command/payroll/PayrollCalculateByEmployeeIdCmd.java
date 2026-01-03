@@ -44,6 +44,9 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
     @Setter
     private Integer period;
 
+    @Setter
+    private Boolean useActualDate;
+
     @Getter
     private PayrollResponse payrollResponse;
 
@@ -51,7 +54,11 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
 
     @Override
     public void execute() {
-        if (period != null) {
+        if (Boolean.TRUE.equals(useActualDate)) {
+            LocalDate today = LocalDate.now();
+            startDate = today.withDayOfMonth(1);
+            endDate = today;
+        } else if (period != null) {
             startDate = DateUtils.getStartDateFromPeriod(period);
             endDate = DateUtils.getEndDateFromPeriod(period);
         } else {
@@ -167,12 +174,10 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
         LocalDate effectiveStartDate = startDate;
         LocalDate effectiveEndDate = endDate;
 
-        // Si el empleado fue contratado después del inicio del período
         if (employee.getHireDate().isAfter(effectiveStartDate)) {
             effectiveStartDate = employee.getHireDate();
         }
 
-        // Si el empleado fue eliminado antes del fin del período
         if (employee.getStatus() == EmployeeStatus.DELETED && employee.getDeletedAt() != null) {
             LocalDate deletedDate = employee.getDeletedAt().toLocalDate();
             if (deletedDate.isBefore(effectiveEndDate)) {
@@ -180,13 +185,18 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
             }
         }
 
-        // NUEVO: Asegurar que no se cuenten días fuera del período de consulta
+        if (employee.getDisassociationDate() != null) {
+            LocalDate disassociationDate = employee.getDisassociationDate();
+            if (disassociationDate.isBefore(effectiveEndDate)) {
+                effectiveEndDate = disassociationDate;
+            }
+        }
+
         LocalDate today = LocalDate.now();
         if (effectiveEndDate.isAfter(today)) {
             effectiveEndDate = today;
         }
 
-        // Si las fechas son inválidas, retornar 0
         if (effectiveStartDate.isAfter(effectiveEndDate)) {
             return 0;
         }

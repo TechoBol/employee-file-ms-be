@@ -26,13 +26,17 @@ public class PayrollCalculateByBranchCmd implements Command {
 
     private final CommandFactory commandFactory;
 
+    private static final UUID NO_BRANCH = UUID.fromString("00000000-0000-0000-0000-000000000000");
+
     @Override
     public void execute() {
         List<EmployeeResponse> allEmployees = findAllEmployees();
 
         Map<UUID, List<EmployeeResponse>> employeesByBranch = allEmployees.stream()
                 .collect(Collectors.groupingBy(
-                        employee -> UUID.fromString(employee.getBranchId() != null ? employee.getBranchId() : null)
+                        employee -> employee.getBranchId() != null
+                                ? UUID.fromString(employee.getBranchId())
+                                : NO_BRANCH
                 ));
 
         payrollByBranch = employeesByBranch.entrySet().stream()
@@ -51,9 +55,12 @@ public class PayrollCalculateByBranchCmd implements Command {
                             .toList();
 
                     PayrollByBranchResponse branchResponse = new PayrollByBranchResponse();
-                    branchResponse.setBranchId(branchId);
 
-                    if (!employees.isEmpty() && employees.getFirst().getBranchName() != null) {
+                    branchResponse.setBranchId(branchId.equals(NO_BRANCH) ? null : branchId);
+
+                    if (!employees.isEmpty()
+                            && employees.getFirst().getBranchName() != null
+                            && !branchId.equals(NO_BRANCH)) {
                         branchResponse.setBranchName(employees.getFirst().getBranchName());
                     } else {
                         branchResponse.setBranchName("Sin Sucursal");
@@ -61,7 +68,6 @@ public class PayrollCalculateByBranchCmd implements Command {
 
                     branchResponse.setEmployeeCount(employees.size());
                     branchResponse.setPayrolls(payrollResponses);
-
                     branchResponse.setTotals(calculateBranchTotals(payrollResponses));
 
                     return branchResponse;

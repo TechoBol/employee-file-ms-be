@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -76,7 +77,9 @@ public class PayrollCalculateByPageableCmd implements Command {
     private PayrollResponse calculatePayroll(String employeeId) {
         PayrollCalculateByEmployeeIdCmd command = commandFactory.createCommand(PayrollCalculateByEmployeeIdCmd.class);
         command.setEmployeeId(employeeId);
-        if(period != null) {
+        if (searchRequest.getIsDisassociated() != null && searchRequest.getIsDisassociated()) {
+            command.setUseActualDate(true);
+        } else if(period != null) {
             command.setPeriod(period);
         }
         command.execute();

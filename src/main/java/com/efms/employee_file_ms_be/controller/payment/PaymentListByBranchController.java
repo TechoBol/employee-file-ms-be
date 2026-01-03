@@ -1,7 +1,7 @@
-package com.efms.employee_file_ms_be.controller.payroll;
+package com.efms.employee_file_ms_be.controller.payment;
 
-import com.efms.employee_file_ms_be.api.response.payroll.PayrollByBranchResponse;
-import com.efms.employee_file_ms_be.command.payroll.PayrollCalculateByBranchCmd;
+import com.efms.employee_file_ms_be.api.response.payment.PaymentByBranchResponse;
+import com.efms.employee_file_ms_be.command.payment.PaymentListByBranchCmd;
 import com.efms.employee_file_ms_be.controller.Constants;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -17,19 +17,19 @@ import java.util.List;
  * @author Josue Veliz
  */
 @RestController
-@RequestMapping(Constants.Path.PAYROLL_PATH)
+@RequestMapping(Constants.Path.PAYMENT_PATH)
 @RequiredArgsConstructor
-@Tag(name = Constants.Tag.PAYROLL)
-public class PaymentCalculateByBranchController {
+@Tag(name = Constants.Tag.PAYMENT)
+public class PaymentListByBranchController {
 
-    private final PayrollCalculateByBranchCmd command;
+    private final PaymentListByBranchCmd command;
 
-    @GetMapping("/calculate/all/group-by-branch")
-    public ResponseEntity<List<PayrollByBranchResponse>> getPayrollGroupedByBranch(
+    @GetMapping("/group-by-branch")
+    public ResponseEntity<List<PaymentByBranchResponse>> getPaymentGroupedByBranch(
             @RequestParam(required = false) Integer period) {
         command.setPeriod(period);
         command.execute();
 
-        return ResponseEntity.ok(command.getPayrollByBranch());
+        return ResponseEntity.ok(command.getPaymentByBranch());
     }
 }
