@@ -4,8 +4,8 @@ services:
     container_name: efms_postgres_db
     restart: on-failure
     environment:
-      POSTGRES_USER: jodemvel
-      POSTGRES_PASSWORD: jodemvel
+      POSTGRES_USER: techobol
+      POSTGRES_PASSWORD: techobol
       POSTGRES_DB: efms
     ports:
       - "5432:5432"
