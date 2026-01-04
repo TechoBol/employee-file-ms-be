@@ -1,0 +1,33 @@
+package com.efms.employee_file_ms_be.model.domain;
+
+import com.efms.employee_file_ms_be.model.Constants;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+import java.util.UUID;
+
+@Setter
+@Getter
+@Entity
+@Table(name = Constants.Department.NAME)
+public class Department {
+
+    @Id
+    @GeneratedValue
+    @Column(updatable = false, nullable = false)
+    private UUID id;
+
+    @Column(nullable = false, length = 80)
+    private String name;
+
+    @Column(length = 250)
+    private String description;
+
+    @Column(name = "company_id", nullable = false)
+    private UUID companyId;
+
+    @OneToMany(mappedBy = "department", orphanRemoval = true)
+    private List<Position> positions;
+}

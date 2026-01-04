@@ -1,0 +1,66 @@
+package com.efms.employee_file_ms_be.model.domain;
+
+import com.efms.employee_file_ms_be.model.Constants;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+/**
+ * @author Josue Veliz
+ */
+@Setter
+@Getter
+@Entity
+@Table(name = Constants.Payment.NAME)
+public class Payment {
+
+    @Id
+    @GeneratedValue
+    @Column(updatable = false, nullable = false)
+    private UUID id;
+
+    private Integer period;
+
+    private LocalDateTime paymentDate;
+
+    @Column(
+            precision = Constants.TypeSpecifications.NUMERIC_PRECISION,
+            scale = Constants.TypeSpecifications.NUMERIC_SCALE,
+            nullable = false
+    )
+    private BigDecimal grossAmount;
+
+    @Column(
+            precision = Constants.TypeSpecifications.NUMERIC_PRECISION,
+            scale = Constants.TypeSpecifications.NUMERIC_SCALE,
+            nullable = false
+    )
+    private BigDecimal totalDeductions;
+
+    @Column(
+            precision = Constants.TypeSpecifications.NUMERIC_PRECISION,
+            scale = Constants.TypeSpecifications.NUMERIC_SCALE,
+            nullable = false
+    )
+    private BigDecimal netAmount;
+
+    @Column(name = "employee_id", nullable = false)
+    private UUID employeeId;
+    
+    @Column(name = "company_id", nullable = false)
+    private UUID companyId;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private PaymentDetails paymentDetails;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private EmployeeDetails employeeDetails;
+}

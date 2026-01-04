@@ -1,0 +1,38 @@
+package com.efms.employee_file_ms_be.model.domain;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+/**
+ * @author Josue Veliz
+ */
+@Setter
+@Getter
+public class EmployeeSnapshot {
+    private UUID id;
+    private String firstName;
+    private String lastName;
+    private String ci;
+    private String email;
+    private String phone;
+    private String address;
+    private LocalDate birthDate;
+    private LocalDate hireDate;
+    private EmployeeStatus status;
+    private EmployeeType type;
+    private EmergencyContact emergencyContact;
+    private Boolean isDeleted;
+    private LocalDateTime deletedAt;
+    private Boolean isDisassociated;
+    private LocalDateTime disassociatedAt;
+    private LocalDate disassociationDate;
+    private String disassociationReason;
+    private UUID branchId;
+    private String branchName;
+    private UUID positionId;
+    private String positionName;
+}
