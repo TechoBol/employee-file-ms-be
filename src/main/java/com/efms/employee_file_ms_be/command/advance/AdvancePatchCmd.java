@@ -7,14 +7,11 @@ import com.efms.employee_file_ms_be.command.base_salary.BaseSalaryReadByEmployee
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
-import com.efms.employee_file_ms_be.command.salary_event.SalaryEventByAdvanceCreateCmd;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventByAdvancePatchCmd;
-import com.efms.employee_file_ms_be.command.salary_event.SalaryEventDeleteByIdCmd;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.AdvanceNotFoundException;
 import com.efms.employee_file_ms_be.exception.RecordEditNotAllowedException;
 import com.efms.employee_file_ms_be.model.domain.Advance;
-import com.efms.employee_file_ms_be.model.domain.BaseSalary;
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
 import com.efms.employee_file_ms_be.model.mapper.advance.AdvanceMapper;
 import com.efms.employee_file_ms_be.model.repository.AdvanceRepository;
@@ -26,6 +23,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.efms.employee_file_ms_be.command.Constants.MAX_DAYS_TO_EDIT;
 
 /**
  * @author Josue Veliz
@@ -50,7 +49,7 @@ public class AdvancePatchCmd implements Command {
     @Override
     public void execute() {
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
-        Advance advance = repository.findByIdAndCompanyId(UUID.fromString(id), companyId)
+        Advance advance = repository.findByIdAndCompanyId(UUID.fromString(id), companyId, null)
                 .orElseThrow(() -> new AdvanceNotFoundException(id));
         BaseSalaryResponse baseSalaryResponse = findBaseSalary(advance.getEmployee().getId().toString());
         BigDecimal totalAmount = baseSalaryResponse.getAmount().multiply(advanceUpdateRequest.getAmount());
@@ -73,7 +72,7 @@ public class AdvancePatchCmd implements Command {
 
         LocalDate lastDayOfAdvanceMonth = advanceDate.withDayOfMonth(advanceDate.lengthOfMonth());
 
-        LocalDate fifthDayOfNextMonth = lastDayOfAdvanceMonth.plusDays(5);
+        LocalDate fifthDayOfNextMonth = lastDayOfAdvanceMonth.plusDays(MAX_DAYS_TO_EDIT);
 
         if (now.isAfter(fifthDayOfNextMonth)) {
             throw new RecordEditNotAllowedException();

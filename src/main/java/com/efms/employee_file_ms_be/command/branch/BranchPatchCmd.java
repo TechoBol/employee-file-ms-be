@@ -49,5 +49,9 @@ public class BranchPatchCmd implements Command {
 
     private void updateProperties(Branch branch, BranchUpdateRequest branchUpdateRequest) {
         Optional.ofNullable(branchUpdateRequest.getName()).ifPresent(branch::setName);
+        Optional.ofNullable(branchUpdateRequest.getDescription()).ifPresent(branch::setDescription);
+        Optional.ofNullable(branchUpdateRequest.getCity()).ifPresent(branch::setCity);
+        Optional.ofNullable(branchUpdateRequest.getCountry()).ifPresent(branch::setCountry);
+        Optional.ofNullable(branchUpdateRequest.getLocation()).ifPresent(branch::setLocation);
     }
 }

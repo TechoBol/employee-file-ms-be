@@ -4,7 +4,6 @@ import com.efms.employee_file_ms_be.model.Constants;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,7 +13,6 @@ import java.util.UUID;
 @Getter
 @Entity
 @Table(name = Constants.SalaryEvent.NAME)
-@SQLRestriction("status = 'OPEN'")
 public class SalaryEvent {
 
     @Id
@@ -34,7 +32,7 @@ public class SalaryEvent {
     @Column(nullable = false, length = 50)
     private SalaryEventCategory category = SalaryEventCategory.MANUAL;
 
-    @Column(length = 150)
+    @Column(length = 250)
     private String description;
 
     @Column(
@@ -59,4 +57,10 @@ public class SalaryEvent {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PayrollStatus status;
+
+    @OneToOne(mappedBy = "salaryEvent")
+    private Absence absence;
+
+    @OneToOne(mappedBy = "salaryEvent")
+    private Advance advance;
 }

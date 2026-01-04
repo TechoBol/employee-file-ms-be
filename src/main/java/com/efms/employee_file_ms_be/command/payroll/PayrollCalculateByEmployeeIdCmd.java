@@ -12,6 +12,7 @@ import com.efms.employee_file_ms_be.command.employee.EmployeeReadByIdCmd;
 import com.efms.employee_file_ms_be.command.general_settings.GeneralSettingsReadCmd;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventListByEmployeeIdCmd;
 import com.efms.employee_file_ms_be.model.domain.*;
+import com.efms.employee_file_ms_be.util.DateUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -34,23 +35,62 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
     @Setter
     private String employeeId;
 
+    @Setter
+    private LocalDate startDate;
+
+    @Setter
+    private LocalDate endDate;
+
+    @Setter
+    private Integer period;
+
+    @Setter
+    private Boolean useActualDate;
+
     @Getter
     private PayrollResponse payrollResponse;
 
     private final CommandFactory commandFactory;
 
+    private static final BigDecimal SENIORITY_MULTIPLIER = BigDecimal.valueOf(3);
+
     @Override
     public void execute() {
+        if (Boolean.TRUE.equals(useActualDate)) {
+            LocalDate today = LocalDate.now();
+            startDate = today.withDayOfMonth(1);
+            endDate = today;
+        } else if (period != null) {
+            startDate = DateUtils.getStartDateFromPeriod(period);
+            endDate = DateUtils.getEndDateFromPeriod(period);
+        } else {
+            startDate = DateUtils.getStartDateOrDefault(startDate);
+            endDate = DateUtils.getEndDateOrDefault(endDate);
+        }
         GeneralSettingsResponse generalSettings = findGeneralSettings();
         Employee employee = findEmployee();
         BaseSalary salary = employee.getBaseSalary();
+
+        BigDecimal baseSalaryAmount = (salary != null && salary.getAmount() != null)
+                ? salary.getAmount()
+                : BigDecimal.ZERO;
+
         int seniority = getSeniority(employee);
+        int workedDays = Math.min(calculateWorkedDays(employee), generalSettings.getWorkingDaysPerMonth());
+        Integer workingDaysPerMonth = generalSettings.getWorkingDaysPerMonth();
 
-        int workedDays = calculateWorkedDays(employee);
-        BigDecimal basicEarnings = calculateBasicEarnings(salary.getAmount(), workedDays);
+        BigDecimal basicEarnings = calculateBasicEarnings(baseSalaryAmount, workedDays, workingDaysPerMonth);
 
-        BigDecimal seniorityBonus = calculateSeniorityBonus(salary.getAmount(), seniority, generalSettings.getSeniorityIncreasePercentage());
-        BigDecimal afpContribution = calculateAfpContribution(salary.getAmount(), generalSettings.getContributionAfpPercentage());
+        BigDecimal seniorityPercentage = getSeniorityPercentage(seniority);
+
+        BigDecimal seniorityFactor = employee.getType() == EmployeeType.CONSULTANT
+                ? BigDecimal.ZERO
+                : BigDecimal.ONE;
+
+        BigDecimal seniorityBonus = calculateSeniorityBonus(
+                baseSalaryAmount,
+                seniorityPercentage
+        ).multiply(seniorityFactor);
 
         List<Absence> absences = findAbsenceByEmployeeId();
         Map<AbsenceType, List<Absence>> absencesByType = absences.stream()
@@ -88,10 +128,12 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
             deductions.add(advanceDeduction);
         }
 
-        BigDecimal manualBonuses = manualSalaryEvents.stream()
+        BigDecimal otherBonuses = manualSalaryEvents.stream()
                 .filter(se -> se.getType() == SalaryEventType.BONUS)
                 .map(SalaryEvent::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalBonuses = seniorityBonus.add(otherBonuses);
 
         BigDecimal manualDeductions = manualSalaryEvents.stream()
                 .filter(se -> se.getType() == SalaryEventType.DEDUCTION)
@@ -108,102 +150,111 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
             deductions.add(manualDeductionResponse);
         }
 
+        BigDecimal totalEarnings = basicEarnings.add(totalBonuses);
+
+        BigDecimal afpContribution = employee.getType() == EmployeeType.CONSULTANT
+                ? BigDecimal.ZERO
+                : calculateAfpContribution(totalEarnings, generalSettings.getContributionAfpPercentage());
+
         BigDecimal totalDeductions = deductions.stream()
                 .map(PayrollDeductionResponse::getTotalDeduction)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .add(afpContribution);
 
-        BigDecimal grossAmount = basicEarnings
-                .add(seniorityBonus)
-                .add(manualBonuses);
-
-        BigDecimal totalAmount = grossAmount
-                .subtract(afpContribution)
-                .subtract(totalDeductions);
+        BigDecimal netAmount = totalEarnings
+                .subtract(totalDeductions)
+                .setScale(1, RoundingMode.HALF_UP);
 
         payrollResponse = new PayrollResponse();
-        payrollResponse.setBaseSalary(salary.getAmount());
+        payrollResponse.setBaseSalary(baseSalaryAmount);
         payrollResponse.setWorkedDays(workedDays);
+        payrollResponse.setWorkingDaysPerMonth(workingDaysPerMonth);
         payrollResponse.setBasicEarnings(basicEarnings);
         payrollResponse.setSeniorityYears(seniority);
-        payrollResponse.setSeniorityIncreasePercentage(generalSettings.getSeniorityIncreasePercentage());
+        payrollResponse.setSeniorityIncreasePercentage(seniorityPercentage);
         payrollResponse.setSeniorityBonus(seniorityBonus);
-        payrollResponse.setGrossAmount(grossAmount);
+        payrollResponse.setOtherBonuses(otherBonuses);
+        payrollResponse.setTotalBonuses(totalBonuses);
+        payrollResponse.setTotalEarnings(totalEarnings);
         payrollResponse.setDeductionAfpPercentage(generalSettings.getContributionAfpPercentage());
         payrollResponse.setDeductionAfp(afpContribution);
         payrollResponse.setDeductions(deductions);
         payrollResponse.setTotalDeductions(totalDeductions);
-        payrollResponse.setNetAmount(totalAmount);
+        payrollResponse.setNetAmount(netAmount);
     }
 
     private int calculateWorkedDays(Employee employee) {
-        LocalDate now = LocalDate.now();
-        LocalDate targetMonth;
+        LocalDate effectiveStartDate = startDate;
+        LocalDate effectiveEndDate = endDate;
 
-        if (now.getDayOfMonth() <= 5) {
-            targetMonth = now.minusMonths(1);
-        } else {
-            targetMonth = now;
+        if (employee.getHireDate().isAfter(effectiveStartDate)) {
+            effectiveStartDate = employee.getHireDate();
         }
-
-        LocalDate startOfTargetMonth = targetMonth.withDayOfMonth(1);
-        LocalDate endOfTargetMonth = targetMonth.withDayOfMonth(targetMonth.lengthOfMonth());
-
-        LocalDate effectiveStartDate = employee.getHireDate().isBefore(startOfTargetMonth)
-                ? startOfTargetMonth
-                : employee.getHireDate();
-
-        LocalDate effectiveEndDate = endOfTargetMonth;
 
         if (employee.getStatus() == EmployeeStatus.DELETED && employee.getDeletedAt() != null) {
             LocalDate deletedDate = employee.getDeletedAt().toLocalDate();
-            if (!deletedDate.isBefore(startOfTargetMonth) && !deletedDate.isAfter(endOfTargetMonth)) {
+            if (deletedDate.isBefore(effectiveEndDate)) {
                 effectiveEndDate = deletedDate;
             }
         }
 
-        if (targetMonth.getYear() == now.getYear() && targetMonth.getMonth() == now.getMonth()) {
-            effectiveEndDate = now;
+        if (employee.getDisassociationDate() != null) {
+            LocalDate disassociationDate = employee.getDisassociationDate();
+            if (disassociationDate.isBefore(effectiveEndDate)) {
+                effectiveEndDate = disassociationDate;
+            }
         }
 
-        if (effectiveStartDate.isAfter(endOfTargetMonth) || effectiveEndDate.isBefore(startOfTargetMonth)) {
+        LocalDate today = LocalDate.now();
+        if (effectiveEndDate.isAfter(today)) {
+            effectiveEndDate = today;
+        }
+
+        if (effectiveStartDate.isAfter(effectiveEndDate)) {
             return 0;
-        }
-
-        if (effectiveStartDate.isBefore(startOfTargetMonth)) {
-            effectiveStartDate = startOfTargetMonth;
-        }
-        if (effectiveEndDate.isAfter(endOfTargetMonth)) {
-            effectiveEndDate = endOfTargetMonth;
         }
 
         return (int) ChronoUnit.DAYS.between(effectiveStartDate, effectiveEndDate) + 1;
     }
 
-    private BigDecimal calculateBasicEarnings(BigDecimal baseSalary, int workedDays) {
+    private BigDecimal calculateBasicEarnings(BigDecimal baseSalary, int workedDays, Integer workingDaysPerMonth) {
+        if (workingDaysPerMonth == null || workingDaysPerMonth == 0) {
+            workingDaysPerMonth = 30; // Default
+        }
         return baseSalary
                 .multiply(BigDecimal.valueOf(workedDays))
-                .divide(BigDecimal.valueOf(30), 2, RoundingMode.HALF_UP);
+                .divide(BigDecimal.valueOf(workingDaysPerMonth), 2, RoundingMode.HALF_UP);
     }
 
-    private BigDecimal calculateSeniorityBonus(BigDecimal baseSalaryAmount, int seniority, BigDecimal seniorityIncreasePercentage) {
-        if (seniority <= 0) {
+    private BigDecimal getSeniorityPercentage(int seniority) {
+        if (seniority >= 2 && seniority <= 4) {
+            return new BigDecimal("5");
+        } else if (seniority >= 5 && seniority <= 7) {
+            return new BigDecimal("11");
+        } else if (seniority >= 8 && seniority <= 10) {
+            return new BigDecimal("18");
+        } else if (seniority > 10) {
+            return new BigDecimal("18");
+        }
+        return BigDecimal.ZERO;
+    }
+
+    private BigDecimal calculateSeniorityBonus(BigDecimal baseSalary, BigDecimal percentage) {
+        if (percentage.compareTo(BigDecimal.ZERO) == 0) {
             return BigDecimal.ZERO;
         }
 
-        BigDecimal bonusRate = seniorityIncreasePercentage
-                .divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP)
-                .multiply(BigDecimal.valueOf(seniority));
-
-        return baseSalaryAmount
-                .multiply(bonusRate)
-                .setScale(2, RoundingMode.HALF_UP);
+        return baseSalary
+                .multiply(percentage)
+                .multiply(SENIORITY_MULTIPLIER)
+                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
     }
 
-    private BigDecimal calculateAfpContribution(BigDecimal baseSalary, BigDecimal afpContributionPercentage) {
-        if (baseSalary == null || afpContributionPercentage == null) {
+    private BigDecimal calculateAfpContribution(BigDecimal totalEarnings, BigDecimal afpContributionPercentage) {
+        if (totalEarnings == null || afpContributionPercentage == null) {
             return BigDecimal.ZERO;
         }
-        return baseSalary.multiply(afpContributionPercentage);
+        return totalEarnings.multiply(afpContributionPercentage);
     }
 
     private GeneralSettingsResponse findGeneralSettings() {
@@ -227,6 +278,8 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
     private List<Absence> findAbsenceByEmployeeId() {
         AbsenceListByEmployeeIdCmd command = commandFactory.createCommand(AbsenceListByEmployeeIdCmd.class);
         command.setEmployeeId(employeeId);
+        command.setStartDate(startDate);
+        command.setEndDate(endDate);
         command.execute();
         return command.getAbsenceList();
     }
@@ -234,6 +287,8 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
     private List<Advance> findAdvancesByEmployeeId() {
         AdvanceListByEmployeeIdCmd command = commandFactory.createCommand(AdvanceListByEmployeeIdCmd.class);
         command.setEmployeeId(employeeId);
+        command.setStartDate(startDate);
+        command.setEndDate(endDate);
         command.execute();
         return command.getAdvanceList();
     }
@@ -241,7 +296,9 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
     private List<SalaryEvent> findManualSalaryEventsByEmployeeId() {
         SalaryEventListByEmployeeIdCmd command = commandFactory.createCommand(SalaryEventListByEmployeeIdCmd.class);
         command.setEmployeeId(employeeId);
-        command.setCategory(SalaryEventCategory.MANUAL.name());
+        command.setCategory(SalaryEventCategory.MANUAL);
+        command.setStartDate(startDate);
+        command.setEndDate(endDate);
         command.execute();
         return command.getSalaryEventList();
     }

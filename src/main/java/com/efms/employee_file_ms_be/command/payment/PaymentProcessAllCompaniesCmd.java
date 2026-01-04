@@ -14,10 +14,7 @@ import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
 import com.efms.employee_file_ms_be.command.payroll.PayrollCalculateByPageableCmd;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventProcessCmd;
-import com.efms.employee_file_ms_be.model.domain.Employee;
-import com.efms.employee_file_ms_be.model.domain.Payment;
-import com.efms.employee_file_ms_be.model.domain.PaymentDeduction;
-import com.efms.employee_file_ms_be.model.domain.PaymentDetails;
+import com.efms.employee_file_ms_be.model.domain.*;
 import com.efms.employee_file_ms_be.model.repository.EmployeeRepository;
 import com.efms.employee_file_ms_be.model.repository.PaymentRepository;
 import jakarta.transaction.Transactional;
@@ -32,6 +29,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -142,21 +140,21 @@ public class PaymentProcessAllCompaniesCmd implements Command {
             // Process advances
             AdvanceProcessCmd advanceCmd = commandFactory.createCommand(AdvanceProcessCmd.class);
             advanceCmd.setCompanyId(companyId);
-            advanceCmd.setPageable(Pageable.unpaged());
+            advanceCmd.setPeriod(period);
             advanceCmd.execute();
             result.setProcessedAdvances(advanceCmd.getProcessedList().size());
 
             // Process absences
             AbsenceProcessCmd absenceCmd = commandFactory.createCommand(AbsenceProcessCmd.class);
             absenceCmd.setCompanyId(companyId);
-            absenceCmd.setPageable(Pageable.unpaged());
+            absenceCmd.setPeriod(period);
             absenceCmd.execute();
             result.setProcessedAbsences(absenceCmd.getProcessedList().size());
 
             // Process salary events
             SalaryEventProcessCmd eventCmd = commandFactory.createCommand(SalaryEventProcessCmd.class);
             eventCmd.setCompanyId(companyId);
-            eventCmd.setPageable(Pageable.unpaged());
+            eventCmd.setPeriod(period);
             eventCmd.execute();
             result.setProcessedEvents(eventCmd.getProcessedList().size());
 
@@ -168,15 +166,15 @@ public class PaymentProcessAllCompaniesCmd implements Command {
     }
 
     private Page<PayrollEmployeeResponse> fetchPayrollPage(UUID companyId, Pageable pageable) {
-        // Assuming you have a way to filter by company, adjust as needed
         PayrollCalculateByPageableCmd cmd = commandFactory.createCommand(PayrollCalculateByPageableCmd.class);
         cmd.setPageable(pageable);
+        cmd.setPeriod(period);
         cmd.execute();
         return cmd.getPayrollPageResponse();
     }
 
     @Transactional
-    private void processPayrollPage(List<PayrollEmployeeResponse> payrolls, UUID companyId, CompanyProcessResult result) {
+    protected void processPayrollPage(List<PayrollEmployeeResponse> payrolls, UUID companyId, CompanyProcessResult result) {
         List<Payment> payments = new ArrayList<>();
 
         for (PayrollEmployeeResponse payrollEmployee : payrolls) {
@@ -202,14 +200,15 @@ public class PaymentProcessAllCompaniesCmd implements Command {
 
         payment.setPeriod(period);
         payment.setPaymentDate(LocalDateTime.now());
-        payment.setGrossAmount(payrollEmployee.getPayroll().getGrossAmount());
+        payment.setGrossAmount(payrollEmployee.getPayroll().getTotalEarnings()); // Ahora es totalEarnings
         payment.setTotalDeductions(payrollEmployee.getPayroll().getTotalDeductions());
         payment.setNetAmount(payrollEmployee.getPayroll().getNetAmount());
         payment.setCompanyId(companyId);
 
         // Set employee relationship
-        Employee employee = employeeRepository.getReferenceById(payrollEmployee.getEmployee().getId());
-        payment.setEmployee(employee);
+        Employee employee = employeeRepository.getReferenceById(UUID.fromString(payrollEmployee.getEmployee().getId()));
+        payment.setEmployeeDetails(buildEmployeeDetails(employee));
+        payment.setEmployeeId(employee.getId());
 
         // Map payroll details to payment details
         PaymentDetails details = mapToPaymentDetails(payrollEmployee.getPayroll());
@@ -221,15 +220,27 @@ public class PaymentProcessAllCompaniesCmd implements Command {
     private PaymentDetails mapToPaymentDetails(PayrollResponse payroll) {
         PaymentDetails details = new PaymentDetails();
 
+        // Información de salario base
         details.setBaseSalary(payroll.getBaseSalary());
         details.setWorkedDays(payroll.getWorkedDays());
+        details.setWorkingDaysPerMonth(payroll.getWorkingDaysPerMonth());
         details.setBasicEarnings(payroll.getBasicEarnings());
+
+        // Información de antigüedad
         details.setSeniorityYears(payroll.getSeniorityYears());
         details.setSeniorityIncreasePercentage(payroll.getSeniorityIncreasePercentage());
         details.setSeniorityBonus(payroll.getSeniorityBonus());
-        details.setGrossAmount(payroll.getGrossAmount());
+
+        // Bonos
+        details.setOtherBonuses(payroll.getOtherBonuses());
+        details.setTotalBonuses(payroll.getTotalBonuses());
+        details.setTotalEarnings(payroll.getTotalEarnings());
+
+        // Deducciones AFP
         details.setDeductionAfpPercentage(payroll.getDeductionAfpPercentage());
         details.setDeductionAfp(payroll.getDeductionAfp());
+
+        // Totales
         details.setTotalDeductions(payroll.getTotalDeductions());
         details.setNetAmount(payroll.getNetAmount());
 
@@ -275,5 +286,36 @@ public class PaymentProcessAllCompaniesCmd implements Command {
                         result.getCompanyName(), result.getFailedPayments(), result.getTotalEmployees());
             }
         });
+    }
+
+    private EmployeeDetails buildEmployeeDetails(Employee employee){
+        EmployeeDetails employeeDetails = new EmployeeDetails();
+        employeeDetails.setId(employee.getId());
+        employeeDetails.setFirstName(employee.getFirstName());
+        employeeDetails.setLastName(employee.getLastName());
+        employeeDetails.setCi(employee.getCi());
+        employeeDetails.setEmail(employee.getEmail());
+        employeeDetails.setPhone(employee.getPhone());
+        employeeDetails.setAddress(employee.getAddress());
+        employeeDetails.setBirthDate(employee.getBirthDate());
+        employeeDetails.setHireDate(employee.getHireDate());
+        employeeDetails.setStatus(employee.getStatus());
+        employeeDetails.setType(employee.getType());
+        employeeDetails.setIsDeleted(employee.getIsDeleted());
+        employeeDetails.setDeletedAt(employee.getDeletedAt());
+        employeeDetails.setIsDisassociated(employee.getIsDisassociated());
+        employeeDetails.setDisassociationDate(employee.getDisassociationDate());
+        employeeDetails.setDisassociationReason(employee.getDisassociationReason());
+        Optional.ofNullable(employee.getBranch()).ifPresent(b -> {
+            employeeDetails.setBranchId(b.getId());
+            employeeDetails.setBranchName(b.getName());
+        });
+
+        Optional.ofNullable(employee.getPosition()).ifPresent(p -> {
+            employeeDetails.setPositionId(p.getId());
+            employeeDetails.setPositionName(p.getName());
+        });
+        employeeDetails.setCompanyId(employee.getCompanyId());
+        return employeeDetails;
     }
 }

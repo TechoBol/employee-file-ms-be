@@ -10,11 +10,13 @@ import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+
+import static com.efms.employee_file_ms_be.util.DateUtils.getEndDateFromPeriod;
+import static com.efms.employee_file_ms_be.util.DateUtils.getStartDateFromPeriod;
 
 @CommandExecute
 @RequiredArgsConstructor
@@ -24,7 +26,7 @@ public class SalaryEventProcessCmd implements Command {
     private UUID companyId;
 
     @Setter
-    private Pageable pageable;
+    private Integer period;
 
     @Getter
     private List<ProcessedData> processedList = List.of();
@@ -34,17 +36,19 @@ public class SalaryEventProcessCmd implements Command {
     @Override
     @Transactional
     public void execute() {
-        Page<SalaryEvent> page = repository.findAllByCompanyId(companyId, pageable);
+        LocalDate startDate = getStartDateFromPeriod(period);
+        LocalDate endDate = getEndDateFromPeriod(period);
+        List<SalaryEvent> salaryEvents = repository.findByCompanyInDateRange(companyId, PayrollStatus.OPEN, startDate, endDate);
 
-        if (page.isEmpty()) {
+        if (salaryEvents.isEmpty()) {
             processedList = List.of();
             return;
         }
 
-        page.getContent().forEach(event -> event.setStatus(PayrollStatus.PROCESSED));
-        repository.saveAll(page.getContent());
+        salaryEvents.forEach(event -> event.setStatus(PayrollStatus.PROCESSED));
+        repository.saveAll(salaryEvents);
 
-        processedList = page.getContent().stream().map(event -> {
+        processedList = salaryEvents.stream().map(event -> {
             ProcessedData dto = new ProcessedData();
             dto.setId(event.getId());
             dto.setEmployeeId(event.getEmployee().getId());

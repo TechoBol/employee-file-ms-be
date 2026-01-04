@@ -10,7 +10,6 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,10 +37,10 @@ public class Employee extends Audit {
     @Column(nullable = false, length = 150)
     private String lastName;
 
-    @Column(nullable = false, length = 15, unique = true)
+    @Column(nullable = false, length = 15)
     private String ci;
 
-    @Column(nullable = false, length = 100, unique = true)
+    @Column(nullable = false, length = 100)
     private String email;
 
     @Column(length = 20)
@@ -59,7 +58,7 @@ public class Employee extends Audit {
     private EmployeeStatus status;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column
     private EmployeeType type;
 
     @JdbcTypeCode(SqlTypes.JSON)
@@ -72,23 +71,35 @@ public class Employee extends Audit {
     @Column
     private LocalDateTime deletedAt;
 
+    @Column
+    private Boolean isDisassociated = Boolean.FALSE;
+
+    @Column
+    private LocalDateTime disassociatedAt;
+
+    @Column
+    private LocalDate disassociationDate;
+
+    @Column(length = 800)
+    private String disassociationReason;
+
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private BaseSalary baseSalary;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Payment> payments;
-
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Memorandum> memorandums;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "position_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "position_id", nullable = true)
     private Position position;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "branch_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "branch_id", nullable = true)
     private Branch branch;
+
+    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private File file;
 
     @Column(name = "company_id", nullable = false)
     private UUID companyId;

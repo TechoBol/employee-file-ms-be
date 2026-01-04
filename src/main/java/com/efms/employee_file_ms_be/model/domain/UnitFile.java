@@ -10,8 +10,8 @@ import java.util.UUID;
 @Setter
 public class UnitFile {
     private UUID id;
-    private String url;
-    private String name;
+    private String uuidFileName;
+    private String originalName;
     private String description;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

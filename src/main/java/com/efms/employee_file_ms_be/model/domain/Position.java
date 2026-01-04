@@ -22,13 +22,13 @@ public class Position {
     @Column(nullable = false, length = 80)
     private String name;
 
-    @Column(length = 180)
+    @Column(length = 250)
     private String description;
 
     @Column(name = "company_id", nullable = false)
     private UUID companyId;
 
-    @OneToMany(mappedBy = "position", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "position")
     private List<Employee> employees;
 
     @ManyToOne(fetch = FetchType.LAZY)

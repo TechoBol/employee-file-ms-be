@@ -1,11 +1,14 @@
 package com.efms.employee_file_ms_be.command.employee;
 
+import com.efms.employee_file_ms_be.command.Constants;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.EmployeeNotFoundException;
+import com.efms.employee_file_ms_be.model.domain.ChangeType;
 import com.efms.employee_file_ms_be.model.domain.Employee;
 import com.efms.employee_file_ms_be.model.repository.EmployeeRepository;
+import com.efms.employee_file_ms_be.service.EmployeeHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
@@ -19,7 +22,11 @@ public class EmployeeDeleteCmd implements Command {
     @Setter
     private String id;
 
+    @Setter
+    private String userName;
+
     private final EmployeeRepository employeeRepository;
+    private final EmployeeHistoryService historyService;
 
     @Override
     public void execute() {
@@ -29,5 +36,12 @@ public class EmployeeDeleteCmd implements Command {
         employee.setIsDeleted(true);
         employee.setDeletedAt(LocalDateTime.now());
         employeeRepository.save(employee);
+
+        historyService.saveEmployeeHistoryAsync(
+                employee,
+                ChangeType.DELETE,
+                userName,
+                Constants.HistoryEvents.EMPLOYEE_DELETE
+        );
     }
 }

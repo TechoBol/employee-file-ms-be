@@ -1,9 +1,11 @@
 package com.efms.employee_file_ms_be.command.salary_event;
 
+import com.efms.employee_file_ms_be.api.response.AbsenceResponse;
 import com.efms.employee_file_ms_be.api.response.SalaryEventResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.config.TenantContext;
+import com.efms.employee_file_ms_be.model.domain.PayrollStatus;
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
 import com.efms.employee_file_ms_be.model.domain.SalaryEventCategory;
 import com.efms.employee_file_ms_be.model.mapper.salary_event.SalaryEventMapper;
@@ -16,6 +18,8 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+
+import static com.efms.employee_file_ms_be.util.DateUtils.shouldSearchIgnoringStatus;
 
 /**
  * @author Josue Veliz
@@ -34,7 +38,10 @@ public class SalaryEventListByEmployeeIdCmd implements Command {
     private String employeeId;
 
     @Setter
-    private String category;
+    private SalaryEventCategory category;
+
+    @Setter
+    private Boolean useActualDate;
 
     @Getter
     private List<SalaryEventResponse> salaryEventResponseList;
@@ -43,29 +50,42 @@ public class SalaryEventListByEmployeeIdCmd implements Command {
     private List<SalaryEvent> salaryEventList;
 
     private final SalaryEventRepository repository;
-
     private final SalaryEventMapper mapper;
 
     @Override
     public void execute() {
-        startDate = DateUtils.getStartDateOrDefault(startDate);
-        endDate = DateUtils.getEndDateOrDefault(endDate);
+        if (Boolean.TRUE.equals(useActualDate)) {
+            LocalDate today = LocalDate.now();
+            startDate = today.withDayOfMonth(1);
+            endDate = today;
+        } else {
+            startDate = DateUtils.getStartDateOrDefault(startDate);
+            endDate = DateUtils.getEndDateOrDefault(endDate);
+        }
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
+        UUID employeeUUID = UUID.fromString(employeeId);
 
-        SalaryEventCategory categoryEnum = (category != null && !category.isBlank())
-                ? SalaryEventCategory.valueOf(category.toUpperCase())
+        PayrollStatus statusToUse = shouldSearchIgnoringStatus(startDate, endDate)
+                ? PayrollStatus.OPEN
                 : null;
+        // use PayrollStatus.PROCESSED instead of null if you want to ignore.
 
         salaryEventList = repository.findByEmployeeAndCompanyAndOptionalCategoryInDateRange(
-                UUID.fromString(employeeId),
+                employeeUUID,
                 companyId,
-                categoryEnum,
+                statusToUse,
+                category,
                 startDate,
                 endDate
         );
 
         salaryEventResponseList = salaryEventList.stream()
-                .map(mapper::toDTO)
+                .map(salaryEvent -> {
+                    SalaryEventResponse response = mapper.toDTO(salaryEvent);
+                    boolean isProcessed = salaryEvent.getStatus() != PayrollStatus.OPEN;
+                    response.setProcessed(isProcessed);
+                    return response;
+                })
                 .toList();
     }
 }

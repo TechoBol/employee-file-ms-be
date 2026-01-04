@@ -29,4 +29,6 @@ public class SalaryEventResponse {
     private LocalDate startDate;
 
     private LocalDate endDate;
+
+    private boolean processed;
 }

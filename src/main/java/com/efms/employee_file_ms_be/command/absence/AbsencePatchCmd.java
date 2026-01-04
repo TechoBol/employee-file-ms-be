@@ -5,9 +5,7 @@ import com.efms.employee_file_ms_be.api.response.AbsenceResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.command.core.CommandFactory;
-import com.efms.employee_file_ms_be.command.salary_event.SalaryEventByAbsenceCreateCmd;
 import com.efms.employee_file_ms_be.command.salary_event.SalaryEventByAbsencePatchCmd;
-import com.efms.employee_file_ms_be.command.salary_event.SalaryEventDeleteByIdCmd;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.AbsenceNotFoundException;
 import com.efms.employee_file_ms_be.exception.EndDateBeforeStartDateException;
@@ -25,6 +23,8 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.efms.employee_file_ms_be.command.Constants.MAX_DAYS_TO_EDIT;
 
 /**
  * @author Josue Veliz
@@ -49,7 +49,7 @@ public class AbsencePatchCmd implements Command {
     @Override
     public void execute() {
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
-        Absence absence = absenceRepository.findByIdAndCompanyId(UUID.fromString(id), companyId)
+        Absence absence = absenceRepository.findByIdAndCompanyId(UUID.fromString(id), companyId, null)
                 .orElseThrow(() -> new AbsenceNotFoundException(id));
 
         validateEditingTimeframe(absence);
@@ -71,7 +71,7 @@ public class AbsencePatchCmd implements Command {
 
         LocalDate lastDayOfAbsenceMonth = absenceDate.withDayOfMonth(absenceDate.lengthOfMonth());
 
-        LocalDate fifthDayOfNextMonth = lastDayOfAbsenceMonth.plusDays(5);
+        LocalDate fifthDayOfNextMonth = lastDayOfAbsenceMonth.plusDays(MAX_DAYS_TO_EDIT);
 
         if (now.isAfter(fifthDayOfNextMonth)) {
             throw new RecordEditNotAllowedException();

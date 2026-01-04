@@ -6,19 +6,25 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
+public interface EmployeeRepository extends JpaRepository<Employee, UUID>, JpaSpecificationExecutor<Employee> {
 
     @EntityGraph(attributePaths = {"position", "position.department", "branch"})
     Optional<Employee> findByIdAndCompanyId(UUID id, UUID companyId);
 
     @EntityGraph(attributePaths = {"position", "position.department", "branch"})
     Page<Employee> findAllByCompanyId(UUID companyId, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"position", "position.department", "branch"})
+    List<Employee> findAllByCompanyId(UUID companyId);
 
     @Query("""
         SELECT e.id as id,
@@ -37,4 +43,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
             @Param("companyId") UUID companyId,
             Pageable pageable
     );
+
+    Page<Employee> findAllByCompanyIdAndIsDisassociatedAndDisassociatedAtBefore(UUID companyId, boolean disassociated, LocalDateTime date, Pageable pageable);
 }

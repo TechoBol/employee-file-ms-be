@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @CommandExecute
@@ -37,6 +38,9 @@ public class SalaryEventCreateCmd implements Command {
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
         salaryEvent = mapper.toEntity(salaryEventCreateRequest);
         salaryEvent.setCompanyId(companyId);
+        if(salaryEventCreateRequest.getCategory() == null) {
+            salaryEvent.setCategory(SalaryEventCategory.MANUAL);
+        }
         salaryEvent = repository.save(salaryEvent);
         salaryEventResponse = mapper.toDTO(salaryEvent);
     }

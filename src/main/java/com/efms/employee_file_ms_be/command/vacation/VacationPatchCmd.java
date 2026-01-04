@@ -18,6 +18,8 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.efms.employee_file_ms_be.command.Constants.MAX_DAYS_TO_EDIT;
+
 /**
  * @author Josue Veliz
  */
@@ -57,7 +59,7 @@ public class VacationPatchCmd implements Command {
 
         LocalDate lastDayOfVacationMonth = startDate.withDayOfMonth(startDate.lengthOfMonth());
 
-        LocalDate fifthDayOfNextMonth = lastDayOfVacationMonth.plusDays(5);
+        LocalDate fifthDayOfNextMonth = lastDayOfVacationMonth.plusDays(MAX_DAYS_TO_EDIT);
 
         if (now.isAfter(fifthDayOfNextMonth)) {
             throw new RecordEditNotAllowedException();

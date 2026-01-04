@@ -44,4 +44,6 @@ public interface VacationRepository extends JpaRepository<Vacation, UUID> {
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+
+    int deleteByIdAndCompanyId(UUID id, UUID companyId);
 }

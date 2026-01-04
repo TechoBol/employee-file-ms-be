@@ -16,7 +16,6 @@ import java.util.UUID;
 @Getter
 @Entity
 @Table(name = Constants.Absence.NAME)
-@SQLRestriction("status = 'OPEN'")
 public class Absence extends Audit {
 
     @Id
@@ -39,13 +38,13 @@ public class Absence extends Audit {
 
     private LocalDate endDate;
 
-    @Column(length = 100)
+    @Column(length = 150)
     private String reason;
 
-    @Column(length = 200)
+    @Column(length = 250)
     private String description;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "salary_event_id")
     private SalaryEvent salaryEvent;
 

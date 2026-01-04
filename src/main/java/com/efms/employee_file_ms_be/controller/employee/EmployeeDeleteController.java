@@ -6,10 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Josue Veliz
@@ -24,8 +21,10 @@ public class EmployeeDeleteController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete an Employee")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable String id,
+                                       @RequestHeader(Constants.Header.X_USER_NAME) String userName) {
         command.setId(id);
+        command.setUserName(userName);
         command.execute();
 
         return ResponseEntity.noContent().build();

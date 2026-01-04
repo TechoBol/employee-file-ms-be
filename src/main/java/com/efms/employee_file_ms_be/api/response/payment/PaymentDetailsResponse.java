@@ -17,19 +17,25 @@ public class PaymentDetailsResponse {
 
     private Integer period;
 
-    private BigDecimal baseSalary;
+    private BigDecimal baseSalary; // Haber básico (salario del empleado)
 
-    private Integer workedDays;
+    private Integer workedDays; // Días trabajados
 
-    private BigDecimal basicEarnings;
+    private Integer workingDaysPerMonth; // Días del mes (típicamente 30)
+
+    private BigDecimal basicEarnings; // Sueldo básico (baseSalary * workedDays / workingDaysPerMonth)
 
     private Integer seniorityYears;
 
     private BigDecimal seniorityIncreasePercentage;
 
-    private BigDecimal seniorityBonus;
+    private BigDecimal seniorityBonus; // Bono de antigüedad
 
-    private BigDecimal grossAmount;
+    private BigDecimal otherBonuses; // Otros bonos (bonos manuales)
+
+    private BigDecimal totalBonuses; // Total de bonos (antigüedad + otros)
+
+    private BigDecimal totalEarnings; // Total ganado (basicEarnings + totalBonuses)
 
     private BigDecimal deductionAfpPercentage;
 
@@ -37,7 +43,7 @@ public class PaymentDetailsResponse {
 
     private List<PaymentDeductionResponse> deductions;
 
-    private BigDecimal totalDeduction;
+    private BigDecimal totalDeductions;
 
     private BigDecimal netAmount;
 }

@@ -3,6 +3,7 @@ package com.efms.employee_file_ms_be.model.mapper.salary_event;
 import com.efms.employee_file_ms_be.api.request.SalaryEventCreateRequest;
 import com.efms.employee_file_ms_be.api.response.SalaryEventResponse;
 import com.efms.employee_file_ms_be.model.domain.Employee;
+import com.efms.employee_file_ms_be.model.domain.PayrollStatus;
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
 import com.efms.employee_file_ms_be.model.domain.SalaryEventFrequency;
 import com.efms.employee_file_ms_be.model.mapper.CustomMapper;
@@ -26,6 +27,7 @@ public class SalaryEventMapper implements CustomMapper<SalaryEventResponse, Sala
         instance.setFrequency(salaryEventCreateRequest.getFrequency());
         instance.setStartDate(salaryEventCreateRequest.getStartDate());
         instance.setEndDate(salaryEventCreateRequest.getEndDate());
+        instance.setStatus(PayrollStatus.OPEN);
 
         Employee employee = new Employee();
         employee.setId(UUID.fromString(salaryEventCreateRequest.getEmployeeId()));

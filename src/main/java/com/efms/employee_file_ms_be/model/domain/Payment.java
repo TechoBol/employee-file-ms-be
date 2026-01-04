@@ -50,14 +50,17 @@ public class Payment {
     )
     private BigDecimal netAmount;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;
-
+    @Column(name = "employee_id", nullable = false)
+    private UUID employeeId;
+    
     @Column(name = "company_id", nullable = false)
     private UUID companyId;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private PaymentDetails paymentDetails;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private EmployeeDetails employeeDetails;
 }

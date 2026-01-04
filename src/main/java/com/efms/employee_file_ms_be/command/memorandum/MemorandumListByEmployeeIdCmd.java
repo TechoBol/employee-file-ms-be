@@ -32,6 +32,9 @@ public class MemorandumListByEmployeeIdCmd implements Command {
     @Setter
     private String employeeId;
 
+    @Setter
+    private Boolean useActualDate;
+
     @Getter
     private List<Memorandum> memorandumList;
 
@@ -44,8 +47,14 @@ public class MemorandumListByEmployeeIdCmd implements Command {
 
     @Override
     public void execute() {
-        startDate = DateUtils.getStartDateOrDefault(startDate);
-        endDate = DateUtils.getEndDateOrDefault(endDate);
+        if (Boolean.TRUE.equals(useActualDate)) {
+            LocalDate today = LocalDate.now();
+            startDate = today.withDayOfMonth(1);
+            endDate = today;
+        } else {
+            startDate = DateUtils.getStartDateOrDefault(startDate);
+            endDate = DateUtils.getEndDateOrDefault(endDate);
+        }
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
         memorandumList = repository.findByEmployeeAndCompanyInDateRange(UUID.fromString(employeeId), companyId, startDate, endDate);
         memorandumResponseList = memorandumList.stream()

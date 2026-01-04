@@ -8,6 +8,7 @@ import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.SalaryEventNotFound;
 import com.efms.employee_file_ms_be.model.domain.Employee;
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
+import com.efms.employee_file_ms_be.model.domain.SalaryEventCategory;
 import com.efms.employee_file_ms_be.model.domain.SalaryEventFrequency;
 import com.efms.employee_file_ms_be.model.mapper.salary_event.SalaryEventMapper;
 import com.efms.employee_file_ms_be.model.repository.SalaryEventRepository;
@@ -44,9 +45,12 @@ public class SalaryEventPatchCmd implements Command {
     @Override
     public void execute() {
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
-        salaryEvent = repository.findByIdAndCompanyId(UUID.fromString(id), companyId)
+        salaryEvent = repository.findByIdAndCompanyId(UUID.fromString(id), companyId, null)
                 .orElseThrow(() -> new SalaryEventNotFound(id));
         updateProperties(salaryEvent, salaryEventUpdateRequest);
+        if(salaryEventUpdateRequest.getCategory() == null) {
+            salaryEvent.setCategory(SalaryEventCategory.MANUAL);
+        }
         salaryEvent = repository.save(salaryEvent);
         salaryEventResponse = mapper.toDTO(salaryEvent);
     }

@@ -15,4 +15,6 @@ public interface DepartmentRepository extends JpaRepository<Department, UUID> {
     Optional<Department> findByIdAndCompanyId(UUID id, UUID companyId);
 
     List<Department> findAllByCompanyId(UUID id);
+
+    int deleteByIdAndCompanyId(UUID id, UUID companyId);
 }

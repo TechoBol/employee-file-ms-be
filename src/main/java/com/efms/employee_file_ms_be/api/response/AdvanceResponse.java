@@ -23,4 +23,6 @@ public class AdvanceResponse {
     private BigDecimal amount;
 
     private LocalDate advanceDate;
+
+    private boolean processed = false;
 }

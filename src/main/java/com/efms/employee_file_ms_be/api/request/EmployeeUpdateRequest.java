@@ -23,4 +23,6 @@ public class EmployeeUpdateRequest {
     private EmployeeType type;
     private String positionId;
     private String branchId;
+    private LocalDate disassociationDate;
+    private String disassociationReason;
 }

@@ -4,6 +4,7 @@ import com.efms.employee_file_ms_be.api.request.AdvanceCreateRequest;
 import com.efms.employee_file_ms_be.api.response.AdvanceResponse;
 import com.efms.employee_file_ms_be.model.domain.Advance;
 import com.efms.employee_file_ms_be.model.domain.Employee;
+import com.efms.employee_file_ms_be.model.domain.PayrollStatus;
 import com.efms.employee_file_ms_be.model.mapper.CustomMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
@@ -34,6 +35,8 @@ public class AdvanceMapper implements CustomMapper<AdvanceResponse, AdvanceCreat
         Employee employee = new Employee();
         employee.setId(UUID.fromString(dto.getEmployeeId()));
         instance.setEmployee(employee);
+
+        instance.setStatus(PayrollStatus.OPEN);
 
         return instance;
     }

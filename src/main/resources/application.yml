@@ -15,7 +15,13 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
-        default_schema: ${DB_SCHEMA:efms_test}
+        default_schema: ${DB_SCHEMA:public}
+
+  web:
+    cors:
+      allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+      allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
+      max-age: ${CORS_MAX_AGE:3600}
 
 efms:
   tenant:
@@ -30,11 +36,18 @@ efms:
   scheduler:
     payment:
       process:
-        # Runs on the 6th of each month at 00:00
-        cron: ${PAYMENT_PROCESS_CRON:0 0 0 6 * ?}
+        # Runs on the 14th of each month at 23:00
+        cron: ${PAYMENT_PROCESS_CRON:0 0 23 14 * ?}
       auto-process: ${PAYMENT_AUTO_PROCESS:true}
       allow-reprocess: ${PAYMENT_ALLOW_REPROCESS:false}
 
 logging:
   level:
     com.efms.employee_file_ms_be: ${LOG_LEVEL_EFMS:DEBUG}
+
+minio:
+  url: ${MINIO_ADMIN_URL:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:jodemvel}
+  secret-key: ${MINIO_SECRET_KEY:jodemvel}
+  bucket: ${MINIO_BUCKET:efms}
+  expiry-seconds:  ${MINIO_EXPIRY_SECONDS:3600}

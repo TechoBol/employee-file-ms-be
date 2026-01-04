@@ -68,6 +68,6 @@ public class SalaryEventByAdvancePatchCmd implements Command {
     private String buildDeductionDescription(Advance advance) {
         return "Descuento por adelanto - " +
                 advance.getAdvanceDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
-                " - " + advance.getAmount() + "%";
+                " - " + advance.getAmount();
     }
 }

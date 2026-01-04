@@ -20,7 +20,6 @@ public class SalaryEventCreateRequest {
     @NotNull
     private SalaryEventType type;
 
-    @NotNull
     private SalaryEventCategory category;
 
     private String description;
