@@ -7,13 +7,12 @@ import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
 import com.efms.employee_file_ms_be.model.domain.SalaryEventCategory;
-import com.efms.employee_file_ms_be.model.mapper.salary_event.SalaryEventMapper;
+import com.efms.employee_file_ms_be.model.mapper.SalaryEventMapper;
 import com.efms.employee_file_ms_be.model.repository.SalaryEventRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @CommandExecute

@@ -9,7 +9,7 @@ import com.efms.employee_file_ms_be.model.domain.ChangeType;
 import com.efms.employee_file_ms_be.model.domain.Employee;
 import com.efms.employee_file_ms_be.model.domain.EmployeeStatus;
 import com.efms.employee_file_ms_be.model.domain.FieldChange;
-import com.efms.employee_file_ms_be.model.mapper.employee.EmployeeMapper;
+import com.efms.employee_file_ms_be.model.mapper.EmployeeMapper;
 import com.efms.employee_file_ms_be.model.repository.EmployeeRepository;
 import com.efms.employee_file_ms_be.service.EmployeeHistoryService;
 import lombok.Getter;

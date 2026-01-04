@@ -9,7 +9,7 @@ import com.efms.employee_file_ms_be.model.domain.BaseSalary;
 import com.efms.employee_file_ms_be.model.domain.ChangeType;
 import com.efms.employee_file_ms_be.model.domain.Employee;
 import com.efms.employee_file_ms_be.model.domain.File;
-import com.efms.employee_file_ms_be.model.mapper.employee.EmployeeMapper;
+import com.efms.employee_file_ms_be.model.mapper.EmployeeMapper;
 import com.efms.employee_file_ms_be.model.repository.EmployeeRepository;
 import com.efms.employee_file_ms_be.service.EmployeeHistoryService;
 import lombok.Getter;
@@ -56,7 +56,7 @@ public class EmployeeChangeCompanyCmd implements Command {
         UUID currentCompanyId = UUID.fromString(TenantContext.getTenantId());
 
         Employee employee = repository.findByIdAndCompanyId(employeeId, currentCompanyId)
-                .orElseThrow(() -> new EmployeeNotFoundException("Employee not found"));
+                .orElseThrow(() -> new EmployeeNotFoundException(employeeId.toString()));
 
         employee.setBranch(null);
         employee.setPosition(null);

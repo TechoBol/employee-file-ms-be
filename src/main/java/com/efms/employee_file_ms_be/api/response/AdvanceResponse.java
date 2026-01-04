@@ -15,14 +15,9 @@ import java.util.UUID;
 @Setter
 @Builder
 public class AdvanceResponse {
-
     private UUID id;
-
     private String employeeId;
-
     private BigDecimal amount;
-
     private LocalDate advanceDate;
-
     private boolean processed = false;
 }

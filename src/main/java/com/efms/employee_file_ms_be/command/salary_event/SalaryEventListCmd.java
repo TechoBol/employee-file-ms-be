@@ -6,7 +6,7 @@ import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.PayrollStatus;
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
-import com.efms.employee_file_ms_be.model.mapper.salary_event.SalaryEventMapper;
+import com.efms.employee_file_ms_be.model.mapper.SalaryEventMapper;
 import com.efms.employee_file_ms_be.model.repository.SalaryEventRepository;
 import com.efms.employee_file_ms_be.util.DateUtils;
 import lombok.Getter;

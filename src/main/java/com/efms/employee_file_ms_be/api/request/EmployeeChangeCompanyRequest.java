@@ -1,5 +1,6 @@
 package com.efms.employee_file_ms_be.api.request;
 
+import com.efms.employee_file_ms_be.api.Constants;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -18,12 +19,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class EmployeeChangeCompanyRequest {
 
-    @NotNull(message = "New company ID is required")
+    @NotNull(message = Constants.ErrorMessage.NEW_COMPANY_ID_REQUIRED)
     private UUID newCompanyId;
 
     @NotNull
     private String newCompanyName;
 
-    @Size(max = 500, message = "Reason must not exceed 500 characters")
+    @Size(max = 500, message = Constants.ErrorMessage.REASON_MAX_CHARS)
     private String reason;
 }

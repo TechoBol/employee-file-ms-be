@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -16,16 +15,10 @@ import java.util.UUID;
 @Setter
 @Builder
 public class MemorandumResponse {
-
     private UUID id;
-
     private String employeeId;
-
     private MemorandumType type;
-
     private String description;
-
     private LocalDate memorandumDate;
-
     private Boolean isPositive;
 }

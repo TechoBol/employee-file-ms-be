@@ -8,7 +8,7 @@ import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.MemorandumNotFoundException;
 import com.efms.employee_file_ms_be.exception.RecordEditNotAllowedException;
 import com.efms.employee_file_ms_be.model.domain.Memorandum;
-import com.efms.employee_file_ms_be.model.mapper.memorandum.MemorandumMapper;
+import com.efms.employee_file_ms_be.model.mapper.MemorandumMapper;
 import com.efms.employee_file_ms_be.model.repository.MemorandumRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class MemorandumCreateRequest {
+
     @NotBlank
     private String employeeId;
 

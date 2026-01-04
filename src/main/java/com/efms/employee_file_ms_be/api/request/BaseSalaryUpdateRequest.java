@@ -12,7 +12,10 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class BaseSalaryUpdateRequest {
+
     private BigDecimal amount;
+
     private LocalDate startDate;
+
     private LocalDate endDate;
 }

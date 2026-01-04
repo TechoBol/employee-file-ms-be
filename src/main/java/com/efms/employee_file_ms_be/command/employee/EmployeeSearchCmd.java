@@ -6,7 +6,7 @@ import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.Employee;
-import com.efms.employee_file_ms_be.model.mapper.employee.EmployeeMapper;
+import com.efms.employee_file_ms_be.model.mapper.EmployeeMapper;
 import com.efms.employee_file_ms_be.model.repository.EmployeeRepository;
 import com.efms.employee_file_ms_be.model.repository.specification.EmployeeSpecification;
 import lombok.Getter;

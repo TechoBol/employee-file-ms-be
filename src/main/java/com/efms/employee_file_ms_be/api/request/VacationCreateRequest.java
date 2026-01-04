@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class VacationCreateRequest {
+
     @NotBlank
     private String employeeId;
 

@@ -51,6 +51,8 @@ public class Constants {
 
         public static final String EMPLOYEE = "Employee";
 
+        public static final String EMPLOYEE_HISTORY = "Employee History";
+
         public static final String GENERAL_SETTINGS = "General Settings";
 
         public static final String LOCATION = "Location";

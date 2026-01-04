@@ -1,13 +1,9 @@
-package com.efms.employee_file_ms_be.model.mapper.general_settings;
+package com.efms.employee_file_ms_be.model.mapper;
 
 import com.efms.employee_file_ms_be.api.request.GeneralSettingsCreateRequest;
 import com.efms.employee_file_ms_be.api.response.GeneralSettingsResponse;
-import com.efms.employee_file_ms_be.model.domain.Company;
 import com.efms.employee_file_ms_be.model.domain.GeneralSettings;
-import com.efms.employee_file_ms_be.model.mapper.CustomMapper;
 import org.springframework.stereotype.Component;
-
-import java.util.UUID;
 
 /**
  * @author Josue Veliz

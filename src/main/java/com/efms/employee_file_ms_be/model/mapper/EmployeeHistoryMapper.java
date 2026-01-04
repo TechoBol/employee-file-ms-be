@@ -1,4 +1,4 @@
-package com.efms.employee_file_ms_be.model.mapper.employee;
+package com.efms.employee_file_ms_be.model.mapper;
 
 import com.efms.employee_file_ms_be.api.response.EmployeeHistoryResponse;
 import com.efms.employee_file_ms_be.api.response.FieldChangeResponse;

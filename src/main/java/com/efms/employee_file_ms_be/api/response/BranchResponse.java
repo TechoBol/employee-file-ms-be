@@ -11,16 +11,10 @@ import lombok.Setter;
 @Setter
 @Builder
 public class BranchResponse {
-
     private String id;
-
     private String name;
-
     private String description;
-
     private String location;
-
     private String city;
-
     private String country;
 }

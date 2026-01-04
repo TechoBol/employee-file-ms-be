@@ -1,10 +1,9 @@
-package com.efms.employee_file_ms_be.model.mapper.vacation;
+package com.efms.employee_file_ms_be.model.mapper;
 
 import com.efms.employee_file_ms_be.api.request.VacationCreateRequest;
 import com.efms.employee_file_ms_be.api.response.VacationResponse;
 import com.efms.employee_file_ms_be.model.domain.Employee;
 import com.efms.employee_file_ms_be.model.domain.Vacation;
-import com.efms.employee_file_ms_be.model.mapper.CustomMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 

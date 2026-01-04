@@ -6,7 +6,7 @@ import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.BaseSalaryNotFoundException;
 import com.efms.employee_file_ms_be.model.domain.BaseSalary;
-import com.efms.employee_file_ms_be.model.mapper.base_salary.BaseSalaryMapper;
+import com.efms.employee_file_ms_be.model.mapper.BaseSalaryMapper;
 import com.efms.employee_file_ms_be.model.repository.BaseSalaryRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

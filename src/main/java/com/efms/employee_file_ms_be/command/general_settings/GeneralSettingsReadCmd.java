@@ -8,7 +8,7 @@ import com.efms.employee_file_ms_be.command.core.CommandFactory;
 import com.efms.employee_file_ms_be.config.GeneralSettingsProperties;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.GeneralSettings;
-import com.efms.employee_file_ms_be.model.mapper.general_settings.GeneralSettingsMapper;
+import com.efms.employee_file_ms_be.model.mapper.GeneralSettingsMapper;
 import com.efms.employee_file_ms_be.model.repository.GeneralSettingsRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

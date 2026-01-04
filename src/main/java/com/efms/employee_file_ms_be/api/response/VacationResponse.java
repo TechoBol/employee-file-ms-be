@@ -14,16 +14,10 @@ import java.util.UUID;
 @Setter
 @Builder
 public class VacationResponse {
-
     private UUID id;
-
     private String employeeId;
-
     private LocalDate startDate;
-
     private LocalDate endDate;
-
     private int daysTaken;
-
     private String notes;
 }

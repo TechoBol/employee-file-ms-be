@@ -5,8 +5,7 @@ import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.Payment;
-import com.efms.employee_file_ms_be.model.mapper.employee.EmployeeMapper;
-import com.efms.employee_file_ms_be.model.mapper.payment.PaymentMapper;
+import com.efms.employee_file_ms_be.model.mapper.PaymentMapper;
 import com.efms.employee_file_ms_be.model.repository.PaymentRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +37,6 @@ public class PaymentPageByPeriodCmd implements Command {
     private final PaymentRepository repository;
 
     private final PaymentMapper mapper;
-
-    private final EmployeeMapper employeeMapper;
 
     @Override
     public void execute() {

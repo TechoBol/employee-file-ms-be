@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author Josue Veliz
  */
-
 @RestController
 @RequestMapping(Constants.Path.BRANCH_PATH)
 @RequiredArgsConstructor

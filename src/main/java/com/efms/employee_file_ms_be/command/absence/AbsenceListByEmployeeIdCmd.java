@@ -6,7 +6,7 @@ import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.Absence;
 import com.efms.employee_file_ms_be.model.domain.PayrollStatus;
-import com.efms.employee_file_ms_be.model.mapper.absence.AbsenceMapper;
+import com.efms.employee_file_ms_be.model.mapper.AbsenceMapper;
 import com.efms.employee_file_ms_be.model.repository.AbsenceRepository;
 import com.efms.employee_file_ms_be.util.DateUtils;
 import lombok.Getter;

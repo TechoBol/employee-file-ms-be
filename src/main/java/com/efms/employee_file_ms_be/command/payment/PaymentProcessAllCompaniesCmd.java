@@ -108,7 +108,6 @@ public class PaymentProcessAllCompaniesCmd implements Command {
         int totalEmployees = 0;
         boolean hasMore = true;
 
-        // Process pending items first
         processPendingItems(companyId, result);
 
         while (hasMore) {
@@ -137,21 +136,18 @@ public class PaymentProcessAllCompaniesCmd implements Command {
         log.info("Processing pending items for company {}", companyId);
 
         try {
-            // Process advances
             AdvanceProcessCmd advanceCmd = commandFactory.createCommand(AdvanceProcessCmd.class);
             advanceCmd.setCompanyId(companyId);
             advanceCmd.setPeriod(period);
             advanceCmd.execute();
             result.setProcessedAdvances(advanceCmd.getProcessedList().size());
 
-            // Process absences
             AbsenceProcessCmd absenceCmd = commandFactory.createCommand(AbsenceProcessCmd.class);
             absenceCmd.setCompanyId(companyId);
             absenceCmd.setPeriod(period);
             absenceCmd.execute();
             result.setProcessedAbsences(absenceCmd.getProcessedList().size());
 
-            // Process salary events
             SalaryEventProcessCmd eventCmd = commandFactory.createCommand(SalaryEventProcessCmd.class);
             eventCmd.setCompanyId(companyId);
             eventCmd.setPeriod(period);
@@ -205,12 +201,10 @@ public class PaymentProcessAllCompaniesCmd implements Command {
         payment.setNetAmount(payrollEmployee.getPayroll().getNetAmount());
         payment.setCompanyId(companyId);
 
-        // Set employee relationship
         Employee employee = employeeRepository.getReferenceById(UUID.fromString(payrollEmployee.getEmployee().getId()));
         payment.setEmployeeDetails(buildEmployeeDetails(employee));
         payment.setEmployeeId(employee.getId());
 
-        // Map payroll details to payment details
         PaymentDetails details = mapToPaymentDetails(payrollEmployee.getPayroll());
         payment.setPaymentDetails(details);
 
@@ -220,31 +214,25 @@ public class PaymentProcessAllCompaniesCmd implements Command {
     private PaymentDetails mapToPaymentDetails(PayrollResponse payroll) {
         PaymentDetails details = new PaymentDetails();
 
-        // Información de salario base
         details.setBaseSalary(payroll.getBaseSalary());
         details.setWorkedDays(payroll.getWorkedDays());
         details.setWorkingDaysPerMonth(payroll.getWorkingDaysPerMonth());
         details.setBasicEarnings(payroll.getBasicEarnings());
 
-        // Información de antigüedad
         details.setSeniorityYears(payroll.getSeniorityYears());
         details.setSeniorityIncreasePercentage(payroll.getSeniorityIncreasePercentage());
         details.setSeniorityBonus(payroll.getSeniorityBonus());
 
-        // Bonos
         details.setOtherBonuses(payroll.getOtherBonuses());
         details.setTotalBonuses(payroll.getTotalBonuses());
         details.setTotalEarnings(payroll.getTotalEarnings());
 
-        // Deducciones AFP
         details.setDeductionAfpPercentage(payroll.getDeductionAfpPercentage());
         details.setDeductionAfp(payroll.getDeductionAfp());
 
-        // Totales
         details.setTotalDeductions(payroll.getTotalDeductions());
         details.setNetAmount(payroll.getNetAmount());
 
-        // Map deductions
         if (payroll.getDeductions() != null) {
             List<PaymentDeduction> deductions = payroll.getDeductions().stream()
                     .map(this::mapToPaymentDeduction)
@@ -277,7 +265,6 @@ public class PaymentProcessAllCompaniesCmd implements Command {
             log.warn("There were {} failed payments. Review the logs for details.", summary.getTotalFailedPayments());
         }
 
-        // Log per company summary
         summary.getCompanyResults().forEach(result -> {
             if (!result.isSuccess()) {
                 log.error("Company {} failed: {}", result.getCompanyName(), result.getErrorMessage());

@@ -6,7 +6,7 @@ import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.Vacation;
-import com.efms.employee_file_ms_be.model.mapper.vacation.VacationMapper;
+import com.efms.employee_file_ms_be.model.mapper.VacationMapper;
 import com.efms.employee_file_ms_be.model.repository.VacationRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

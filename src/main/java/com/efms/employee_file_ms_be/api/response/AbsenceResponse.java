@@ -7,7 +7,6 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 /**
  * @author Josue Veliz
@@ -16,7 +15,6 @@ import java.time.temporal.ChronoUnit;
 @Setter
 @Builder
 public class AbsenceResponse {
-
     private String id;
     private String employeeId;
     private String type;
@@ -30,11 +28,4 @@ public class AbsenceResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean processed = false;
-
-    public int getTotalDays() {
-        if (endDate == null) {
-            return 1;
-        }
-        return (int) ChronoUnit.DAYS.between(LocalDate.parse(date.toString()), endDate.plusDays(1));
-    }
 }

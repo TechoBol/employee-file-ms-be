@@ -20,16 +20,13 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping(Constants.Path.EMPLOYEE_PATH)
 @RequiredArgsConstructor
-@Tag(name = "Employee History", description = "Employee change history operations")
+@Tag(name = Constants.Tag.EMPLOYEE_HISTORY)
 public class EmployeeHistoryController {
 
     private final EmployeeHistoryListCmd command;
 
     @GetMapping("/{employeeId}/history")
-    @Operation(
-            summary = "Get employee history with optional filters and pagination",
-            description = "Retrieves the complete change history for a specific employee"
-    )
+    @Operation(summary = "Get employee history with optional filters and pagination")
     public ResponseEntity<Page<EmployeeHistoryResponse>> getEmployeeHistory(
             @PathVariable String employeeId,
             @RequestParam(required = false) String changeType,

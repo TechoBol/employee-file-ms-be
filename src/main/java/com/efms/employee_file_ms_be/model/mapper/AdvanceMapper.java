@@ -1,11 +1,10 @@
-package com.efms.employee_file_ms_be.model.mapper.advance;
+package com.efms.employee_file_ms_be.model.mapper;
 
 import com.efms.employee_file_ms_be.api.request.AdvanceCreateRequest;
 import com.efms.employee_file_ms_be.api.response.AdvanceResponse;
 import com.efms.employee_file_ms_be.model.domain.Advance;
 import com.efms.employee_file_ms_be.model.domain.Employee;
 import com.efms.employee_file_ms_be.model.domain.PayrollStatus;
-import com.efms.employee_file_ms_be.model.mapper.CustomMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 

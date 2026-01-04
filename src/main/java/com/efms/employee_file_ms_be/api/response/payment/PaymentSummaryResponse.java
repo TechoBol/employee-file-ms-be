@@ -1,6 +1,5 @@
 package com.efms.employee_file_ms_be.api.response.payment;
 
-import com.efms.employee_file_ms_be.api.response.payroll.PayrollDeductionResponse;
 import lombok.*;
 
 import java.math.BigDecimal;

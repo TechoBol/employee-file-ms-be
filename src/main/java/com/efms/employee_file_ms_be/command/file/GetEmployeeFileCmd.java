@@ -1,8 +1,5 @@
 package com.efms.employee_file_ms_be.command.file;
 
-/**
- * @author Josue Veliz
- */
 import com.efms.employee_file_ms_be.api.response.FileWithUrlResponse;
 import com.efms.employee_file_ms_be.api.response.UnitFileWithUrlResponse;
 import com.efms.employee_file_ms_be.command.core.Command;

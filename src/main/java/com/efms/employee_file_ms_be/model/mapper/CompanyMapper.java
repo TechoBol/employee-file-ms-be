@@ -1,9 +1,8 @@
-package com.efms.employee_file_ms_be.model.mapper.company;
+package com.efms.employee_file_ms_be.model.mapper;
 
 import com.efms.employee_file_ms_be.api.request.CompanyCreateRequest;
 import com.efms.employee_file_ms_be.api.response.CompanyResponse;
 import com.efms.employee_file_ms_be.model.domain.Company;
-import com.efms.employee_file_ms_be.model.mapper.CustomMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 

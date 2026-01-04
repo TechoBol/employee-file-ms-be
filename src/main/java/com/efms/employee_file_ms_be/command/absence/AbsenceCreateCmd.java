@@ -10,7 +10,7 @@ import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.EndDateBeforeStartDateException;
 import com.efms.employee_file_ms_be.exception.MultiDayVacationMustBeFullDayException;
 import com.efms.employee_file_ms_be.model.domain.*;
-import com.efms.employee_file_ms_be.model.mapper.absence.AbsenceMapper;
+import com.efms.employee_file_ms_be.model.mapper.AbsenceMapper;
 import com.efms.employee_file_ms_be.model.repository.AbsenceRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

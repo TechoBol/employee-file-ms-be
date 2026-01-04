@@ -1,10 +1,9 @@
-package com.efms.employee_file_ms_be.model.mapper.position;
+package com.efms.employee_file_ms_be.model.mapper;
 
 import com.efms.employee_file_ms_be.api.request.PositionCreateRequest;
 import com.efms.employee_file_ms_be.api.response.PositionResponse;
 import com.efms.employee_file_ms_be.model.domain.Department;
 import com.efms.employee_file_ms_be.model.domain.Position;
-import com.efms.employee_file_ms_be.model.mapper.CustomMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 

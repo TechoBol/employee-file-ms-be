@@ -13,7 +13,7 @@ import com.efms.employee_file_ms_be.exception.AdvanceNotFoundException;
 import com.efms.employee_file_ms_be.exception.RecordEditNotAllowedException;
 import com.efms.employee_file_ms_be.model.domain.Advance;
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
-import com.efms.employee_file_ms_be.model.mapper.advance.AdvanceMapper;
+import com.efms.employee_file_ms_be.model.mapper.AdvanceMapper;
 import com.efms.employee_file_ms_be.model.repository.AdvanceRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

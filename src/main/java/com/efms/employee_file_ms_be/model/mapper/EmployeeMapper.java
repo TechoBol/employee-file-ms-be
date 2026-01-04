@@ -1,9 +1,8 @@
-package com.efms.employee_file_ms_be.model.mapper.employee;
+package com.efms.employee_file_ms_be.model.mapper;
 
 import com.efms.employee_file_ms_be.api.request.EmployeeCreateRequest;
 import com.efms.employee_file_ms_be.api.response.EmployeeResponse;
 import com.efms.employee_file_ms_be.model.domain.*;
-import com.efms.employee_file_ms_be.model.mapper.CustomMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

@@ -4,13 +4,12 @@ import com.efms.employee_file_ms_be.api.request.EmployeeUpdateRequest;
 import com.efms.employee_file_ms_be.api.response.EmployeeResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
-import com.efms.employee_file_ms_be.command.core.CommandFactory;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.exception.EmployeeNotFoundException;
 import com.efms.employee_file_ms_be.model.domain.ChangeType;
 import com.efms.employee_file_ms_be.model.domain.Employee;
 import com.efms.employee_file_ms_be.model.domain.EmployeeStatus;
-import com.efms.employee_file_ms_be.model.mapper.employee.EmployeeMapper;
+import com.efms.employee_file_ms_be.model.mapper.EmployeeMapper;
 import com.efms.employee_file_ms_be.model.repository.EmployeeRepository;
 import com.efms.employee_file_ms_be.service.EmployeeHistoryService;
 import lombok.Getter;
@@ -46,7 +45,6 @@ public class EmployeeDisassociateCmd implements Command {
 
     private final EmployeeMapper mapper;
 
-    private final CommandFactory factory;
     private final EmployeeHistoryService historyService;
 
     @Override

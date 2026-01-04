@@ -1,10 +1,9 @@
-package com.efms.employee_file_ms_be.model.mapper.memorandum;
+package com.efms.employee_file_ms_be.model.mapper;
 
 import com.efms.employee_file_ms_be.api.request.MemorandumCreateRequest;
 import com.efms.employee_file_ms_be.api.response.MemorandumResponse;
 import com.efms.employee_file_ms_be.model.domain.Employee;
 import com.efms.employee_file_ms_be.model.domain.Memorandum;
-import com.efms.employee_file_ms_be.model.mapper.CustomMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 

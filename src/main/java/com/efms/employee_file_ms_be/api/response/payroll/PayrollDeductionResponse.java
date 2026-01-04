@@ -11,10 +11,7 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 public class PayrollDeductionResponse {
-
     private String type;
-
     private Integer qty;
-
     private BigDecimal totalDeduction;
 }

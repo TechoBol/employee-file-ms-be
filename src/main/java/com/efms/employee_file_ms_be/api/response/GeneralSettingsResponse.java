@@ -14,18 +14,11 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 public class GeneralSettingsResponse {
-
     private String id;
-
     private String companyId;
-
     private Integer workingDaysPerMonth;
-
     private BigDecimal seniorityIncreasePercentage;
-
     private BigDecimal contributionAfpPercentage;
-
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
 }

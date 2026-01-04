@@ -1,7 +1,7 @@
 package com.efms.employee_file_ms_be.service;
 
 import com.efms.employee_file_ms_be.model.domain.*;
-import com.efms.employee_file_ms_be.model.mapper.employee.EmployeeMapper;
+import com.efms.employee_file_ms_be.model.mapper.EmployeeMapper;
 import com.efms.employee_file_ms_be.model.repository.EmployeeHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

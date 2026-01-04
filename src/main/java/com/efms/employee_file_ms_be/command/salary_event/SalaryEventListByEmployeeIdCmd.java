@@ -1,6 +1,5 @@
 package com.efms.employee_file_ms_be.command.salary_event;
 
-import com.efms.employee_file_ms_be.api.response.AbsenceResponse;
 import com.efms.employee_file_ms_be.api.response.SalaryEventResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
@@ -8,7 +7,7 @@ import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.PayrollStatus;
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
 import com.efms.employee_file_ms_be.model.domain.SalaryEventCategory;
-import com.efms.employee_file_ms_be.model.mapper.salary_event.SalaryEventMapper;
+import com.efms.employee_file_ms_be.model.mapper.SalaryEventMapper;
 import com.efms.employee_file_ms_be.model.repository.SalaryEventRepository;
 import com.efms.employee_file_ms_be.util.DateUtils;
 import lombok.Getter;

@@ -1,9 +1,8 @@
-package com.efms.employee_file_ms_be.model.mapper.branch;
+package com.efms.employee_file_ms_be.model.mapper;
 
 import com.efms.employee_file_ms_be.api.request.BranchCreateRequest;
 import com.efms.employee_file_ms_be.api.response.BranchResponse;
 import com.efms.employee_file_ms_be.model.domain.Branch;
-import com.efms.employee_file_ms_be.model.mapper.CustomMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 

@@ -1,13 +1,12 @@
 package com.efms.employee_file_ms_be.command.advance;
 
-import com.efms.employee_file_ms_be.api.response.AbsenceResponse;
 import com.efms.employee_file_ms_be.api.response.AdvanceResponse;
 import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.Advance;
 import com.efms.employee_file_ms_be.model.domain.PayrollStatus;
-import com.efms.employee_file_ms_be.model.mapper.advance.AdvanceMapper;
+import com.efms.employee_file_ms_be.model.mapper.AdvanceMapper;
 import com.efms.employee_file_ms_be.model.repository.AdvanceRepository;
 import com.efms.employee_file_ms_be.util.DateUtils;
 import lombok.Getter;

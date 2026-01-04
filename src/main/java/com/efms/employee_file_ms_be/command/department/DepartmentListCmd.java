@@ -5,11 +5,10 @@ import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.config.TenantContext;
 import com.efms.employee_file_ms_be.model.domain.Department;
-import com.efms.employee_file_ms_be.model.mapper.department.DepartmentMapper;
+import com.efms.employee_file_ms_be.model.mapper.DepartmentMapper;
 import com.efms.employee_file_ms_be.model.repository.DepartmentRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 import java.util.List;
 import java.util.UUID;

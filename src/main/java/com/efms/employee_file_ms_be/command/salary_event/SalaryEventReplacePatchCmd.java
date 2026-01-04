@@ -11,7 +11,6 @@ import com.efms.employee_file_ms_be.exception.SalaryEventNotFound;
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
 import com.efms.employee_file_ms_be.model.domain.SalaryEventCategory;
 import com.efms.employee_file_ms_be.model.domain.SalaryEventFrequency;
-import com.efms.employee_file_ms_be.model.mapper.salary_event.SalaryEventMapper;
 import com.efms.employee_file_ms_be.model.repository.SalaryEventRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

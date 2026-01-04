@@ -14,7 +14,7 @@ import com.efms.employee_file_ms_be.model.domain.Absence;
 import com.efms.employee_file_ms_be.model.domain.AbsenceDuration;
 import com.efms.employee_file_ms_be.model.domain.AbsenceType;
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
-import com.efms.employee_file_ms_be.model.mapper.absence.AbsenceMapper;
+import com.efms.employee_file_ms_be.model.mapper.AbsenceMapper;
 import com.efms.employee_file_ms_be.model.repository.AbsenceRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

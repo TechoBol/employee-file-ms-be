@@ -9,8 +9,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UnitFileCreateRequest {
+
     private String originalName;
+
     private String description;
+
     private String section;
+
     private String uuidFileName;
 }

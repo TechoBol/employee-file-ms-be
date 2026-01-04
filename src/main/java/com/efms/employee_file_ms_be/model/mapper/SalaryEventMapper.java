@@ -1,12 +1,10 @@
-package com.efms.employee_file_ms_be.model.mapper.salary_event;
+package com.efms.employee_file_ms_be.model.mapper;
 
 import com.efms.employee_file_ms_be.api.request.SalaryEventCreateRequest;
 import com.efms.employee_file_ms_be.api.response.SalaryEventResponse;
 import com.efms.employee_file_ms_be.model.domain.Employee;
 import com.efms.employee_file_ms_be.model.domain.PayrollStatus;
 import com.efms.employee_file_ms_be.model.domain.SalaryEvent;
-import com.efms.employee_file_ms_be.model.domain.SalaryEventFrequency;
-import com.efms.employee_file_ms_be.model.mapper.CustomMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;

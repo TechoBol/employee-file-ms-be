@@ -1,11 +1,10 @@
-package com.efms.employee_file_ms_be.model.mapper.absence;
+package com.efms.employee_file_ms_be.model.mapper;
 
 import com.efms.employee_file_ms_be.api.request.AbsenceCreateRequest;
 import com.efms.employee_file_ms_be.api.response.AbsenceResponse;
 import com.efms.employee_file_ms_be.model.domain.Absence;
 import com.efms.employee_file_ms_be.model.domain.Employee;
 import com.efms.employee_file_ms_be.model.domain.PayrollStatus;
-import com.efms.employee_file_ms_be.model.mapper.CustomMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;

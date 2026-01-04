@@ -1,4 +1,4 @@
-package com.efms.employee_file_ms_be.model.mapper.payment;
+package com.efms.employee_file_ms_be.model.mapper;
 
 import com.efms.employee_file_ms_be.api.response.payment.PaymentDeductionResponse;
 import com.efms.employee_file_ms_be.api.response.payment.PaymentDetailsResponse;

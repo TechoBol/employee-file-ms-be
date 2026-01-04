@@ -102,18 +102,13 @@ public class SalaryEventByAbsencePatchCmd implements Command {
 
     private BigDecimal calculateDeductionAmount(BigDecimal baseSalary, AbsenceType type,
                                                 AbsenceDuration duration, int totalDays, int workingDaysPerMonth) {
-
-        // Salario diario = salario base / 30
         BigDecimal dailySalary = baseSalary.divide(BigDecimal.valueOf(workingDaysPerMonth), 4, RoundingMode.HALF_UP);
 
-        // Factor según duración
         BigDecimal durationFactor = duration == AbsenceDuration.HALF_DAY ?
                 new BigDecimal("0.5") : BigDecimal.ONE;
 
-        // Factor según tipo de ausencia
         BigDecimal typeFactor = calculateTypeFactor(type, duration);
 
-        // Cálculo final
         return dailySalary
                 .multiply(typeFactor)
                 .multiply(durationFactor)
@@ -126,7 +121,6 @@ public class SalaryEventByAbsencePatchCmd implements Command {
             case PERMISSION:
                 return BigDecimal.ONE;
             case ABSENCE:
-                // Falta: factor 2 para día completo, 1 para medio día
                 return duration == AbsenceDuration.HALF_DAY ?
                         BigDecimal.ONE : BigDecimal.valueOf(2);
             default:

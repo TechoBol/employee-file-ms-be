@@ -5,7 +5,7 @@ import com.efms.employee_file_ms_be.command.core.Command;
 import com.efms.employee_file_ms_be.command.core.CommandExecute;
 import com.efms.employee_file_ms_be.exception.CompanyNotFoundException;
 import com.efms.employee_file_ms_be.model.domain.Company;
-import com.efms.employee_file_ms_be.model.mapper.company.CompanyMapper;
+import com.efms.employee_file_ms_be.model.mapper.CompanyMapper;
 import com.efms.employee_file_ms_be.model.repository.CompanyRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
