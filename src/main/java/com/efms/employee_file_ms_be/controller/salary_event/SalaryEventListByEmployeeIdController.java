@@ -31,11 +31,13 @@ public class SalaryEventListByEmployeeIdController {
             @PathVariable String employeeId,
             @RequestParam(required = false) SalaryEventCategory category,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) Boolean useActualDate) {
         command.setCategory(category);
         command.setStartDate(startDate);
         command.setEndDate(endDate);
         command.setEmployeeId(employeeId);
+        command.setUseActualDate(useActualDate);
         command.execute();
 
         return ResponseEntity.ok(command.getSalaryEventResponseList());

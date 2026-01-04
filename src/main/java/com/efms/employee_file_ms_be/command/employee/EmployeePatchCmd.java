@@ -140,7 +140,7 @@ public class EmployeePatchCmd implements Command {
             }
         }
 
-        if (request.getPositionId() != null) {
+        if (request.getBranchId() != null) {
             String currentBranchId = employee.getBranch() != null ? employee.getBranch().getId().toString() : null;
             if (!request.getBranchId().equals(currentBranchId)) {
                 changes.put("branchId", createFieldChange("branchId", currentBranchId, request.getBranchId(), now));

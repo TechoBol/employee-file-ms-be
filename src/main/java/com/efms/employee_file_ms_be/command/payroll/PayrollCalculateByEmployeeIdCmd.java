@@ -52,6 +52,8 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
 
     private final CommandFactory commandFactory;
 
+    private static final BigDecimal SENIORITY_MULTIPLIER = BigDecimal.valueOf(3);
+
     @Override
     public void execute() {
         if (Boolean.TRUE.equals(useActualDate)) {
@@ -80,10 +82,15 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
         BigDecimal basicEarnings = calculateBasicEarnings(baseSalaryAmount, workedDays, workingDaysPerMonth);
 
         BigDecimal seniorityPercentage = getSeniorityPercentage(seniority);
-        BigDecimal seniorityBonus = calculateSeniorityBonus(baseSalaryAmount, seniorityPercentage);
-        BigDecimal afpContribution = employee.getType() == EmployeeType.CONSULTANT
+
+        BigDecimal seniorityFactor = employee.getType() == EmployeeType.CONSULTANT
                 ? BigDecimal.ZERO
-                : calculateAfpContribution(baseSalaryAmount, generalSettings.getContributionAfpPercentage());
+                : BigDecimal.ONE;
+
+        BigDecimal seniorityBonus = calculateSeniorityBonus(
+                baseSalaryAmount,
+                seniorityPercentage
+        ).multiply(seniorityFactor);
 
         List<Absence> absences = findAbsenceByEmployeeId();
         Map<AbsenceType, List<Absence>> absencesByType = absences.stream()
@@ -143,14 +150,20 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
             deductions.add(manualDeductionResponse);
         }
 
+        BigDecimal totalEarnings = basicEarnings.add(totalBonuses);
+
+        BigDecimal afpContribution = employee.getType() == EmployeeType.CONSULTANT
+                ? BigDecimal.ZERO
+                : calculateAfpContribution(totalEarnings, generalSettings.getContributionAfpPercentage());
+
         BigDecimal totalDeductions = deductions.stream()
                 .map(PayrollDeductionResponse::getTotalDeduction)
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 .add(afpContribution);
 
-        BigDecimal totalEarnings = basicEarnings.add(totalBonuses);
-
-        BigDecimal netAmount = totalEarnings.subtract(totalDeductions);
+        BigDecimal netAmount = totalEarnings
+                .subtract(totalDeductions)
+                .setScale(1, RoundingMode.HALF_UP);
 
         payrollResponse = new PayrollResponse();
         payrollResponse.setBaseSalary(baseSalaryAmount);
@@ -230,15 +243,18 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
         if (percentage.compareTo(BigDecimal.ZERO) == 0) {
             return BigDecimal.ZERO;
         }
-        return baseSalary.multiply(percentage)
-                .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+
+        return baseSalary
+                .multiply(percentage)
+                .multiply(SENIORITY_MULTIPLIER)
+                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
     }
 
-    private BigDecimal calculateAfpContribution(BigDecimal baseSalary, BigDecimal afpContributionPercentage) {
-        if (baseSalary == null || afpContributionPercentage == null) {
+    private BigDecimal calculateAfpContribution(BigDecimal totalEarnings, BigDecimal afpContributionPercentage) {
+        if (totalEarnings == null || afpContributionPercentage == null) {
             return BigDecimal.ZERO;
         }
-        return baseSalary.multiply(afpContributionPercentage);
+        return totalEarnings.multiply(afpContributionPercentage);
     }
 
     private GeneralSettingsResponse findGeneralSettings() {

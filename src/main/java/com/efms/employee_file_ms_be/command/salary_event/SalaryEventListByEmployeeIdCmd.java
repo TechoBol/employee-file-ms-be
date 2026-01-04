@@ -40,6 +40,9 @@ public class SalaryEventListByEmployeeIdCmd implements Command {
     @Setter
     private SalaryEventCategory category;
 
+    @Setter
+    private Boolean useActualDate;
+
     @Getter
     private List<SalaryEventResponse> salaryEventResponseList;
 
@@ -51,8 +54,14 @@ public class SalaryEventListByEmployeeIdCmd implements Command {
 
     @Override
     public void execute() {
-        startDate = DateUtils.getStartDateOrDefault(startDate);
-        endDate = DateUtils.getEndDateOrDefault(endDate);
+        if (Boolean.TRUE.equals(useActualDate)) {
+            LocalDate today = LocalDate.now();
+            startDate = today.withDayOfMonth(1);
+            endDate = today;
+        } else {
+            startDate = DateUtils.getStartDateOrDefault(startDate);
+            endDate = DateUtils.getEndDateOrDefault(endDate);
+        }
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
         UUID employeeUUID = UUID.fromString(employeeId);
 

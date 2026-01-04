@@ -36,6 +36,9 @@ public class AdvanceListByEmployeeIdCmd implements Command {
     @Setter
     private String employeeId;
 
+    @Setter
+    private Boolean useActualDate;
+
     @Getter
     private List<Advance> advanceList;
 
@@ -47,8 +50,14 @@ public class AdvanceListByEmployeeIdCmd implements Command {
 
     @Override
     public void execute() {
-        startDate = getStartDateOrDefault(startDate);
-        endDate = getEndDateOrDefault(endDate);
+        if (Boolean.TRUE.equals(useActualDate)) {
+            LocalDate today = LocalDate.now();
+            startDate = today.withDayOfMonth(1);
+            endDate = today;
+        } else {
+            startDate = DateUtils.getStartDateOrDefault(startDate);
+            endDate = DateUtils.getEndDateOrDefault(endDate);
+        }
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
         UUID employeeUUID = UUID.fromString(employeeId);
 

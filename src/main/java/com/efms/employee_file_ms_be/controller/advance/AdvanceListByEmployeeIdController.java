@@ -29,10 +29,12 @@ public class AdvanceListByEmployeeIdController {
     public ResponseEntity<List<AdvanceResponse>> getAdvancesByEmployeeId(
             @PathVariable String employeeId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(required = false) Boolean useActualDate) {
         command.setStartDate(startDate);
         command.setEndDate(endDate);
         command.setEmployeeId(employeeId);
+        command.setUseActualDate(useActualDate);
         command.execute();
 
         return ResponseEntity.ok(command.getAdvanceResponseList());

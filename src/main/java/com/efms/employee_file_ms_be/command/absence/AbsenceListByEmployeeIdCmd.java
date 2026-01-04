@@ -35,6 +35,9 @@ public class AbsenceListByEmployeeIdCmd implements Command {
     @Setter
     private String employeeId;
 
+    @Setter
+    private Boolean useActualDate;
+
     @Getter
     private List<AbsenceResponse> absenceResponseList;
 
@@ -46,8 +49,14 @@ public class AbsenceListByEmployeeIdCmd implements Command {
 
     @Override
     public void execute() {
-        startDate = DateUtils.getStartDateOrDefault(startDate);
-        endDate = DateUtils.getEndDateOrDefault(endDate);
+        if (Boolean.TRUE.equals(useActualDate)) {
+            LocalDate today = LocalDate.now();
+            startDate = today.withDayOfMonth(1);
+            endDate = today;
+        } else {
+            startDate = DateUtils.getStartDateOrDefault(startDate);
+            endDate = DateUtils.getEndDateOrDefault(endDate);
+        }
         UUID companyId = UUID.fromString(TenantContext.getTenantId());
         UUID employeeUUID = UUID.fromString(employeeId);
 

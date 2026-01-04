@@ -98,7 +98,7 @@ public class EmployeeSpecification {
                 predicates.add(criteriaBuilder.equal(root.get("position").get("id"), positionId));
             }
 
-            if (query != null) {
+            if (query != null && query.getResultType() != Long.class && query.getResultType() != long.class) {
                 root.fetch("position", JoinType.LEFT).fetch("department", JoinType.LEFT);
                 root.fetch("branch", JoinType.LEFT);
             }
