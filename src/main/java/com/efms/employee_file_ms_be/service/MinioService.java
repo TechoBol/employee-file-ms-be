@@ -4,6 +4,7 @@ import io.minio.*;
 import io.minio.http.Method;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,7 @@ import java.util.UUID;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MinioService {
 
     private final MinioClient minioClient;
@@ -26,6 +28,8 @@ public class MinioService {
 
     @Value("${minio.expiry-seconds}")
     private Integer expirySeconds;
+
+    private boolean isAvailable = false;
 
     @PostConstruct
     public void init() {
@@ -38,12 +42,19 @@ public class MinioService {
                         MakeBucketArgs.builder().bucket(bucket).build()
                 );
             }
+            isAvailable = true;
+            log.info("MinIO successfully initialized");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            isAvailable = false;
+            log.warn("MinIO is not available. Application will continue without file storage: {}", e.getMessage());
         }
     }
 
     public String upload(MultipartFile file) {
+        if (!isAvailable) {
+            throw new RuntimeException("Storage service is not available");
+        }
+
         try {
             String extension = getExtension(file.getOriginalFilename());
             String objectName = UUID.randomUUID() + extension;
@@ -59,7 +70,8 @@ public class MinioService {
 
             return objectName;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("Error uploading file to MinIO", e);
+            throw new RuntimeException("Error uploading file: " + e.getMessage());
         }
     }
 
@@ -70,6 +82,10 @@ public class MinioService {
     }
 
     public byte[] download(String objectName) {
+        if (!isAvailable) {
+            throw new RuntimeException("Storage service is not available");
+        }
+
         try (InputStream stream = minioClient.getObject(
                 GetObjectArgs.builder()
                         .bucket(bucket)
@@ -78,11 +94,16 @@ public class MinioService {
         )) {
             return stream.readAllBytes();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("Error downloading file from MinIO", e);
+            throw new RuntimeException("Error downloading file: " + e.getMessage());
         }
     }
 
     public String presignedUrl(String objectName) {
+        if (!isAvailable) {
+            throw new RuntimeException("Storage service is not available");
+        }
+
         try {
             return minioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
@@ -93,11 +114,16 @@ public class MinioService {
                             .build()
             );
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("Error generating presigned URL", e);
+            throw new RuntimeException("Error generating presigned URL: " + e.getMessage());
         }
     }
 
     public void deleteObject(String objectName) {
+        if (!isAvailable) {
+            throw new RuntimeException("Storage service is not available");
+        }
+
         try {
             minioClient.removeObject(
                     RemoveObjectArgs.builder()
@@ -106,8 +132,13 @@ public class MinioService {
                             .build()
             );
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("Error deleting file from MinIO", e);
+            throw new RuntimeException("Error deleting file: " + e.getMessage());
         }
+    }
+
+    public boolean isServiceAvailable() {
+        return isAvailable;
     }
 
     private String getExtension(String filename) {
