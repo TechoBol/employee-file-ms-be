@@ -105,7 +105,7 @@ public class SalaryEventByAbsenceCreateCmd implements Command {
                                                 AbsenceDuration duration, int totalDays, int workingDaysPerMonth) {
         BigDecimal dailySalary = baseSalary.divide(BigDecimal.valueOf(workingDaysPerMonth), 4, RoundingMode.HALF_UP);
 
-        BigDecimal durationFactor = duration == AbsenceDuration.HALF_DAY ?
+        BigDecimal durationFactor = (type == AbsenceType.PERMISSION && duration == AbsenceDuration.HALF_DAY) ?
                 new BigDecimal("0.5") : BigDecimal.ONE;
 
         BigDecimal typeFactor = calculateTypeFactor(type, duration);
