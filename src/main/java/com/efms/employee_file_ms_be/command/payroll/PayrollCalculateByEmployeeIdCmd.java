@@ -89,7 +89,9 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
 
         BigDecimal seniorityBonus = calculateSeniorityBonus(
                 baseSalaryAmount,
-                seniorityPercentage
+                seniorityPercentage,
+                employee,
+                workingDaysPerMonth
         ).multiply(seniorityFactor);
 
         List<Absence> absences = findAbsenceByEmployeeId();
@@ -219,7 +221,7 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
 
     private BigDecimal calculateBasicEarnings(BigDecimal baseSalary, int workedDays, Integer workingDaysPerMonth) {
         if (workingDaysPerMonth == null || workingDaysPerMonth == 0) {
-            workingDaysPerMonth = 30; // Default
+            workingDaysPerMonth = 30;
         }
         return baseSalary
                 .multiply(BigDecimal.valueOf(workedDays))
@@ -239,15 +241,57 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
         return BigDecimal.ZERO;
     }
 
-    private BigDecimal calculateSeniorityBonus(BigDecimal baseSalary, BigDecimal percentage) {
+    private BigDecimal calculateSeniorityBonus(BigDecimal baseSalary, BigDecimal percentage, Employee employee, Integer workingDaysPerMonth) {
         if (percentage.compareTo(BigDecimal.ZERO) == 0) {
             return BigDecimal.ZERO;
         }
 
-        return baseSalary
+        BigDecimal fullBonus = baseSalary
                 .multiply(percentage)
                 .multiply(SENIORITY_MULTIPLIER)
                 .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+
+        int proratedDays = calculateSeniorityProratedDays(employee, workingDaysPerMonth);
+
+        if (proratedDays >= workingDaysPerMonth) {
+            return fullBonus;
+        }
+
+        if (proratedDays <= 0) {
+            return BigDecimal.ZERO;
+        }
+
+        return fullBonus
+                .multiply(BigDecimal.valueOf(proratedDays))
+                .divide(BigDecimal.valueOf(workingDaysPerMonth), 2, RoundingMode.HALF_UP);
+    }
+
+    private int calculateSeniorityProratedDays(Employee employee, Integer workingDaysPerMonth) {
+        LocalDate hireDate = employee.getHireDate();
+
+        LocalDate seniorityDate;
+        try {
+            seniorityDate = startDate.withDayOfMonth(hireDate.getDayOfMonth());
+        } catch (java.time.DateTimeException e) {
+            seniorityDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+        }
+
+        // If the employee has a disassociation date, use it as the effective end date
+        LocalDate effectiveEndDate = endDate;
+        if (employee.getDisassociationDate() != null && employee.getDisassociationDate().isBefore(effectiveEndDate)) {
+            effectiveEndDate = employee.getDisassociationDate();
+        }
+
+        if (!seniorityDate.isAfter(startDate)) {
+            // Already earned seniority before the period, but still prorated by disassociation
+            return (int) ChronoUnit.DAYS.between(startDate, effectiveEndDate);
+        }
+
+        if (seniorityDate.isAfter(effectiveEndDate)) {
+            return 0;
+        }
+
+        return (int) ChronoUnit.DAYS.between(seniorityDate, effectiveEndDate);
     }
 
     private BigDecimal calculateAfpContribution(BigDecimal totalEarnings, BigDecimal afpContributionPercentage) {
