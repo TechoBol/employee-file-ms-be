@@ -268,30 +268,34 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
 
     private int calculateSeniorityProratedDays(Employee employee, Integer workingDaysPerMonth) {
         LocalDate hireDate = employee.getHireDate();
+        int currentSeniority = getSeniority(employee);
 
-        LocalDate seniorityDate;
-        try {
-            seniorityDate = startDate.withDayOfMonth(hireDate.getDayOfMonth());
-        } catch (java.time.DateTimeException e) {
-            seniorityDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+        // If seniority is 0, no bonus at all
+        if (currentSeniority < 2) {
+            return 0;
         }
 
-        // If the employee has a disassociation date, use it as the effective end date
+        // The date when the employee actually reached the current seniority level
+        // e.g. hired 6 March 2023, currentSeniority = 2 → reached 2 years on 6 March 2025
+        LocalDate seniorityAchievedDate = hireDate.plusYears(currentSeniority);
+
+        // Already achieved before this period → full bonus
+        if (!seniorityAchievedDate.isAfter(startDate)) {
+            return workingDaysPerMonth;
+        }
+
+        // Will achieve after this period → no bonus yet
+        if (seniorityAchievedDate.isAfter(endDate)) {
+            return 0;
+        }
+
+        // Achieved within this period → prorated
         LocalDate effectiveEndDate = endDate;
         if (employee.getDisassociationDate() != null && employee.getDisassociationDate().isBefore(effectiveEndDate)) {
             effectiveEndDate = employee.getDisassociationDate();
         }
 
-        if (!seniorityDate.isAfter(startDate)) {
-            // Already earned seniority before the period, but still prorated by disassociation
-            return (int) ChronoUnit.DAYS.between(startDate, effectiveEndDate);
-        }
-
-        if (seniorityDate.isAfter(effectiveEndDate)) {
-            return 0;
-        }
-
-        return (int) ChronoUnit.DAYS.between(seniorityDate, effectiveEndDate);
+        return (int) ChronoUnit.DAYS.between(seniorityAchievedDate, effectiveEndDate);
     }
 
     private BigDecimal calculateAfpContribution(BigDecimal totalEarnings, BigDecimal afpContributionPercentage) {
