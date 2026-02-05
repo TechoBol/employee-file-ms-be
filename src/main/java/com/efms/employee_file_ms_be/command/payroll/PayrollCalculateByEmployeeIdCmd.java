@@ -320,7 +320,7 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
 
     private int getSeniority(Employee employee) {
         LocalDate hireDate = employee.getHireDate();
-        return Period.between(hireDate, LocalDate.now()).getYears();
+        return Period.between(hireDate, endDate).getYears();
     }
 
     private List<Absence> findAbsenceByEmployeeId() {

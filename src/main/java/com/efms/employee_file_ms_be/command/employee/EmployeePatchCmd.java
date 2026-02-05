@@ -81,6 +81,7 @@ public class EmployeePatchCmd implements Command {
             position.setId(UUID.fromString(positionId));
             employee.setPosition(position);
         });
+        Optional.ofNullable(employeeUpdateRequest.getType()).ifPresent(employee::setType);
         Optional.ofNullable(employeeUpdateRequest.getBranchId()).ifPresent(branchId -> {
             Branch branch = new Branch();
             branch.setId(UUID.fromString(branchId));
