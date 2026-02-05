@@ -41,6 +41,7 @@ public class PayrollCalculateByPageableController {
             @RequestParam(required = false) Boolean isDisassociated,
             @RequestParam(required = false) UUID branchId,
             @RequestParam(required = false) UUID positionId,
+            @RequestParam(required = false) String contractCompany,
             Pageable pageable
     ) {
         EmployeeSearchRequest searchRequest = EmployeeSearchRequest.builder()
@@ -54,6 +55,7 @@ public class PayrollCalculateByPageableController {
                 .branchId(branchId)
                 .positionId(positionId)
                 .pageable(pageable)
+                .contractCompany(contractCompany)
                 .build();
 
         command.setSearchRequest(searchRequest);

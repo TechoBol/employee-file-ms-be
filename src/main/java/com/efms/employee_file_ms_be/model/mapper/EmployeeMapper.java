@@ -62,6 +62,7 @@ public class EmployeeMapper implements CustomMapper<EmployeeResponse, EmployeeCr
                 .disassociatedAt(employee.getDisassociatedAt())
                 .disassociationDate(employee.getDisassociationDate())
                 .disassociationReason(employee.getDisassociationReason())
+                .contractCompany(employee.getContractCompany())
                 .build();
     }
 
@@ -86,6 +87,7 @@ public class EmployeeMapper implements CustomMapper<EmployeeResponse, EmployeeCr
                 .status(EmployeeStatus.ACTIVE)
                 .isDeleted(false)
                 .isDisassociated(false)
+                .contractCompany(employeeCreateRequest.getContractCompany())
                 .build();
     }
 }

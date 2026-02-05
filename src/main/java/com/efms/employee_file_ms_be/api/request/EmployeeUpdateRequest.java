@@ -40,4 +40,6 @@ public class EmployeeUpdateRequest {
     private LocalDate disassociationDate;
 
     private String disassociationReason;
+
+    private String contractCompany;
 }

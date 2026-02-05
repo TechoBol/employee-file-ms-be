@@ -26,5 +26,6 @@ public class EmployeeSearchRequest {
     private UUID branchId;
     private UUID positionId;
     private UUID companyId;
+    private String contractCompany;
     private Pageable pageable;
 }

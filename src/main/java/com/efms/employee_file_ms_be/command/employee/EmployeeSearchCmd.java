@@ -55,7 +55,8 @@ public class EmployeeSearchCmd implements Command {
                 searchRequest.getIsDisassociated(),
                 searchRequest.getBranchId(),
                 searchRequest.getPositionId(),
-                companyId
+                companyId,
+                searchRequest.getContractCompany()
         );
 
         employees = employeeRepository.findAll(spec, searchRequest.getPageable());

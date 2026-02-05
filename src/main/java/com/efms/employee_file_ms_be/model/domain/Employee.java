@@ -103,4 +103,7 @@ public class Employee extends Audit {
 
     @Column(name = "company_id", nullable = false)
     private UUID companyId;
+
+    @Column(name = "contract_company", length = 200)
+    private String contractCompany;
 }

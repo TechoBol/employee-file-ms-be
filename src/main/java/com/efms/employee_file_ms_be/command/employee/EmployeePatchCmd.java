@@ -89,6 +89,7 @@ public class EmployeePatchCmd implements Command {
         });
         Optional.ofNullable(employeeUpdateRequest.getDisassociationDate()).ifPresent(employee::setDisassociationDate);
         Optional.ofNullable(employeeUpdateRequest.getDisassociationReason()).ifPresent(employee::setDisassociationReason);
+        Optional.ofNullable(employeeUpdateRequest.getContractCompany()).ifPresent(employee::setContractCompany);
     }
 
     private Map<String, FieldChange> detectChanges(Employee employee, EmployeeUpdateRequest request) {

@@ -26,7 +26,8 @@ public class EmployeeSpecification {
             Boolean isDisassociated,
             UUID branchId,
             UUID positionId,
-            UUID companyId
+            UUID companyId,
+            String contractCompany
     ) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -54,7 +55,31 @@ public class EmployeeSpecification {
                         ),
                         searchPattern
                 );
-                predicates.add(criteriaBuilder.or(firstNameMatch, lastNameMatch, fullNameMatch));
+
+                Predicate contractCompanyMatch = criteriaBuilder.and(
+                        criteriaBuilder.isNotNull(root.get("contractCompany")),
+                        criteriaBuilder.like(
+                                criteriaBuilder.lower(root.get("contractCompany")),
+                                searchPattern
+                        )
+                );
+
+                predicates.add(criteriaBuilder.or(
+                        firstNameMatch,
+                        lastNameMatch,
+                        fullNameMatch,
+                        contractCompanyMatch
+                ));
+            }
+
+            if (contractCompany != null && !contractCompany.isBlank()) {
+                predicates.add(criteriaBuilder.and(
+                        criteriaBuilder.isNotNull(root.get("contractCompany")),
+                        criteriaBuilder.like(
+                                criteriaBuilder.lower(root.get("contractCompany")),
+                                "%" + contractCompany.toLowerCase() + "%"
+                        )
+                ));
             }
 
             if (ci != null && !ci.isBlank()) {

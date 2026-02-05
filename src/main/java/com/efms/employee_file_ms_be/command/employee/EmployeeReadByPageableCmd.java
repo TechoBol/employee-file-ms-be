@@ -52,7 +52,8 @@ public class EmployeeReadByPageableCmd implements Command {
                     searchRequest.getIsDisassociated(),
                     searchRequest.getBranchId(),
                     searchRequest.getPositionId(),
-                    companyId
+                    companyId,
+                    searchRequest.getContractCompany()
             );
             employeePage = repository.findAll(spec, pageable);
         } else {

@@ -32,4 +32,5 @@ public class EmployeeResponse {
     private LocalDateTime disassociatedAt;
     private LocalDate disassociationDate;
     private String disassociationReason;
+    private String contractCompany;
 }

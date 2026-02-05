@@ -41,4 +41,6 @@ public class EmployeeCreateRequest {
 
     @NotBlank
     private String branchId;
+
+    private String contractCompany;
 }
