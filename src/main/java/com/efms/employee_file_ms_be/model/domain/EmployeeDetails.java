@@ -33,4 +33,6 @@ public class EmployeeDetails {
     private UUID positionId;
     private String positionName;
     private UUID companyId;
+    private String contractCompany;
+    private String contractPosition;
 }

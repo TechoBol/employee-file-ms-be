@@ -33,4 +33,5 @@ public class EmployeeResponse {
     private LocalDate disassociationDate;
     private String disassociationReason;
     private String contractCompany;
+    private String contractPosition;
 }

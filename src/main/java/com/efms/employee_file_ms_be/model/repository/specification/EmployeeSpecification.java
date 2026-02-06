@@ -64,11 +64,20 @@ public class EmployeeSpecification {
                         )
                 );
 
+                Predicate contractPositionMatch = criteriaBuilder.and(
+                        criteriaBuilder.isNotNull(root.get("contractPosition")),
+                        criteriaBuilder.like(
+                                criteriaBuilder.lower(root.get("contractPosition")),
+                                searchPattern
+                        )
+                );
+
                 predicates.add(criteriaBuilder.or(
                         firstNameMatch,
                         lastNameMatch,
                         fullNameMatch,
-                        contractCompanyMatch
+                        contractCompanyMatch,
+                        contractPositionMatch
                 ));
             }
 

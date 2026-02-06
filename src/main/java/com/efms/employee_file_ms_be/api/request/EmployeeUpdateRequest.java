@@ -42,4 +42,6 @@ public class EmployeeUpdateRequest {
     private String disassociationReason;
 
     private String contractCompany;
+
+    private String contractPosition;
 }

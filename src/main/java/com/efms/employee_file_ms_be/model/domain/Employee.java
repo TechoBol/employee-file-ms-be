@@ -106,4 +106,7 @@ public class Employee extends Audit {
 
     @Column(name = "contract_company", length = 200)
     private String contractCompany;
+
+    @Column(name = "contract_position", length = 200)
+    private String contractPosition;
 }

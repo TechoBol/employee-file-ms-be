@@ -90,6 +90,7 @@ public class EmployeePatchCmd implements Command {
         Optional.ofNullable(employeeUpdateRequest.getDisassociationDate()).ifPresent(employee::setDisassociationDate);
         Optional.ofNullable(employeeUpdateRequest.getDisassociationReason()).ifPresent(employee::setDisassociationReason);
         Optional.ofNullable(employeeUpdateRequest.getContractCompany()).ifPresent(employee::setContractCompany);
+        Optional.ofNullable(employeeUpdateRequest.getContractPosition()).ifPresent(employee::setContractPosition);
     }
 
     private Map<String, FieldChange> detectChanges(Employee employee, EmployeeUpdateRequest request) {
@@ -159,6 +160,14 @@ public class EmployeePatchCmd implements Command {
 
         if (request.getDisassociationReason() != null && !Objects.equals(request.getDisassociationReason(), employee.getDisassociationReason())) {
             changes.put("disassociationReason", createFieldChange("disassociationReason", employee.getDisassociationReason(), request.getDisassociationReason(), now));
+        }
+
+        if (request.getContractCompany() != null && !Objects.equals(request.getContractCompany(), employee.getContractCompany())) {
+            changes.put("contractCompany", createFieldChange("contractCompany", employee.getContractCompany(), request.getContractCompany(), now));
+        }
+
+        if (request.getContractPosition() != null && !Objects.equals(request.getContractPosition(), employee.getContractPosition())) {
+            changes.put("contractPosition", createFieldChange("contractPosition", employee.getContractPosition(), request.getContractPosition(), now));
         }
 
         return changes;

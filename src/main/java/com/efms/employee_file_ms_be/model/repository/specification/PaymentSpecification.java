@@ -59,6 +59,20 @@ public class PaymentSpecification {
                         lastNameExpr
                 );
 
+                Expression<String> contractCompanyExpr = criteriaBuilder.function(
+                        "jsonb_extract_path_text",
+                        String.class,
+                        root.get("employeeDetails"),
+                        criteriaBuilder.literal("contractCompany")
+                );
+
+                Expression<String> contractPositionExpr = criteriaBuilder.function(
+                        "jsonb_extract_path_text",
+                        String.class,
+                        root.get("employeeDetails"),
+                        criteriaBuilder.literal("contractPosition")
+                );
+
                 Predicate firstNameMatch = criteriaBuilder.like(
                         criteriaBuilder.lower(firstNameExpr),
                         searchPattern
@@ -74,7 +88,29 @@ public class PaymentSpecification {
                         searchPattern
                 );
 
-                predicates.add(criteriaBuilder.or(firstNameMatch, lastNameMatch, fullNameMatch));
+                Predicate contractCompanyMatch = criteriaBuilder.and(
+                        criteriaBuilder.isNotNull(contractCompanyExpr),
+                        criteriaBuilder.like(
+                                criteriaBuilder.lower(contractCompanyExpr),
+                                searchPattern
+                        )
+                );
+
+                Predicate contractPositionMatch = criteriaBuilder.and(
+                        criteriaBuilder.isNotNull(contractPositionExpr),
+                        criteriaBuilder.like(
+                                criteriaBuilder.lower(contractPositionExpr),
+                                searchPattern
+                        )
+                );
+
+                predicates.add(criteriaBuilder.or(
+                        firstNameMatch,
+                        lastNameMatch,
+                        fullNameMatch,
+                        contractCompanyMatch,
+                        contractPositionMatch
+                ));
             }
 
             if (ci != null && !ci.isBlank()) {

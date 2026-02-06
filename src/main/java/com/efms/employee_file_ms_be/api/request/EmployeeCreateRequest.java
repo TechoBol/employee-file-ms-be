@@ -43,4 +43,6 @@ public class EmployeeCreateRequest {
     private String branchId;
 
     private String contractCompany;
+
+    private String contractPosition;
 }
