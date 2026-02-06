@@ -76,7 +76,7 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
                 : BigDecimal.ZERO;
 
         int seniority = getSeniority(employee);
-        int workedDays = Math.min(calculateWorkedDays(employee), generalSettings.getWorkingDaysPerMonth());
+        int workedDays = Math.min(calculateWorkedDays(employee, generalSettings.getWorkingDaysPerMonth()), generalSettings.getWorkingDaysPerMonth());
         Integer workingDaysPerMonth = generalSettings.getWorkingDaysPerMonth();
 
         BigDecimal basicEarnings = calculateBasicEarnings(baseSalaryAmount, workedDays, workingDaysPerMonth);
@@ -185,7 +185,7 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
         payrollResponse.setNetAmount(netAmount);
     }
 
-    private int calculateWorkedDays(Employee employee) {
+    private int calculateWorkedDays(Employee employee, Integer workingDaysPerMonth) {
         LocalDate effectiveStartDate = startDate;
         LocalDate effectiveEndDate = endDate;
 
@@ -216,7 +216,23 @@ public class PayrollCalculateByEmployeeIdCmd implements Command {
             return 0;
         }
 
-        return (int) ChronoUnit.DAYS.between(effectiveStartDate, effectiveEndDate) + 1;
+        // Calcular días calendario
+        int calendarDays = (int) ChronoUnit.DAYS.between(effectiveStartDate, effectiveEndDate) + 1;
+
+        // Obtener total de días del período completo (del startDate al endDate original)
+        int totalCalendarDaysInPeriod = (int) ChronoUnit.DAYS.between(startDate, endDate) + 1;
+
+        // Normalizar a días laborales (30 días por mes)
+        if (workingDaysPerMonth == null || workingDaysPerMonth == 0) {
+            workingDaysPerMonth = 30;
+        }
+
+        // Convertir días calendario trabajados a días laborales
+        BigDecimal workedDays = BigDecimal.valueOf(calendarDays)
+                .multiply(BigDecimal.valueOf(workingDaysPerMonth))
+                .divide(BigDecimal.valueOf(totalCalendarDaysInPeriod), 0, RoundingMode.HALF_UP);
+
+        return workedDays.intValue();
     }
 
     private BigDecimal calculateBasicEarnings(BigDecimal baseSalary, int workedDays, Integer workingDaysPerMonth) {
